@@ -42,50 +42,57 @@ architecture Behavioral of SerialReadTb is
              dataIn : in STD_LOGIC;
              clk_100Mhz : in STD_LOGIC;
              sysReset : in STD_LOGIC;
-             tileData : out STD_LOGIC_VECTOR (1199 downto 0));
+             tileData : out STD_LOGIC_VECTOR (15 downto 0));
     end component SerialRead;
 
     signal clk_100Mhz : STD_LOGIC;
     signal clk : STD_LOGIC;
     signal data : STD_LOGIC;
-    signal tileData : STD_LOGIC_VECTOR(1199 downto 0);
+    signal tileData : STD_LOGIC_VECTOR(15 downto 0);
+    signal sysReset : STD_LOGIC;
 
 begin
 
     UUT : SerialRead Port map ( clkIn => clk,
                  dataIn => data,
                  clk_100Mhz => clk_100Mhz,
-                 sysReset => '0',
+                 sysReset => sysReset,
                  tileData => tileData);
 
 
     process
     begin
-        for I in 0 to 1200 loop
-            for J in 0 to 200 loop
+    data <= '1';
+    sysReset <= '1';
+    wait for 5 ns;
+    sysReset <= '0';
+    wait for 5 ns;
+        for I in 0 to 16 loop
+            for J in 0 to 20 loop
                 clk_100Mhz  <= '1';
-                wait for 5 ps;
+                wait for 1 ns;
                 clk_100Mhz <= '0';
-                wait for 5 ps;
+                wait for 1 ns;
             end loop;
-            data <= '1';
-            wait for 5 ps;
+            
+            wait for 5 ns;
             clk <= '1';
-            wait for 5 ps;
-            for J in 0 to 200 loop
+            wait for 5 ns;
+            for J in 0 to 20 loop
                 clk_100Mhz  <= '1';
-                wait for 5 ps;
+                wait for 1 ns;
                 clk_100Mhz <= '0';
-                wait for 5 ps;
+                wait for 1 ns;
             end loop;
 
-            data <= '0';
+            
             clk <= '0';
-            for J in 0 to 200 loop
+            wait for 5 ns;
+            for J in 0 to 20 loop
                 clk_100Mhz  <= '1';
-                wait for 5 ps;
+                wait for 1 ns;
                 clk_100Mhz <= '0';
-                wait for 5 ps;
+                wait for 1 ns;
             end loop;
         end loop;
         wait;
