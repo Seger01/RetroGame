@@ -238,7 +238,7 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(GPIOA, LD2_Pin|FPGAreset_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(serialData_GPIO_Port, serialData_Pin, GPIO_PIN_RESET);
@@ -248,16 +248,16 @@ static void MX_GPIO_Init(void)
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_IT_FALLING;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pin : LD2_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin;
+  /*Configure GPIO pins : LD2_Pin FPGAreset_Pin */
+  GPIO_InitStruct.Pin = LD2_Pin|FPGAreset_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-  HAL_GPIO_Init(LD2_GPIO_Port, &GPIO_InitStruct);
+  HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : serialData_Pin */
   GPIO_InitStruct.Pin = serialData_Pin;
@@ -291,6 +291,37 @@ void serialDataWrite(_Bool state) {
 		HAL_GPIO_WritePin(GPIOB, GPIO_PIN_10, 0);
 	}
 }
+
+void fpgaReset() {
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, 1);
+	HAL_Delay(1);
+	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, 0);
+	HAL_Delay(1);
+
+	for (int i = 0; i < 18; i++) {
+		serialDataWrite(1);
+
+		serialClockWrite(1);
+
+		serialDataWrite(1);
+		serialClockWrite(0);
+
+	}
+
+	//HAL_Delay(1000000);
+}
+
+void setupSerial() {
+	for (int i = 0; i < 17; i++) {
+		serialDataWrite(0);
+		HAL_Delay(1);
+		serialClockWrite(1);
+		HAL_Delay(1);
+		serialDataWrite(0);
+		serialClockWrite(0);
+		HAL_Delay(1);
+	}
+}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_startSend */
@@ -303,31 +334,51 @@ void serialDataWrite(_Bool state) {
 void startSend(void *argument)
 {
   /* USER CODE BEGIN 5 */
+	fpgaReset();
 	/* Infinite loop */
 	for (;;) {
-		osDelay(1);
-		/*_Bool dataArray[16];
+		osDelay(10);
+		_Bool dataArray[16] = { 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1 };
 
-		for (int i = 0; i < 16; i++){
-			dataArray[i] = i %2;
+		static int counter = 0;
+
+		int state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
+
+		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0){
+			counter++;
+
 		}
 
-		for (int i = 0; i < 16; i++){
+		if (counter == 16)
+			counter = 0;
+
+		for (int i = 0; i < 16; i++) {
+			if(i == counter){
+			 serialDataWrite(1);
+
+			 } else {
+			 serialDataWrite(0);
+
+			 }
 			serialDataWrite(dataArray[i]);
-			HAL_Delay(1);
+
 			serialClockWrite(1);
-			HAL_Delay(1);
+
 			serialDataWrite(0);
 			serialClockWrite(0);
-			HAL_Delay(1);
+
 		}
-		HAL_GPIO_TogglePin(GPIOB, GPIO_PIN_6);*/
-
-		serialDataWrite(1);
+		serialDataWrite(0);
 		serialClockWrite(1);
-
-
 		serialClockWrite(0);
+		/*serialDataWrite(1);
+		 serialClockWrite(1);
+
+		 serialClockWrite(0);
+		 serialDataWrite(0);
+		 serialClockWrite(1);
+
+		 serialClockWrite(0);*/
 
 	}
   /* USER CODE END 5 */

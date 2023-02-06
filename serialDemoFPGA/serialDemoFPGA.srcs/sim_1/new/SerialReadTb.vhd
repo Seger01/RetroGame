@@ -38,63 +38,100 @@ end SerialReadTb;
 architecture Behavioral of SerialReadTb is
 
     component SerialRead is
-        Port ( clkIn : in STD_LOGIC;
-             dataIn : in STD_LOGIC;
-             clk_100Mhz : in STD_LOGIC;
-             sysReset : in STD_LOGIC;
-             tileData : out STD_LOGIC_VECTOR (15 downto 0));
+        Port ( clkIn : IN STD_LOGIC;
+            dataIn : IN STD_LOGIC;
+            sysReset : IN STD_LOGIC;
+            tileData : OUT STD_LOGIC_VECTOR (1199 DOWNTO 0)
+            );
     end component SerialRead;
 
-    signal clk_100Mhz : STD_LOGIC;
     signal clk : STD_LOGIC;
     signal data : STD_LOGIC;
-    signal tileData : STD_LOGIC_VECTOR(15 downto 0);
+    signal tileData : STD_LOGIC_VECTOR(1199 downto 0);
     signal sysReset : STD_LOGIC;
-
+    
+    
 begin
 
-    UUT : SerialRead Port map ( clkIn => clk,
+    UUT : SerialRead Port map ( 
+                 clkIn => clk,
                  dataIn => data,
-                 clk_100Mhz => clk_100Mhz,
                  sysReset => sysReset,
-                 tileData => tileData);
-
+                 tileData => tileData
+                 );
 
     process
     begin
-    data <= '1';
-    sysReset <= '1';
-    wait for 5 ns;
-    sysReset <= '0';
-    wait for 5 ns;
-        for I in 0 to 16 loop
-            for J in 0 to 20 loop
-                clk_100Mhz  <= '1';
-                wait for 1 ns;
-                clk_100Mhz <= '0';
-                wait for 1 ns;
-            end loop;
+        data <= '1';
+        clk <= '0';
+        sysReset <= '1';
+        wait for 50 ns;
+        sysReset <= '0';
+        wait for 50 ns;
+        data <= '0';
+        wait for 50 ns;
+        clk <= '1';
+        wait for 50 ns;
+                          
+        clk <= '0';
+        wait for 50 ns;
+        data <= '1';
+        for I in 1 to 1199 loop
             
-            wait for 5 ns;
-            clk <= '1';
-            wait for 5 ns;
-            for J in 0 to 20 loop
-                clk_100Mhz  <= '1';
-                wait for 1 ns;
-                clk_100Mhz <= '0';
-                wait for 1 ns;
-            end loop;
 
+            wait for 50 ns;
+            clk <= '1';
+            wait for 50 ns;
             
+
+
             clk <= '0';
-            wait for 5 ns;
-            for J in 0 to 20 loop
-                clk_100Mhz  <= '1';
-                wait for 1 ns;
-                clk_100Mhz <= '0';
-                wait for 1 ns;
-            end loop;
+            wait for 50 ns;
+           
         end loop;
+        data <= '0';
+        wait for 50 ns;
+        clk <= '1';
+        wait for 50 ns;
+                    
+        clk <= '0';
+        wait for 50 ns;
+--        wait for 500 ns;
+--        for I in 0 to 15 loop
+                    
+--            data <= '0';
+--            wait for 50 ns;
+--            clk <= '1';
+--            wait for 50 ns;
+            
+--            clk <= '0';
+--            wait for 50 ns;
+                    
+--        end loop;
+--        clk <= '1';
+--        wait for 50 ns;
+                   
+--        clk <= '0';
+--        wait for 50 ns;
+--        data <= '1';
+--        wait for 50 ns;
+--        for I in 0 to 15 loop
+                            
+--            data <= NOT data;
+--            wait for 50 ns;
+--            clk <= '1';
+--            wait for 50 ns;               
+                        
+--            clk <= '0';
+--            wait for 50 ns;                                               
+--        end loop;
+--        data <= '0';
+--        wait for 50 ns;
+--        clk <= '1';
+--        wait for 50 ns;
+                               
+--        clk <= '0';
+--        wait for 50 ns;
         wait;
     end process;
 

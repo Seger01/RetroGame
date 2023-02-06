@@ -67,6 +67,8 @@ void Error_Handler(void);
 #define LD2_GPIO_Port GPIOA
 #define serialData_Pin GPIO_PIN_10
 #define serialData_GPIO_Port GPIOB
+#define FPGAreset_Pin GPIO_PIN_8
+#define FPGAreset_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
