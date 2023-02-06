@@ -1,0 +1,22 @@
+memory_initialization_radix=16;
+memory_initialization_vector=
+F0F, F0F, F0F, 000, 000, 000, 000, F0F, F0F, F0F, 
+
+F0F, F0F, 000, F0F, F0F, F0F, F0F, 000, F0F, F0F, 
+
+F0F, 000, F0F, F0F, F0F, F0F, F0F, F0F, 000, F0F, 
+
+000, F0F, F0F, F0F, F0F, F0F, F0F, F0F, F0F, 000, 
+
+000, F0F, F0F, F0F, F0F, F0F, F0F, F0F, F0F, 000, 
+
+000, F0F, F0F, F0F, F0F, F0F, F0F, F0F, F0F, 000, 
+
+000, F0F, F0F, F0F, F0F, F0F, F0F, F0F, F0F, 000, 
+
+F0F, 000, F0F, F0F, F0F, F0F, F0F, F0F, 000, F0F, 
+
+F0F, F0F, 000, F0F, F0F, F0F, F0F, 000, F0F, F0F, 
+
+F0F, F0F, F0F, 000, 000, 000, 000, F0F, F0F, F0F
+;
