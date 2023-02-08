@@ -22,7 +22,7 @@ ENTITY BackGroundPixels IS
 		-- Data R R R G G G B B
 		tileMapNumber    : IN  STD_LOGIC_VECTOR(5 DOWNTO 0); -- tile number starting top left going left to richt and down
 		-- VGA module connections
-		Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo:
+		Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 		Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 		-- sprite adress to be availebel on spritePixleRGB 2 clocks after put on spritePixleAdress
 		tileMapadress    : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) -- set addres of tile to read
@@ -40,7 +40,7 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	SIGNAL XVGA : INTEGER range 0 to 1023 := 0;
 	SIGNAL YVGA : INTEGER range 0 to 511 := 0;
 	-- Tile
-	SIGNAL currentTileXYPosition : UNSIGNED(7 to 0);
+	SIGNAL currentTileXYPosition : UNSIGNED(7 downto 0);
 	SIGNAL tileRGB : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
 	SIGNAL tileAdress : STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 BEGIN
@@ -57,9 +57,8 @@ BEGIN
 	XVGA <= to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + 1;
     YVGA <= to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START;
 	
-	--todo:
-	--currentTileXYPosition <= (unsigned(Xcount) MOD 16 + (unsigned(Ycount) MOD 16 * TILE_PIXEL_HIGHT_AND_WITH)); -- //todo: add offset in x and y count
-	currentTileXYPosition <= unsigned(Xcount);
+	--todo: resize hoe werkt dat wordt er niets van de data halverwege af gekipt
+	currentTileXYPosition <= resize((unsigned(Xcount) MOD 16 + (unsigned(Ycount) MOD 16 * TILE_PIXEL_HIGHT_AND_WITH)), 8); -- //todo: add offset in x and y count
 	--currentTileXYPosition <= to_unsigned(to_integer(unsigned(Xcount) MOD 16) + to_integer(unsigned(Ycount) MOD 16) * TILE_PIXEL_HIGHT_AND_WITH, 16);
 	--currentTileXYPosition <= to_unsigned((unsigned(Xcount) MOD 16) + ((unsigned(Ycount) MOD 16) * TILE_PIXEL_HIGHT_AND_WITH, 16));
 	
@@ -87,7 +86,8 @@ BEGIN
 			
 			--spritePixleAdress <= spritePositon(0 to spritePixleAdress'length - 1);
 			--spritePixleAdress <= spritePositon(spritePixleAdress'length - 1 downto 0);
-			tileAdress <= STD_LOGIC_VECTOR((unsigned(tileMapNumber) * 256) + currentTileXYPosition);
+			--todo: tileAdress tegroot 00 toevoegen?
+			tileAdress <= STD_LOGIC_VECTOR(resize(unsigned(STD_LOGIC_VECTOR((unsigned(tileMapNumber) * 256) + currentTileXYPosition)),14));
 			-- if currend displayed pixel is in visible part of screen.
 			IF ((XVGA > 0) AND (YVGA > 0) AND (XVGA <= SCREAN_WIDTH) AND (YVGA <= SCREAN_HIGHT)) THEN -- //todo:add ofset
 				--display object whith this color
