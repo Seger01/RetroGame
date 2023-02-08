@@ -66,6 +66,7 @@ BEGIN
 	   variable vEntityXPosition : natural range 0 to 256 := 0;
 	   variable vEntityYPosition : natural range 0 to 256 := 0;
 	   variable vEntityVectorOffset : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
+	   variable vTemp : integer  := 0;
 	BEGIN
 		-- if reset
 		IF (reset = '1') THEN
@@ -86,7 +87,7 @@ BEGIN
 			entityAdress <= (OTHERS => '0');
 			                
             -- loop for        
-            for count in 0 to ENTITY_AMOUNT loop          
+            for count in 0 to ENTITY_AMOUNT -1 loop          
                 -- vector entity 0 => 49 by count    *     total entity size
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 -- read x position      read vector entity 0 => 49 by count          +        x entity size -1                      downto     read vector entity 0 => 49 by count only      
@@ -126,15 +127,21 @@ BEGIN
                         --spritePixleAdress <= spritePositon(spritePixleAdress'length - 1 downto 0);
                         --todo: tileAdress tegroot 00 toevoegen?
                         
+                        --entityAdress <= std_logic_vector ((unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE))) * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH) + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM)(8 downto 0);
+                        
                         -- get entity address to read                                 
                         --                                  get entity to display
-                        entityAdress <= std_logic_vector ((unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE)))
+                        
+                        -- use of vtemp becouse vivado synthesis failed 12 does not fid in 9 and resize does not work
+                        vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
                                         -- multiply by size of an entity
                                         * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH)
                                          -- +   xy position of entity to color relative to entity start on screen;
                                          + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH
                                          -- + X value
                                          + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM);
+                                         
+                        entityAdress <= std_logic_vector(to_unsigned (vTemp, entityAdress'length));
                         exit;
                     end if;
                 end if;

@@ -173,16 +173,15 @@ BEGIN
 	   variable vEntityVectorOffset : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
 	   variable vEntityVectorOffset1 : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
 	begin
-	-- loop for  
-	sTest <= (others => '0');
+        -- loop for  
+        sTest <= (others => '0');
+        sTestData <= (others => '0');
 	
-        for count in 0 to ENTITY_AMOUNT loop
+        for count in 0 to ENTITY_AMOUNT - 1 loop
             -- vector entity 0 => 49 by count    *     total entity size
             vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
             vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-            
-            sTestData <= std_logic_vector(to_unsigned (count, 8));
-                        
+               
             if (count < 20) then
                 sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count, 8)) & std_logic_vector(to_unsigned (count, 8)) & "000000";
             else
