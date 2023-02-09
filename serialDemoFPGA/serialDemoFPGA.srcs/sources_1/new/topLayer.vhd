@@ -32,8 +32,9 @@ use IEEE.STD_LOGIC_1164.ALL;
 --use UNISIM.VComponents.all;
 
 entity topLayer is
-    Port ( clkIn : in STD_LOGIC;
-           dataIn : in STD_LOGIC;
+    Port ( serialClkIn : in STD_LOGIC;
+           clk100Mhz : in STD_LOGIC;
+           serialDataIn : in STD_LOGIC;
            sysReset : in STD_LOGIC;
            ledsOut : out STD_LOGIC_VECTOR (15 downto 0));
 end topLayer;
@@ -45,21 +46,44 @@ component SerialRead is
         clkIn : IN STD_LOGIC;
         dataIn : IN STD_LOGIC;
         sysReset : IN STD_LOGIC;
-        tileData : OUT STD_LOGIC_VECTOR (1199 DOWNTO 0)
+        tileData : OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
         );
 end component SerialRead;
 
-signal tileData : STD_LOGIC_VECTOR(1199 downto 0);
+component dataSynchronizer is
+  port (
+    clk_in : in std_logic;
+    data_in : in std_logic;
+    fpgaClk : in std_logic;
+    sysReset : in std_logic;    
+    clkOutSync : out std_logic;
+    dataOutSync : out std_logic
+  );
+end component;
+
+signal syncClk : std_logic;
+signal syncData : std_logic;
+signal tileData : STD_LOGIC_VECTOR(15 downto 0);
              
 begin
 
+--    ledsOut(15) <= serialClkIn;
+--    ledsOut(14) <= serialDataIn;
+--    ledsOut(13) <= sysReset;
+    ledsOut(15 downto 0) <= tileData(15 downto 0);
     serialReceiver : SerialRead Port map ( 
-         clkIn => clkIn,
-         dataIn => dataIn,
+         clkIn => syncClk,
+         dataIn => syncData,
          sysReset => sysReset,
          tileData => tileData
          );
          
-    ledsOut <= tileData(15 downto 0);
-
+     synchronizeData : dataSynchronizer Port map ( 
+         clk_In => serialClkIn,
+         data_in => serialDataIn,
+         fpgaClk => clk100Mhz,
+         sysReset => sysReset,
+         clkOutSync => syncClk,
+         dataOutSync => syncData
+         );
 end Behavioral;

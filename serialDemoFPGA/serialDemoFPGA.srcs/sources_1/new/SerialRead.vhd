@@ -34,7 +34,7 @@ ENTITY SerialRead IS
         clkIn : IN STD_LOGIC;
         dataIn : IN STD_LOGIC;
         sysReset : IN STD_LOGIC;
-        tileData : OUT STD_LOGIC_VECTOR (1199 DOWNTO 0)
+        tileData : OUT STD_LOGIC_VECTOR (15 DOWNTO 0)
         );
 END SerialRead;
 
@@ -116,18 +116,18 @@ ARCHITECTURE Behavioral OF SerialRead IS
     --        END CASE;
     --    END PROCESS Logic;
 
-    signal received_data : STD_LOGIC_VECTOR (1199 downto 0);
-    signal bit_counter : integer range 0 to 1200 := 0;
+    signal received_data : STD_LOGIC_VECTOR (15 downto 0);
+    signal bit_counter : integer range 0 to 16 := 0;
     
 begin
     process(clkIn, sysReset)
     begin
         if sysReset = '1' then
             tileData <= (others => '0');
-            bit_counter <= 0;
+            bit_counter <= 1;
             received_data <= (others => '0');
         elsif (clkIn = '1' and clkIn'event) then
-            if bit_counter < 1200 then
+            if bit_counter < 16 then
                 received_data(bit_counter) <= dataIn;
                 bit_counter <= bit_counter + 1;
             else

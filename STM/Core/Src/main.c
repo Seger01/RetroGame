@@ -40,13 +40,15 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+SPI_HandleTypeDef hspi1;
+
 UART_HandleTypeDef huart2;
 
 /* Definitions for SerialSend */
 osThreadId_t SerialSendHandle;
 const osThreadAttr_t SerialSend_attributes = {
   .name = "SerialSend",
-  .stack_size = 256 * 4,
+  .stack_size = 526 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
@@ -57,6 +59,7 @@ const osThreadAttr_t SerialSend_attributes = {
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_USART2_UART_Init(void);
+static void MX_SPI1_Init(void);
 void startSend(void *argument);
 
 /* USER CODE BEGIN PFP */
@@ -97,6 +100,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_USART2_UART_Init();
+  MX_SPI1_Init();
   /* USER CODE BEGIN 2 */
 
   /* USER CODE END 2 */
@@ -188,6 +192,46 @@ void SystemClock_Config(void)
 }
 
 /**
+  * @brief SPI1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_SPI1_Init(void)
+{
+
+  /* USER CODE BEGIN SPI1_Init 0 */
+
+  /* USER CODE END SPI1_Init 0 */
+
+  /* USER CODE BEGIN SPI1_Init 1 */
+
+  /* USER CODE END SPI1_Init 1 */
+  /* SPI1 parameter configuration*/
+  hspi1.Instance = SPI1;
+  hspi1.Init.Mode = SPI_MODE_MASTER;
+  hspi1.Init.Direction = SPI_DIRECTION_2LINES;
+  hspi1.Init.DataSize = SPI_DATASIZE_8BIT;
+  hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
+  hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
+  hspi1.Init.NSS = SPI_NSS_SOFT;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+  hspi1.Init.FirstBit = SPI_FIRSTBIT_LSB;
+  hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
+  hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
+  hspi1.Init.CRCPolynomial = 7;
+  hspi1.Init.CRCLength = SPI_CRC_LENGTH_DATASIZE;
+  hspi1.Init.NSSPMode = SPI_NSS_PULSE_DISABLE;
+  if (HAL_SPI_Init(&hspi1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN SPI1_Init 2 */
+
+  /* USER CODE END SPI1_Init 2 */
+
+}
+
+/**
   * @brief USART2 Initialization Function
   * @param None
   * @retval None
@@ -243,9 +287,6 @@ static void MX_GPIO_Init(void)
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(serialData_GPIO_Port, serialData_Pin, GPIO_PIN_RESET);
 
-  /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(serialclk_GPIO_Port, serialclk_Pin, GPIO_PIN_SET);
-
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -265,13 +306,6 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(serialData_GPIO_Port, &GPIO_InitStruct);
-
-  /*Configure GPIO pin : serialclk_Pin */
-  GPIO_InitStruct.Pin = serialclk_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_MEDIUM;
-  HAL_GPIO_Init(serialclk_GPIO_Port, &GPIO_InitStruct);
 
 }
 
@@ -294,34 +328,23 @@ void serialDataWrite(_Bool state) {
 
 void fpgaReset() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, 1);
-	HAL_Delay(1);
+	HAL_Delay(100);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, 0);
-	HAL_Delay(1);
+	HAL_Delay(100);
 
-	for (int i = 0; i < 18; i++) {
-		serialDataWrite(1);
-
-		serialClockWrite(1);
-
-		serialDataWrite(1);
-		serialClockWrite(0);
-
-	}
+//	/*for (int i = 0; i < (1239 * 2) + 1; i++) {
+//		serialDataWrite(1);
+//		HAL_Delay(1);
+//		serialClockWrite(1);
+//		HAL_Delay(1);
+//		serialDataWrite(1);
+//		serialClockWrite(0);
+//
+//	}*/
 
 	//HAL_Delay(1000000);
 }
 
-void setupSerial() {
-	for (int i = 0; i < 17; i++) {
-		serialDataWrite(0);
-		HAL_Delay(1);
-		serialClockWrite(1);
-		HAL_Delay(1);
-		serialDataWrite(0);
-		serialClockWrite(0);
-		HAL_Delay(1);
-	}
-}
 /* USER CODE END 4 */
 
 /* USER CODE BEGIN Header_startSend */
@@ -337,40 +360,58 @@ void startSend(void *argument)
 	fpgaReset();
 	/* Infinite loop */
 	for (;;) {
-		osDelay(10);
-		_Bool dataArray[16] = { 1, 1, 0, 0, 1, 1, 0, 0, 1, 1, 0, 1, 1, 0, 1, 1 };
-
-		static int counter = 0;
-
-		int state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
-
-		if(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0){
-			counter++;
-
+		osDelay(1000);
+		uint8_t buffer = 0b11101010;
+		//buffer[0] = 0b10101010;
+		//buffer[1] = 0b11101010;
+		while (1) {
+			HAL_SPI_Transmit(&hspi1, &buffer, 1, 100);
+			HAL_Delay(100);
 		}
 
-		if (counter == 16)
-			counter = 0;
+		/*const int dataLength = 1200;
+		 _Bool dataArray[1239] = {0};
 
-		for (int i = 0; i < 16; i++) {
-			if(i == counter){
-			 serialDataWrite(1);
 
-			 } else {
-			 serialDataWrite(0);
+		 for (int i = 0; i < 1239; i++){
+		 dataArray[i] = i %2;
+		 }
+		 static int counter = 0;
 
-			 }
-			serialDataWrite(dataArray[i]);
+		 int state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
 
-			serialClockWrite(1);
+		 if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) {
+		 counter++;
 
-			serialDataWrite(0);
-			serialClockWrite(0);
+		 }
 
-		}
-		serialDataWrite(0);
-		serialClockWrite(1);
-		serialClockWrite(0);
+		 if (counter == 16)
+		 counter = 0;
+		 int before = xTaskGetTickCount();
+		 for (int j = 0; j < 30; j++) {
+		 for (int i = 0; i < 1239; i++) {
+
+		 serialDataWrite(dataArray[i]);
+
+		 serialClockWrite(1);
+
+		 serialDataWrite(0);
+		 serialClockWrite(0);
+
+		 }
+		 serialDataWrite(0);
+		 serialClockWrite(1);
+		 serialClockWrite(0);
+		 }
+		 int after = xTaskGetTickCount();
+
+		 int elapsedMs = after - before;*/
+		/*serialDataWrite(1);
+		 while(1){
+		 serialClockWrite(1);
+		 serialClockWrite(0);
+		 }*/
+
 		/*serialDataWrite(1);
 		 serialClockWrite(1);
 
