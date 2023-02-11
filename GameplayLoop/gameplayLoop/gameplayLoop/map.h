@@ -10,8 +10,10 @@ public:
 	~map();
 
 public:
-	void setHero(const hero&);
+	void setHero(int x, int y);
 	void setEnemy(const enemy&);
+
+	void playerMovement();
 
 	int generateMap();
 private:

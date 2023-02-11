@@ -4,7 +4,7 @@
 
 #include <iostream>
 map::map() {
-
+	mainHero = new hero(8, 8);
 }
 
 
@@ -12,8 +12,9 @@ map::~map() {
 
 }
 
-void map::setHero(const hero& heroValue) {
-	mainHero = new hero(heroValue);
+void map::setHero(int x, int y) {
+	mainHero->setHeroXcoord(x);
+	mainHero->setHeroYcoord(y);
 }
 
 void map::setEnemy(const enemy& enemyValue) {

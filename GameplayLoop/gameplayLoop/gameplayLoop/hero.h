@@ -17,7 +17,7 @@ public:
 	int getHeroYcoord();
 
 private:
-	int heroXcoord;
-	int heroYcoord;
+	int heroXcoord = 8;
+	int heroYcoord = 8;
 };
 

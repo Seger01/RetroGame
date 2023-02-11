@@ -14,11 +14,11 @@ hero::~hero() {
 }
 
 void hero::setHeroXcoord(const int& x) {
-	this->heroXcoord = x;
+	this->heroXcoord += x;
 }
 
 void hero::setHeroYcoord(const int& y) {
-	this->heroYcoord = y;
+	this->heroYcoord += y;
 }
 
 int hero::getHeroXcoord() {
