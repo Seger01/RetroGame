@@ -183,11 +183,11 @@ BEGIN
 					vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
 					vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
 					IF (debugIn(2) = '1') THEN
-						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000010" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
+						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "001110" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count*3, 8));
 					ELSIF (debugIn(3) = '1') THEN
-						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000001" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
+						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000001" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count*2, 8));
 					ELSE
-						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000001" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
+						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  STD_LOGIC_VECTOR(to_unsigned (count, 6)) & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
 					END IF;
 				END LOOP;
 			END IF;

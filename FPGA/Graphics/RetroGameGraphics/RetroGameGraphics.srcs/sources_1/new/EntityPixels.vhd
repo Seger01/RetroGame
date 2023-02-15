@@ -88,9 +88,9 @@ BEGIN
 		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
 			-- set back ground collor
-			Rout         <= (OTHERS => '0');
-			Gout         <= (OTHERS => '0');
-			Bout         <= (OTHERS => '1');
+			Rout         <= (OTHERS => debugIn(13));
+			Gout         <= (OTHERS => debugIn(14));
+			Bout         <= (OTHERS => debugIn(15));
 			entityAdress <= (OTHERS => '0'); --todo set transparrent pixel
 			debugOut     <= (OTHERS => '0');
 			-- loop for
@@ -132,17 +132,27 @@ BEGIN
 						-- use of vtemp becouse vivado synthesis failed 12 does not fid in 9 and resize does not work
 						--                              get entity number
 						IF (debugIn(1) = '1') THEN
-							vTemp := (0
+							vTemp := to_integer((unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
+								-- multiply by size of an entity
+								* (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH))
 								-- +   xy position of entity to color relative to entity start on screen;
 								+ (YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH
 								-- + X value
 								+ XVGA - vEntityXPosition
 								-- add offset to read from rom
 								+ OFFSET_CLK_TO_ROM);
-						ELSE
+						ELSif (debugIn(5) = '1') then
 							vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
 								-- multiply by size of an entity
 								* (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH)
+								-- +   xy position of entity to color relative to entity start on screen;
+								+ (YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH
+								-- + X value
+								+ XVGA - vEntityXPosition
+								-- add offset to read from rom
+								+ OFFSET_CLK_TO_ROM);
+                        else
+							vTemp := (0
 								-- +   xy position of entity to color relative to entity start on screen;
 								+ (YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH
 								-- + X value
