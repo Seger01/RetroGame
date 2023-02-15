@@ -28,7 +28,7 @@ ENTITY EntityPixels IS
 		debugIn   : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
 		debugOut   : OUT  STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
 		-- inputs
-		reset, clk100    : IN  STD_LOGIC;
+		reset, clk    : IN  STD_LOGIC;
 		-- sprite RGB data
 		-- Bit 7 6 5 4 3 2 1 0
 		-- Data R R R G G G B B
@@ -58,7 +58,7 @@ BEGIN
 	AllEntitys0 : AllEntitys
 	PORT MAP
 	(
-		clka  => clk100,
+		clka  => clk,
 		addra => entityAdress,
 		douta => entityRGB
 	);
@@ -68,7 +68,7 @@ BEGIN
 	XVGA <= (to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING;
     YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START)                       /PIXEL_SCALING;	
             
-	PROCESS (reset, clk100)
+	PROCESS (reset, clk)
 	   variable vEntityXPosition : natural range 0 to 256 := 0;
 	   variable vEntityYPosition : natural range 0 to 256 := 0;
 	   variable vEntityVectorOffset : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
@@ -85,7 +85,7 @@ BEGIN
 			debugOut <= (OTHERS => '0');
 			
 			-- if clk rising_edge
-		ELSIF rising_edge(clk100) THEN
+		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
 			-- set back ground collor
 			Rout <= (OTHERS => '0');

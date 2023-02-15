@@ -76,7 +76,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 		debugIn   : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
 		debugOut   : OUT  STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
         -- inputs
-        reset, clk100    : IN  STD_LOGIC;
+        reset, clk    : IN  STD_LOGIC;
         -- sprite RGB data
         -- Bit 7 6 5 4 3 2 1 0
         -- Data R R R G G G B B
@@ -152,7 +152,7 @@ BEGIN
         debugIn => debugIn,
         debugOut => debugOut,
         reset => reset,
-		clk100  => clk_100MHz,
+		clk  => clk_25,
 		dataVector => sTest,
 		Xcount => XpicelVGA,
 		Ycount => YpicelVGA,
@@ -164,16 +164,16 @@ BEGIN
 	sDCounter <= 0;
 	sDebug <= (others => '0');
 	
-	process(clk_100MHz)
+	process(clk_25)
 	   variable vEntityVectorOffset : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
 	   variable vEntityVectorOffset1 : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
 	begin
-	   if (rising_edge (clk_100MHz)) then
+	   if (rising_edge (clk_25)) then
 	       iTestCounter <= iTestCounter + 1;
 	       sTest <= sTest;
 	       sTestData <= (others => '0');
 	       
-	       if (iTestCounter >= 100000000) then
+	       if (iTestCounter >= 25000000) then
                 -- loop for  
                 sTest <= (others => '0');
                 iTestCounter <= 0;
