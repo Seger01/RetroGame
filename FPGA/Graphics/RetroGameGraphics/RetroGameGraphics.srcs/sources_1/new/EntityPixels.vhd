@@ -50,10 +50,10 @@ ARCHITECTURE Behavioral OF EntityPixels IS
 			douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 		);
 	END COMPONENT;
-	SIGNAL XVGA : INTEGER := 0;
-	SIGNAL YVGA : INTEGER := 0;
+	SIGNAL XVGA         : INTEGER                      := 0;
+	SIGNAL YVGA         : INTEGER                      := 0;
 	-- Entity
-	SIGNAL entityRGB : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
+	SIGNAL entityRGB    : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
 	SIGNAL entityAdress : STD_LOGIC_VECTOR(8 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 BEGIN
 	-- map ports
@@ -70,55 +70,56 @@ BEGIN
 	XVGA <= (to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING;
 	YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 	PROCESS (reset, clk)
-		VARIABLE vEntityXPosition : NATURAL RANGE 0 TO 256 := 0;
-		VARIABLE vEntityYPosition : NATURAL RANGE 0 TO 256 := 0;
+		VARIABLE vEntityXPosition    : NATURAL RANGE 0 TO 256                                                                                      := 0;
+		VARIABLE vEntityYPosition    : NATURAL RANGE 0 TO 256                                                                                      := 0;
 		VARIABLE vEntityVectorOffset : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
-		VARIABLE vTemp : INTEGER := 0;
+		VARIABLE vTemp               : INTEGER                                                                                                     := 0;
 	BEGIN
 		-- if reset
 		IF (reset = '1') THEN
 			-- default values
 			-- and set color to black
-			Rout <= (OTHERS => '0');
-			Gout <= (OTHERS => '0');
-			Bout <= (OTHERS => '0');
+			Rout         <= (OTHERS => '0');
+			Gout         <= (OTHERS => '0');
+			Bout         <= (OTHERS => '0');
 			entityAdress <= (OTHERS => '0');
-			debugOut <= (OTHERS => '0');
+			debugOut     <= (OTHERS => '0');
 			-- if clk rising_edge
 		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
 			-- set back ground collor
-			Rout <= (OTHERS => '0');
-			Gout <= (OTHERS => '0');
-			Bout <= (OTHERS => '1');
+			Rout         <= (OTHERS => '0');
+			Gout         <= (OTHERS => '0');
+			Bout         <= (OTHERS => '1');
 			entityAdress <= (OTHERS => '0'); --todo set transparrent pixel
-			debugOut <= (OTHERS => '0');
+			debugOut     <= (OTHERS => '0');
 			-- loop for
 			EntityLoop : FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
 				-- vector entity 0 => 49 by count    *     total entity size
 				vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
 				-- read x position      read vector entity 0 => 49 by count          +        x entity size -1                      downto     read vector entity 0 => 49 by count only
-				vEntityXPosition := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE - 1 DOWNTO vEntityVectorOffset)));
+				vEntityXPosition    := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE - 1 DOWNTO vEntityVectorOffset)));
 				-- read y position      read vector entity 0 => 49 by count          +        x entity size -1 + y size             downto    read vector entity 0 => 49 by count  +    Y entity size only
-				vEntityYPosition := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE)));
+				vEntityYPosition    := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE)));
 				-- if entity pixel is going to be on screen.
 				-- compare to be next vga location is inside currend (count) entity
 
 				-- top left pixel of entity, X
 				-- to be next vga location  >= count x position
 				-- current vga x pixel with offset to vga entity   +   offset to read rom   >=     current x position entity
-				IF (((XVGA + OFFSET_CLK_TO_ROM >= vEntityXPosition)
+				IF ((((XVGA + OFFSET_CLK_TO_ROM)            >= vEntityXPosition)
 					-- top left pixel of entity, Y
 					-- to be next vga location  >= count y position
 					-- current vga y does not increment fast enoug to add offset                >=      current y position entity
-					AND (YVGA >= vEntityYPosition)
+					AND (YVGA                               >= vEntityYPosition)
 					-- botom left pixel of entity, X
 					-- to be next vga location  < count y position + size entity
 					--                              add entity with and hight to check if total exends beond
-					AND ((XVGA + OFFSET_CLK_TO_ROM) < (ENTITY_PIXEL_HIGHT_AND_WITH + vEntityXPosition))
+					AND ((XVGA + OFFSET_CLK_TO_ROM)         < (ENTITY_PIXEL_HIGHT_AND_WITH + vEntityXPosition))
 					-- botom right pixel of entity, Y
 					-- to be next vga location  < count y position + size entity
-					AND (YVGA < (ENTITY_PIXEL_HIGHT_AND_WITH + vEntityYPosition))) OR debugIn(0) = '1')
+					AND (YVGA                               < (ENTITY_PIXEL_HIGHT_AND_WITH + vEntityYPosition)))
+					OR   debugIn(0) = '1')
 					THEN
 					--todo: if entity is bullet use custom entity size
 					IF (false) THEN

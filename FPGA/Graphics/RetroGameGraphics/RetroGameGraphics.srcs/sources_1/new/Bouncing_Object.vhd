@@ -128,10 +128,10 @@ BEGIN
 	PORT
 	MAP
 	(
-	clk_25MHz => clk_25,
-	reset => reset,
-	locked => locked,
-	clk_100MHz => clk_100MHz
+        clk_25MHz => clk_25,
+        reset => reset,
+        locked => locked,
+        clk_100MHz => clk_100MHz
 	);
 	-- map ports
 	--	BackGroundPixels0 : BackGroundPixels
@@ -151,19 +151,21 @@ BEGIN
 	PORT
 	MAP
 	(
-	debugIn => debugIn,
-	debugOut => debugOut,
-	reset => reset,
-	clk => clk_25,
-	dataVector => sTest,
-	Xcount => XpicelVGA,
-	Ycount => YpicelVGA,
-	Rout => VGAcolorR,
-	Gout => VGAcolorG,
-	Bout => VGAcolorB
+        debugIn => debugIn,
+        debugOut => debugOut,
+        reset => reset,
+        clk => clk_25,
+        dataVector => sTest,
+        Xcount => XpicelVGA,
+        Ycount => YpicelVGA,
+        Rout => VGAcolorR,
+        Gout => VGAcolorG,
+        Bout => VGAcolorB
 	);
+	
 	sDCounter <= 0;
 	sDebug <= (OTHERS => '0');
+	
 	PROCESS (clk_25)
 		VARIABLE vEntityVectorOffset : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
 		VARIABLE vEntityVectorOffset1 : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
@@ -181,12 +183,11 @@ BEGIN
 					vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
 					vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
 					IF (debugIn(2) = '1') THEN
-						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <= STD_LOGIC_VECTOR(to_unsigned (count * 200, 8)) & STD_LOGIC_VECTOR(to_unsigned (count * 200, 8)) & "000000";
+						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000010" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
 					ELSIF (debugIn(3) = '1') THEN
-						sTest <= (OTHERS => '0');
-						sTest(vEntityVectorOffset1 - 1 DOWNTO 0) <= STD_LOGIC_VECTOR(to_unsigned (48, 8)) & STD_LOGIC_VECTOR(to_unsigned (100, 8)) & "000001";
+						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000001" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
 					ELSE
-						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <= STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & "000001";
+						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "000001" & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
 					END IF;
 				END LOOP;
 			END IF;
