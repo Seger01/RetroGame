@@ -46,7 +46,7 @@ ARCHITECTURE Behavioral OF EntityPixels IS
 		PORT
 		(
 			clka  : IN  STD_LOGIC;
-			addra : IN  STD_LOGIC_VECTOR(8 DOWNTO 0);
+			addra : IN  STD_LOGIC_VECTOR(11 DOWNTO 0);
 			douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 		);
 	END COMPONENT;
@@ -54,7 +54,7 @@ ARCHITECTURE Behavioral OF EntityPixels IS
 	SIGNAL YVGA         : INTEGER                      := 0;
 	-- Entity
 	SIGNAL entityRGB    : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
-	SIGNAL entityAdress : STD_LOGIC_VECTOR(8 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
+	SIGNAL entityAdress : STD_LOGIC_VECTOR(11 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 BEGIN
 	-- map ports
 	AllEntitys0 : AllEntitys
