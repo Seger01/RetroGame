@@ -173,7 +173,7 @@ BEGIN
 	       sTest <= sTest;
 	       sTestData <= (others => '0');
 	       
-	       if (iTestCounter >= 25000000) then
+	       if (iTestCounter >= 25000) then
                 -- loop for  
                 sTest <= (others => '0');
                 iTestCounter <= 0;
@@ -183,10 +183,13 @@ BEGIN
                     vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                        
-                    if (count < 5) then
-                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 100, 8)) & std_logic_vector(to_unsigned (count * 100, 8)) & "000000";
+                    if (debugIn(2) = '1') then
+                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 200, 8)) & std_logic_vector(to_unsigned (count * 200, 8)) & "000000";
+                    elsif (debugIn(3) = '1') then
+                        sTest <= (others => '0');
+                        sTest(vEntityVectorOffset1 - 1 downto 0) <= std_logic_vector(to_unsigned (48, 8)) & std_logic_vector(to_unsigned (100, 8)) & "000001";
                     else
-                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 100, 8)) & std_logic_vector(to_unsigned (count * 100, 8)) & "000001";
+                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 16, 8)) & std_logic_vector(to_unsigned (count * 16, 8)) & "000001";
                     end if;            
                 end loop;
             end if;
