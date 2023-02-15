@@ -130,3 +130,6 @@ xvlog.*
 *.xml
 *.txt
 *.xci
+*.xml
+*.sh
+*.xpr

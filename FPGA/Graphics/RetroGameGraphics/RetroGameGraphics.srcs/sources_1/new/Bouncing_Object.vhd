@@ -18,11 +18,12 @@ ENTITY Bouncing_Object IS
     );
 	PORT
 	(
+		debugIn   : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
+		debugOut   : OUT  STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
 		reset              : IN STD_LOGIC;
 		clk_100MHz         : IN STD_LOGIC;
 		red, green, blue   : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
 		locked             : OUT STD_LOGIC;
-		Debug              : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
 		hsync, vsync       : OUT STD_LOGIC
 	);
 END Bouncing_Object;
@@ -71,7 +72,9 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
         ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
         ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE
     );
-    PORT (
+    PORT (    
+		debugIn   : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
+		debugOut   : OUT  STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
         -- inputs
         reset, clk100    : IN  STD_LOGIC;
         -- sprite RGB data
@@ -146,7 +149,9 @@ BEGIN
 	EntityPixels0 : EntityPixels
 	PORT MAP
 	(
-	reset => reset,
+        debugIn => debugIn,
+        debugOut => debugOut,
+        reset => reset,
 		clk100  => clk_100MHz,
 		dataVector => sTest,
 		Xcount => XpicelVGA,
@@ -155,18 +160,7 @@ BEGIN
 		Gout => VGAcolorG,
 		Bout => VGAcolorB
 	);
-	
---	Debug(0)      <= Xobject(6);
---	Debug(1)      <= Yobject(6);
---	Debug(2)      <= '0';
---	Debug(3)      <= XpicelVGA(6);
---	Debug(4)      <= YpicelVGA(6);
---	Debug(5)      <= '0';
---	Debug(6)      <= '0';
---	Debug(7)      <= '0';
-	Debug(8)      <= to_std_logic (sDCounter);
-	Debug(9)      <= sDebug(0);
-	
+		
 	sDCounter <= 0;
 	sDebug <= (others => '0');
 	
@@ -189,7 +183,7 @@ BEGIN
                     vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                        
-                    if (count < 20) then
+                    if (count < 30) then
                         sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 32 + count, 8)) & std_logic_vector(to_unsigned (count * 32 + count, 8)) & "000000";
                     else
                         sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 32 + count, 8)) & std_logic_vector(to_unsigned (count * 32 + count, 8)) & "000001";

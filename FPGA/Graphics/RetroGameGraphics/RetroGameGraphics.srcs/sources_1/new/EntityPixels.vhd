@@ -25,6 +25,8 @@ ENTITY EntityPixels IS
 		PIXEL_SCALING : INTEGER := 2
 	);
 	PORT (
+		debugIn   : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
+		debugOut   : OUT  STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
 		-- inputs
 		reset, clk100    : IN  STD_LOGIC;
 		-- sprite RGB data
@@ -80,6 +82,7 @@ BEGIN
 			Gout <= (OTHERS => '0');
 			Bout <= (OTHERS => '0');
 			entityAdress <= (OTHERS => '0');
+			debugOut <= (OTHERS => '0');
 			
 			-- if clk rising_edge
 		ELSIF rising_edge(clk100) THEN
@@ -89,9 +92,10 @@ BEGIN
 			Gout <= (OTHERS => '0');
 			Bout <= (OTHERS => '1');
 			entityAdress <= (OTHERS => '0');
+			debugOut <= (OTHERS => '0');
 			                
             -- loop for        
-            for count in 0 to ENTITY_AMOUNT -1 loop          
+            EntityLoop: for count in 0 to ENTITY_AMOUNT -1 loop          
                 -- vector entity 0 => 49 by count    *     total entity size
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 -- read x position      read vector entity 0 => 49 by count          +        x entity size -1                      downto     read vector entity 0 => 49 by count only      
@@ -105,7 +109,7 @@ BEGIN
                 -- top left pixel of entity, X
                 -- to be next vga location  >= count x position
                 -- current vga x pixel with offset to vga entity   +   offset to read rom   >=     current x position entity
-                IF ((XVGA + OFFSET_CLK_TO_ROM >=                                vEntityXPosition)                             
+                IF (((XVGA + OFFSET_CLK_TO_ROM >=                                vEntityXPosition)                             
                 
                 -- top left pixel of entity, Y
                 -- to be next vga location  >= count y position
@@ -119,7 +123,7 @@ BEGIN
                 
                 -- botom right pixel of entity, Y
                 -- to be next vga location  < count y position + size entity
-                AND (YVGA <                     ENTITY_PIXEL_HIGHT_AND_WITH +   vEntityYPosition)) 
+                AND (YVGA <                     ENTITY_PIXEL_HIGHT_AND_WITH +   vEntityYPosition)) or debugIn(0) = '1') 
                 THEN
                     --todo: if entity is bullet use custom entity size
                     if (false) then
@@ -132,15 +136,26 @@ BEGIN
                         
                         -- use of vtemp becouse vivado synthesis failed 12 does not fid in 9 and resize does not work
                         --                              get entity number
-                        vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
-                                        -- multiply by size of an entity
-                                        * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH)
-                                         -- +   xy position of entity to color relative to entity start on screen;
-                                         + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH
-                                         -- + X value
-                                         + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM);
-                                         
+                        if (debugIn(1) = '1') then
+                            vTemp := (0
+                                             -- +   xy position of entity to color relative to entity start on screen;
+                                             + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH
+                                             -- + X value
+                                             + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM);
+                        else
+                            vTemp := to_integer( unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
+                                            -- multiply by size of an entity
+                                            * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH)
+                                             -- +   xy position of entity to color relative to entity start on screen;
+                                             + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH
+                                             -- + X value
+                                             + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM);                             
+                        end if;    
+                                 
                         entityAdress <= std_logic_vector(to_unsigned (vTemp, entityAdress'length));
+                        
+                        -- exit EntityLoop when pixel to read is sed on entityAdress.                                    
+                        exit EntityLoop;           
                         exit;
                     end if;
                 end if;
