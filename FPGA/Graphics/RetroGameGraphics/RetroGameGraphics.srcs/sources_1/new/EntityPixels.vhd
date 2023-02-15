@@ -13,7 +13,7 @@ ENTITY EntityPixels IS
 		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
 		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
 		SCREAN_WIDTH                   : INTEGER := 640;
-		SCREAN_HIGHT                   : INTEGER := 48;
+		SCREAN_HIGHT                   : INTEGER := 480;
 		-- amount of tiles visible on screan
 		ENTITY_AMOUNT                  : INTEGER := 50;
 		ENTITY_X_BIT_SIZE              : INTEGER := 8;
@@ -169,7 +169,7 @@ BEGIN
 			
 			
 			-- if currend displayed pixel is in visible part of screen.
-			IF ((XVGA >= 0) AND (YVGA >= 0) AND (XVGA < SCREAN_WIDTH) AND (YVGA < SCREAN_HIGHT)) THEN
+			IF ((XVGA >= 0) AND (YVGA >= 0) AND (XVGA < (SCREAN_WIDTH /PIXEL_SCALING)) AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING))) THEN
 				--display objects pixels that are not transparrent color
 				IF (entityRGB /= X"00") THEN
 					-- sprite RGB data

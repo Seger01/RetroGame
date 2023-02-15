@@ -183,10 +183,10 @@ BEGIN
                     vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                        
-                    if (count < 30) then
-                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 32 + count, 8)) & std_logic_vector(to_unsigned (count * 32 + count, 8)) & "000000";
+                    if (count < 5) then
+                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 100, 8)) & std_logic_vector(to_unsigned (count * 100, 8)) & "000000";
                     else
-                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 32 + count, 8)) & std_logic_vector(to_unsigned (count * 32 + count, 8)) & "000001";
+                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 100, 8)) & std_logic_vector(to_unsigned (count * 100, 8)) & "000001";
                     end if;            
                 end loop;
             end if;
