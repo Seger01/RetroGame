@@ -7,6 +7,8 @@ USE IEEE.NUMERIC_STD.ALL;
 
 ENTITY EntityPixels IS
 	GENERIC (
+	   -- 
+	   PLUS_1_FOR_DEBUG : INTEGER := 1;
 		-- size of visible part screen
 		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
 		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
@@ -139,17 +141,21 @@ BEGIN
                         if (debugIn(1) = '1') then
                             vTemp := (0
                                              -- +   xy position of entity to color relative to entity start on screen;
-                                             + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH
+                                             + (YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH
                                              -- + X value
-                                             + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM);
+                                             + XVGA - vEntityXPosition
+                                             -- add offset to read from rom
+                                             + OFFSET_CLK_TO_ROM);
                         else
                             vTemp := to_integer( unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
                                             -- multiply by size of an entity
                                             * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH)
                                              -- +   xy position of entity to color relative to entity start on screen;
-                                             + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH
+                                             + (YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH
                                              -- + X value
-                                             + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM);                             
+                                             + XVGA - vEntityXPosition
+                                             -- add offset to read from rom
+                                             + OFFSET_CLK_TO_ROM);                             
                         end if;    
                                  
                         entityAdress <= std_logic_vector(to_unsigned (vTemp, entityAdress'length));
@@ -163,7 +169,7 @@ BEGIN
 			
 			
 			-- if currend displayed pixel is in visible part of screen.
-			IF ((XVGA > 0) AND (YVGA > 0) AND (XVGA <= SCREAN_WIDTH) AND (YVGA <= SCREAN_HIGHT)) THEN
+			IF ((XVGA >= 0) AND (YVGA >= 0) AND (XVGA < SCREAN_WIDTH) AND (YVGA < SCREAN_HIGHT)) THEN
 				--display objects pixels that are not transparrent color
 				IF (entityRGB /= X"00") THEN
 					-- sprite RGB data
