@@ -93,6 +93,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	SIGNAL sDCounter: integer range 0 to 64;
 	SIGNAL sTest :  STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1 DOWNTO 0);
     SIGNAL sTestData :  STD_LOGIC_VECTOR(((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1 DOWNTO 0);	
+    SIGNAL iTestCounter: integer range 0 to 100000002;
 	
     function to_std_logic(i : in integer) return std_logic is
     begin
@@ -173,22 +174,29 @@ BEGIN
 	   variable vEntityVectorOffset : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
 	   variable vEntityVectorOffset1 : natural range 0 to ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) -1) := 0;
 	begin
-        -- loop for  
-        sTest <= (others => '0');
-        sTestData <= (others => '0');
-	
-        for count in 0 to ENTITY_AMOUNT - 1 loop
-            -- vector entity 0 => 49 by count    *     total entity size
-            vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-            vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-               
-            if (count < 20) then
-                sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count, 8)) & std_logic_vector(to_unsigned (count, 8)) & "000000";
-            else
-                sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count, 8)) & std_logic_vector(to_unsigned (count, 8)) & "000001";
+	   if (rising_edge (clk_100MHz)) then
+	       iTestCounter <= iTestCounter + 1;
+	       sTest <= sTest;
+	       sTestData <= (others => '0');
+	       
+	       if (iTestCounter >= 100000000) then
+                -- loop for  
+                sTest <= (others => '0');
+                iTestCounter <= 0;
+            
+                for count in 0 to ENTITY_AMOUNT - 1 loop
+                    -- vector entity 0 => 49 by count    *     total entity size
+                    vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                    vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                       
+                    if (count < 20) then
+                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 32 + count, 8)) & std_logic_vector(to_unsigned (count * 32 + count, 8)) & "000000";
+                    else
+                        sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) downto vEntityVectorOffset) <= std_logic_vector(to_unsigned (count * 32 + count, 8)) & std_logic_vector(to_unsigned (count * 32 + count, 8)) & "000001";
+                    end if;            
+                end loop;
             end if;
-        
-        end loop;
+        end if;
 	end process;
 	
 --	process(clk_100MHz)

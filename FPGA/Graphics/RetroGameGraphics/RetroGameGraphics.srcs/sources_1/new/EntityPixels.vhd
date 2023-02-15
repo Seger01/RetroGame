@@ -3,6 +3,7 @@ USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
 --tooo: if sprite is bullit size is difrent
+--todo: alles x2 voor naar vga output
 
 ENTITY EntityPixels IS
 	GENERIC (
@@ -19,7 +20,9 @@ ENTITY EntityPixels IS
 		ENTITY_PIXEL_HIGHT_AND_WITH    : INTEGER := 16;
 		-- Offsets
 		OFFSET_CLK_TO_VGA : INTEGER := 1;
-		OFFSET_CLK_TO_ROM : INTEGER := 2
+		OFFSET_CLK_TO_ROM : INTEGER := 2;
+		-- vga
+		PIXEL_SCALING : INTEGER := 2
 	);
 	PORT (
 		-- inputs
@@ -58,9 +61,10 @@ BEGIN
 		douta => entityRGB
 	);
 	-- convert Xcount and Ycount to X,Y values on visible part of screen
+	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
 	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA
-	XVGA <= to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA;
-    YVGA <= to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START;	
+	XVGA <= (to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING;
+    YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START)                       /PIXEL_SCALING;	
             
 	PROCESS (reset, clk100)
 	   variable vEntityXPosition : natural range 0 to 256 := 0;
@@ -83,7 +87,7 @@ BEGIN
 			-- set back ground collor
 			Rout <= (OTHERS => '0');
 			Gout <= (OTHERS => '0');
-			Bout <= (OTHERS => '0');
+			Bout <= (OTHERS => '1');
 			entityAdress <= (OTHERS => '0');
 			                
             -- loop for        
@@ -119,20 +123,15 @@ BEGIN
                 THEN
                     --todo: if entity is bullet use custom entity size
                     if (false) then
-                        -- todo: add
+                        -- todo: add sitch case for check and if bullet going to be displayd no break;
 			            entityAdress <= (OTHERS => '0');
                         exit;
-                    else
-                        --spritePixleAdress <= spritePositon(0 to spritePixleAdress'length - 1);
-                        --spritePixleAdress <= spritePositon(spritePixleAdress'length - 1 downto 0);
-                        --todo: tileAdress tegroot 00 toevoegen?
-                        
-                        --entityAdress <= std_logic_vector ((unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE))) * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH) + (vEntityYPosition - YVGA + OFFSET_CLK_TO_ROM) * ENTITY_PIXEL_HIGHT_AND_WITH + vEntityXPosition - XVGA + OFFSET_CLK_TO_ROM)(8 downto 0);
-                        
+                    else                        
                         -- get entity address to read                                 
                         --                                  get entity to display
                         
                         -- use of vtemp becouse vivado synthesis failed 12 does not fid in 9 and resize does not work
+                        --                              get entity number
                         vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1   downto vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
                                         -- multiply by size of an entity
                                         * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH)
@@ -155,9 +154,9 @@ BEGIN
 					-- sprite RGB data
 					-- Bit 7 6 5 4 3 2 1 0
 					-- Data R R R G G G B B
-					Rout <= entityRGB(7 DOWNTO 5) & entityRGB(7);
-					Gout <= entityRGB(4 DOWNTO 2) & entityRGB(4);
-					Bout <= entityRGB(1 DOWNTO 0) & entityRGB(1 DOWNTO 0);
+					Rout <= "0" & entityRGB(7 DOWNTO 5);
+					Gout <= "0" & entityRGB(4 DOWNTO 2);
+					Bout <= "00" & entityRGB(1 DOWNTO 0);
 				END IF;
 			END IF;
 		END IF;
