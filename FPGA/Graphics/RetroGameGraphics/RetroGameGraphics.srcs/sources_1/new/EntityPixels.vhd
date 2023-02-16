@@ -132,15 +132,17 @@ BEGIN
 						-- use of vtemp becouse vivado synthesis failed 12 does not fid in 9 and resize does not work
 						--                              get entity number
 						IF (debugIn(1) = '1') THEN
-							vTemp := to_integer((unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
-								-- multiply by size of an entity
-								* (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH))
-								-- +   xy position of entity to color relative to entity start on screen;
-								+ (YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH
-								-- + X value
-								+ XVGA - vEntityXPosition
-								-- add offset to read from rom
-								+ OFFSET_CLK_TO_ROM);
+						      -- get entitie number
+						    vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE)));
+						    -- calculate offset of entities by multiply by size of an entity
+						    vTemp := vTemp * (ENTITY_PIXEL_HIGHT_AND_WITH * ENTITY_PIXEL_HIGHT_AND_WITH);						    
+                            -- +   xy position of entity to color relative to entity start on screen;
+                            vTemp := vTemp + ((YVGA - vEntityYPosition) * ENTITY_PIXEL_HIGHT_AND_WITH);
+                            -- + X value
+                             vTemp := vTemp + XVGA - vEntityXPosition;
+                            -- add offset to read from rom
+                            vTemp := vTemp + OFFSET_CLK_TO_ROM;
+                            
 						ELSif (debugIn(5) = '1') then
 							vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE))
 								-- multiply by size of an entity
