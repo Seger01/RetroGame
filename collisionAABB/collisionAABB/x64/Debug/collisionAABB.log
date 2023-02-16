@@ -1,10 +1,2 @@
-﻿  collision.cpp
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(25,13): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(26,14): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(27,15): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(28,12): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(30,13): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(33,13): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(37,13): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\collisionAABB\collision.cpp(41,13): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-  collisionAABB.vcxproj -> C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\cpp\week 2\deel 1\collisionAABB\x64\Debug\collisionAABB.exe
+﻿  collisionAABB.cpp
+  collisionAABB.vcxproj -> C:\Users\wboer\OneDrive\Documenten\school\jaar 2\blok 7\retro\collisionAABB\x64\Debug\collisionAABB.exe

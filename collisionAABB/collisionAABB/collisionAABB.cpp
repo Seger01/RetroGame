@@ -8,39 +8,47 @@ int main()
     collision cubes;
     while (true) {
         int option1 = -1;
-        int XY = 0;
-        int cube = 0;
-        int amount = 0;
+        int XY = -1;
+        int cube = -1;
+        int amount = -1;
         std::cout << "select cube: " << std::endl;
  
             
             for (int i = 0; i < cubes.getCubes().size(); i++) {
                 std::cout << i << ": " << cubes.getCubes().at(i)->getName() << std::endl;
             }
-            std::cout << "number of cube: ";
-
-            std::cin >> cube;
+            while (cube == -1 || cube > cubes.getCubes().size()) {
+                std::cout << "number of cube: ";
+                std::cin >> cube;
+            }
             std::cout << "Select option" << std::endl;
             std::cout << "1: move cube" << std::endl;
             std::cout << "2: get postion" << std::endl;
-
-            std::cin >> option1;
+            while (option1 != 1 && option1 != 2) {
+                std::cout << "option: ";
+                std::cin >> option1;
+            }
+            
             switch (option1) {
             case 1: 
                 std::cout << "1: X" << std::endl;
                 std::cout << "2: Y" << std::endl;
-                
-                
+                while (XY != 1 && XY != 2) {
+                    std::cout << "axis:";
+                    std::cin >> XY;
+                }
                 switch (XY) {
                 case 1:
                     std::cout << "how much:" << std::endl;
                     std::cin >> amount;
-                    cubes.getCubes().at(cube)->moveX(amount);
+                    cubes.moveEntity(cubes.getCubes().at(cube),amount,0);
+                    //cubes.getCubes().at(cube)->moveX(amount);
                     break;
                 case 2: 
                     std::cout << "how much:" << std::endl;
                     std::cin >> amount;
-                    cubes.getCubes().at(cube)->moveY(amount);
+                    //cubes.getCubes().at(cube)->moveY(amount);
+                    cubes.moveEntity(cubes.getCubes().at(cube), 0, amount);
                     break;
                 }
                 break;
@@ -49,7 +57,9 @@ int main()
                 break;
 
             }
-            cubes.checkAll();
+            
+            //cubes.checkAll();
+            std::cout << std::endl;
     }
 }
 

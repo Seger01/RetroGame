@@ -4,8 +4,10 @@ class entity
 {
 private:
 	std::string name;
-	int colY = 0;
-	int colX = 0;
+	int colRight = 0;
+	int colLeft = 0;
+	int colTop = 0;
+	int colBottom = 0;
 	int x = 0;
 	int y = 0;
 	int width=0;
@@ -17,8 +19,10 @@ public:
 	//void isColliding(entity& object);
 	void newLocation(int, int);
 	std::string getName();
-	void setColX(int);
-	void setColY(int);
+	void setColLeft(int);
+	void setColRight(int);
+	void setColTop(int);
+	void setColBottom(int);
 	int getX();
 	int getY();
 	int getWidth();

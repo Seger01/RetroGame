@@ -20,12 +20,19 @@ void entity::newLocation(int x, int y) {
 	this->x = x;
 	this->y = y;
 }
-void entity::setColX(int colX) {
-	this->colX = colX;
+void entity::setColTop(int colX) {
+	this->colTop= colX;
 }
-void entity::setColY(int colY) {
-	this->colX = colY;
+void entity::setColBottom(int colX) {
+	this->colBottom = colX;
 }
+void entity::setColRight(int colX) {
+	this->colRight = colX;
+}
+void entity::setColLeft(int colX) {
+	this->colLeft = colX;
+}
+
 int entity::getWidth() {
 	return width;
 }
@@ -43,8 +50,12 @@ void entity::getPosition() {
 	std::cout << "X: " << x << " Y: " << y << std::endl;
 }
 void entity::onCollide() {
-	std::cout << "colX: " << colX << std::endl;
-	std::cout << "colY: " << colY << std::endl;
+	 
+	std::cout << "left: " << colLeft << std::endl;
+	std::cout << "right: " << colRight << std::endl;
+	std::cout << "top: " << colTop << std::endl;
+	std::cout << "bottom " << colBottom << std::endl;
+	
 	//x = x + colX;
 	//y = y + colY;
 }
