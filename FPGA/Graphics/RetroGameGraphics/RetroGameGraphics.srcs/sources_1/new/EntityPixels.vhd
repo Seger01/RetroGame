@@ -176,9 +176,78 @@ BEGIN
 					-- sprite RGB data
 					-- Bit 7 6 5 4 3 2 1 0
 					-- Data R R R G G G B B
-					Rout <= "0" & entityRGB(7 DOWNTO 5);
-					Gout <= "0" & entityRGB(4 DOWNTO 2);
-					Bout <= "00" & entityRGB(1 DOWNTO 0);
+					if (debugIn(6) = '1') then
+                        Rout <= "0"  & entityRGB(5) & entityRGB(6) & entityRGB(7);
+                        Gout <= "0"  & entityRGB(2) & entityRGB(3) & entityRGB(4);
+                        Bout <= "00" & entityRGB(0) & entityRGB(1);
+					elsif (debugIn(10) = '1') then
+                        Rout <=         entityRGB(5) & entityRGB(6) & entityRGB(7)  & "0";
+                        Gout <=         entityRGB(2) & entityRGB(3) & entityRGB(4)  & "0";
+                        Bout <= "0" &   entityRGB(0) & entityRGB(1)                 & "0";
+					elsif (debugIn(11) = '1') then
+                        Rout <=         entityRGB(5) & entityRGB(6) & entityRGB(7)  & entityRGB(5);
+                        Gout <=         entityRGB(2) & entityRGB(3) & entityRGB(4)  & entityRGB(2);
+                        Bout <= "0" &   entityRGB(0) & entityRGB(1)                 & entityRGB(0);
+					elsif (debugIn(12) = '1') then
+                        Rout <=         entityRGB(7) & entityRGB(5) & entityRGB(6) & entityRGB(7);
+                        Gout <=         entityRGB(4) & entityRGB(2) & entityRGB(3) & entityRGB(4);
+                        Bout <= "0" &   entityRGB(1) & entityRGB(0) & entityRGB(1);
+					elsif (debugIn(7) = '1') then
+					   -- overal darker and green looking
+					   -- wite is gray/ purple
+					   -- light gray is jello
+					   -- dark gray is green
+					   -- red is light red 
+					   -- black is green
+    					Rout <=       entityRGB(7 DOWNTO 5) & "0";
+    					Gout <=       entityRGB(4 DOWNTO 2) & "0";
+                        Bout <=       entityRGB(1 DOWNTO 0) & "00";
+                        Rout <=         entityRGB(7) & entityRGB(5) & entityRGB(6) & entityRGB(7);
+                        Gout <=         entityRGB(4) & entityRGB(2) & entityRGB(3) & entityRGB(4);
+                        Bout <=         entityRGB(0) & entityRGB(1) & entityRGB(0) & entityRGB(1);
+					elsif (debugIn(8) = '1') then
+					   --to red
+					    -- wite is gray
+					    -- dark gray is red
+					    -- licht gray is jello
+					    -- green is red
+					    -- red is green
+					   -- black is red
+                        Gout <= "0" & entityRGB(7 DOWNTO 5);
+                        Rout <= "0" & entityRGB(4 DOWNTO 2);
+                        Bout <= "0" & entityRGB(1 DOWNTO 0) & "0";
+					elsif (debugIn(9) = '1') then
+                        -- wite is purpel
+                        -- grey is jello
+                        -- yello is orange
+                        -- light red is lighter
+                        -- dark red/ black is green 
+					   -- black is licht green
+                        Rout <= "0" & entityRGB(7 DOWNTO 5);
+                        Gout <= "0" & entityRGB(4 DOWNTO 2);
+                        Bout <= "0" & entityRGB(1 DOWNTO 0) & "0";
+                    else
+                        -- wite is blue/purpel
+                        -- grey is jello
+                        -- yello is orange
+                        -- light red is lighter
+                        -- dark red/ black is blue green 
+					   -- black is licht green/blue
+    					Rout <= "0" & entityRGB(7 DOWNTO 5);
+    					Gout <= "0" & entityRGB(4 DOWNTO 2);
+    					Bout <= "00" & entityRGB(1 DOWNTO 0);
+					end if;
+					
+					--to red
+--                    Gout <= "0" & entityRGB(7 DOWNTO 5);
+--                    Rout <= "0" & entityRGB(4 DOWNTO 2);
+--                    Bout <= "0" & entityRGB(1 DOWNTO 0) & "0";
+--					Rout <= "0" & entityRGB(2 DOWNTO 0);
+--					Gout <= "0" & entityRGB(5 DOWNTO 3);
+--					Bout <= "00" & entityRGB(7 DOWNTO 6);
+--					Rout <= "0" & entityRGB(7 DOWNTO 5);
+--					Gout <= "0" & entityRGB(4 DOWNTO 2);
+--					Bout <= "00" & entityRGB(1 DOWNTO 0);
 				END IF;
 			END IF;
 		END IF;
