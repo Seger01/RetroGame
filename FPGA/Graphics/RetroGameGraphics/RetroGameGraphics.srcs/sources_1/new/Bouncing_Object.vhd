@@ -15,7 +15,11 @@ ENTITY Bouncing_Object IS
 		ENTITY_AMOUNT          : INTEGER := 50;
 		ENTITY_X_BIT_SIZE      : INTEGER := 8;
 		ENTITY_Y_BIT_SIZE      : INTEGER := 8;
-		ENTITY_NUMMER_BIT_SIZE : INTEGER := 6
+		ENTITY_NUMMER_BIT_SIZE : INTEGER := 6;
+		-- amount of tiles visible on screan
+		TILE_AMOUNT                    : INTEGER := (15 * 15);
+		-- amount of bit to identify one tile
+		TILE_NUMBER_SIZE               : INTEGER := 6
 	);
 	PORT
 	(
@@ -50,17 +54,15 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	END COMPONENT;
 	COMPONENT BackGroundPixels IS
         PORT (
+			debugIn          : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
+			debugOut         : OUT STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
             -- inputs
-            reset, clk100    : IN  STD_LOGIC;
-            -- sprite RGB data
-            -- Bit 7 6 5 4 3 2 1 0
-            -- Data R R R G G G B B
-            tileMapNumber    : IN  STD_LOGIC_VECTOR(5 DOWNTO 0); -- tile number starting top left going left to richt and down
+            reset, clk       : IN  STD_LOGIC;
             -- VGA module connections
-            Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
-            Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-            -- sprite adress to be availebel on spritePixleRGB 2 clocks after put on spritePixleAdress
-            tileMapadress    : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) -- set addres of tile to read
+            Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
+            -- vector with map tile numbers		-- tile number starting top left going left to richt and down
+            tileNumberVector : IN  STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
+            Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
         );
     END COMPONENT;
 	COMPONENT EntityPixels IS
@@ -83,6 +85,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 			-- Data R R R G G G B B
 			-- vector with all entity data
 			dataVector       : IN  STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+		    Rin, Gin, Bin    : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
 			-- VGA module connections
 			Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 			Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
@@ -97,6 +100,13 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	SIGNAL sTest : STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 	SIGNAL sTestData : STD_LOGIC_VECTOR(((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 	SIGNAL iTestCounter : INTEGER RANGE 0 TO 100000002;
+	
+	SIGNAL BackgroundColorR : STD_LOGIC_VECTOR(3 DOWNTO 0);	
+	SIGNAL BackgroundColorG : STD_LOGIC_VECTOR(3 DOWNTO 0);	
+	SIGNAL BackgroundColorB : STD_LOGIC_VECTOR(3 DOWNTO 0);	
+	
+	SIGNAL sDebugTileNumberVector : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
+	
 	FUNCTION to_std_logic(i : IN INTEGER) RETURN STD_LOGIC IS
 	BEGIN
 		IF i = 0 THEN
@@ -136,15 +146,16 @@ BEGIN
     BackGroundPixels0 : BackGroundPixels
     PORT MAP
     (
+        debugIn => debugIn,
+        debugOut => debugOut,
         reset => reset,
-        clk100  => clk_100MHz,
-        tileMapNumber => sDebug(5 downto 0),
+        clk  => clk_100MHz,
         Xcount => XpicelVGA,
         Ycount => YpicelVGA,
-        Rout => VGAcolorR,
-        Gout => VGAcolorG,
-        Bout => VGAcolorB,
-        tileMapadress => Debug(7 downto 0)
+        tileNumberVector => sDebugTileNumberVector,
+        Rout => BackgroundColorR,
+        Gout => BackgroundColorG,
+        Bout => BackgroundColorB
     );
 	EntityPixels0 : EntityPixels
 	PORT
@@ -157,6 +168,9 @@ BEGIN
         dataVector => sTest,
         Xcount => XpicelVGA,
         Ycount => YpicelVGA,
+        Rin => BackgroundColorR,
+        Gin => BackgroundColorG,
+        Bin => BackgroundColorB, 
         Rout => VGAcolorR,
         Gout => VGAcolorG,
         Bout => VGAcolorB
@@ -164,6 +178,9 @@ BEGIN
 	
 	sDCounter <= 0;
 	sDebug <= (OTHERS => '0');
+	
+	--todo: fix add code (for debug)
+	sDebugTileNumberVector <= (OTHERS => '0');
 	
 	PROCESS (clk_25)
 		VARIABLE vEntityVectorOffset : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;

@@ -174,6 +174,9 @@ BEGIN
 			IF ((XVGA >= 0) AND (YVGA >= 0) AND (XVGA < (SCREAN_WIDTH /PIXEL_SCALING)) AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING))) THEN
 				--display objects pixels that are not transparrent color
 				IF (entityRGB /= X"00") THEN
+					-- sprite RGB data
+					-- Bit 7 6 5 4 3 2 1 0
+					-- Data R R R G G G B B
                     Rout <=         entityRGB(7 downto 5) & entityRGB(7);
                     Gout <=         entityRGB(4 downto 2) & entityRGB(4);
                     Bout <= "0" &   entityRGB(1 downto 0) & entityRGB(1);      
