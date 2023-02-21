@@ -36,6 +36,7 @@ ENTITY EntityPixels IS
 		-- Data R R R G G G B B
 		-- vector with all entity data
 		dataVector       : IN  STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+		Rin, Gin, Bin    : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
 		-- VGA module connections
 		Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 		Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
@@ -88,9 +89,9 @@ BEGIN
 		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
 			-- set back ground collor
-			Rout         <= (OTHERS => debugIn(13));
-			Gout         <= (OTHERS => debugIn(14));
-			Bout         <= (OTHERS => debugIn(15));
+			Rout         <= Rin;
+			Gout         <= Gin;
+			Bout         <= Bin;
 			entityAdress <= (OTHERS => '0'); --todo set transparrent pixel
 			debugOut     <= (OTHERS => '0');
 			-- loop for
@@ -173,9 +174,9 @@ BEGIN
 			IF ((XVGA >= 0) AND (YVGA >= 0) AND (XVGA < (SCREAN_WIDTH /PIXEL_SCALING)) AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING))) THEN
 				--display objects pixels that are not transparrent color
 				IF (entityRGB /= X"00") THEN
-                    Rout <=         entityRGB(7) & entityRGB(5) & entityRGB(6) & entityRGB(7);
-                    Gout <=         entityRGB(4) & entityRGB(2) & entityRGB(3) & entityRGB(4);
-                    Bout <= "0" &   entityRGB(1) & entityRGB(0) & entityRGB(1);      
+                    Rout <=         entityRGB(7 downto 5) & entityRGB(7);
+                    Gout <=         entityRGB(4 downto 2) & entityRGB(4);
+                    Bout <= "0" &   entityRGB(1 downto 0) & entityRGB(1);      
 				END IF;
 			END IF;
 		END IF;

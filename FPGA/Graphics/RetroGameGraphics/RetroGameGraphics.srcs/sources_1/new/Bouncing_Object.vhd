@@ -48,22 +48,21 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 			clk_100MHz : IN  STD_LOGIC
 		);
 	END COMPONENT;
-	--	COMPONENT BackGroundPixels IS
-	--		PORT
-	--		(
-	--			-- inputs
-	--			reset, clk100 : IN STD_LOGIC;
-	--			-- sprite RGB data
-	--			-- Bit 7 6 5 4 3 2 1 0
-	--			-- Data R R R G G G B B
-	--			tileMapNumber : IN STD_LOGIC_VECTOR(5 DOWNTO 0); -- tile number starting top left going left to richt and down
-	--			-- VGA module connections
-	--			Xcount, Ycount   : IN STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number
-	--			Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-	--			-- sprite adress to be availebel on spritePixleRGB 2 clocks after put on spritePixleAdress
-	--			tileMapadress : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) -- set addres of tile to read
-	--		);
-	--	END COMPONENT;
+	COMPONENT BackGroundPixels IS
+        PORT (
+            -- inputs
+            reset, clk100    : IN  STD_LOGIC;
+            -- sprite RGB data
+            -- Bit 7 6 5 4 3 2 1 0
+            -- Data R R R G G G B B
+            tileMapNumber    : IN  STD_LOGIC_VECTOR(5 DOWNTO 0); -- tile number starting top left going left to richt and down
+            -- VGA module connections
+            Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
+            Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
+            -- sprite adress to be availebel on spritePixleRGB 2 clocks after put on spritePixleAdress
+            tileMapadress    : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) -- set addres of tile to read
+        );
+    END COMPONENT;
 	COMPONENT EntityPixels IS
 		GENERIC
 		(
@@ -134,19 +133,19 @@ BEGIN
         clk_100MHz => clk_100MHz
 	);
 	-- map ports
-	--	BackGroundPixels0 : BackGroundPixels
-	--	PORT MAP
-	--	(
-	--	reset => reset,
-	--		clk100  => clk_100MHz,
-	--		tileMapNumber => sDebug(5 downto 0),
-	--		Xcount => XpicelVGA,
-	--		Ycount => YpicelVGA,
-	--		Rout => VGAcolorR,
-	--		Gout => VGAcolorG,
-	--		Bout => VGAcolorB,
-	--		tileMapadress => Debug(7 downto 0)
-	--	);
+    BackGroundPixels0 : BackGroundPixels
+    PORT MAP
+    (
+        reset => reset,
+        clk100  => clk_100MHz,
+        tileMapNumber => sDebug(5 downto 0),
+        Xcount => XpicelVGA,
+        Ycount => YpicelVGA,
+        Rout => VGAcolorR,
+        Gout => VGAcolorG,
+        Bout => VGAcolorB,
+        tileMapadress => Debug(7 downto 0)
+    );
 	EntityPixels0 : EntityPixels
 	PORT
 	MAP
