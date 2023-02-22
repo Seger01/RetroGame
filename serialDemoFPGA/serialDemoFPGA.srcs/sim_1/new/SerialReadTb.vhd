@@ -37,101 +37,170 @@ end SerialReadTb;
 
 architecture Behavioral of SerialReadTb is
 
-    component SerialRead is
-        Port ( clkIn : IN STD_LOGIC;
-            dataIn : IN STD_LOGIC;
+    component SerialRead IS
+        PORT (
+            clkInExternal : IN STD_LOGIC;
+            dataInExternal : IN STD_LOGIC;
+            clk_100Mhz : IN STD_LOGIC;
             sysReset : IN STD_LOGIC;
-            tileData : OUT STD_LOGIC_VECTOR (1199 DOWNTO 0)
-            );
-    end component SerialRead;
+            tileData : OUT STD_LOGIC_VECTOR (1800 -1 DOWNTO 0)
+        );
+    END component SerialRead;
 
-    signal clk : STD_LOGIC;
-    signal data : STD_LOGIC;
-    signal tileData : STD_LOGIC_VECTOR(1199 downto 0);
-    signal sysReset : STD_LOGIC;
-    
-    
+    signal clk : STD_LOGIC := '0';
+    signal data : STD_LOGIC := '0';
+    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
+    signal sysReset : STD_LOGIC := '0';
+    signal clk_100Mhz : STD_LOGIC := '0';
+
+    signal testByte : STD_LOGIC_VECTOR(15 downto 0) := "1111000011110000";
+
+
 begin
 
-    UUT : SerialRead Port map ( 
-                 clkIn => clk,
-                 dataIn => data,
-                 sysReset => sysReset,
-                 tileData => tileData
-                 );
+    UUT : SerialRead Port map (
+            clkInExternal => clk,
+            dataInExternal => data,
+            clk_100Mhz => clk_100Mhz,
+            sysReset => sysReset,
+            tileData => tileData
+        );
 
     process
     begin
-        data <= '1';
-        clk <= '0';
+        --        data <= '1';
+        --        clk <= '0';
+        --        sysReset <= '1';
+
+        --        for j in 1 to 25 loop
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
+
+        --        sysReset <= '0';
+        --        for j in 1 to 25 loop
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
         sysReset <= '1';
-        wait for 50 ns;
+        wait for 1ns;
         sysReset <= '0';
-        wait for 50 ns;
-        data <= '0';
-        wait for 50 ns;
-        clk <= '1';
-        wait for 50 ns;
-                          
-        clk <= '0';
-        wait for 50 ns;
-        data <= '1';
-        for I in 1 to 1199 loop
-            
+        wait for 1 ns;
 
-            wait for 50 ns;
-            clk <= '1';
-            wait for 50 ns;
-            
+        --        data    <=  '1';        --start bit
+        --        clk     <=  '1';
+        --        for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
+        --        clk     <=  '0';
+        --        for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
 
-
-            clk <= '0';
-            wait for 50 ns;
-           
+        for I in 1 TO 10 loop                        --for loop for 7 data bits
+            data    <=  '0';
+            clk     <=  '1';
+            for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+                clk_100Mhz <= '1';
+                wait for 1 ns;
+                clk_100Mhz <= '0';
+                wait for 1 ns;
+            end loop;
+            clk     <=  '0';
+            for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+                clk_100Mhz <= '1';
+                wait for 1 ns;
+                clk_100Mhz <= '0';
+                wait for 1 ns;
+            end loop;
         end loop;
-        data <= '0';
-        wait for 50 ns;
-        clk <= '1';
-        wait for 50 ns;
-                    
-        clk <= '0';
-        wait for 50 ns;
---        wait for 500 ns;
---        for I in 0 to 15 loop
-                    
---            data <= '0';
---            wait for 50 ns;
---            clk <= '1';
---            wait for 50 ns;
-            
---            clk <= '0';
---            wait for 50 ns;
-                    
---        end loop;
---        clk <= '1';
---        wait for 50 ns;
-                   
---        clk <= '0';
---        wait for 50 ns;
---        data <= '1';
---        wait for 50 ns;
---        for I in 0 to 15 loop
-                            
---            data <= NOT data;
---            wait for 50 ns;
---            clk <= '1';
---            wait for 50 ns;               
-                        
---            clk <= '0';
---            wait for 50 ns;                                               
---        end loop;
---        data <= '0';
---        wait for 50 ns;
---        clk <= '1';
---        wait for 50 ns;
-                               
---        clk <= '0';
---        wait for 50 ns;
+
+        for I in 1 TO 1230 loop                        --for loop for 7 data bits
+            data    <=  '1';
+            clk     <=  '1';
+            for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+                clk_100Mhz <= '1';
+                wait for 1 ns;
+                clk_100Mhz <= '0';
+                wait for 1 ns;
+            end loop;
+            clk     <=  '0';
+            for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+                clk_100Mhz <= '1';
+                wait for 1 ns;
+                clk_100Mhz <= '0';
+                wait for 1 ns;
+            end loop;
+        end loop;
+
+        for N in 0 to 300 loop                    --for loop to clock in the hardwareclock and data
+            clk_100Mhz <= '1';
+            wait for 1 ns;
+            clk_100Mhz <= '0';
+            wait for 1 ns;
+        end loop;
+
+        for I in 1 TO 1240 loop                        --for loop for 7 data bits
+            data    <=  '0';
+            clk     <=  '1';
+            for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+                clk_100Mhz <= '1';
+                wait for 1 ns;
+                clk_100Mhz <= '0';
+                wait for 1 ns;
+            end loop;
+            clk     <=  '0';
+            for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+                clk_100Mhz <= '1';
+                wait for 1 ns;
+                clk_100Mhz <= '0';
+                wait for 1 ns;
+            end loop;
+        end loop;
+
+
+        --        data    <=  '1';
+
+        --        clk     <=  '1';
+        --        for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
+        --        clk     <=  '0';
+        --        for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
+
+        --        data    <=  '1';        --stop bit
+        --        clk     <=  '1';
+        --        for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
+        --        clk     <=  '0';
+        --        for N in 0 to 30 loop                    --for loop to clock in the hardwareclock and data
+        --            clk_100Mhz <= '1';
+        --            wait for 1 ns;
+        --            clk_100Mhz <= '0';
+        --            wait for 1 ns;
+        --        end loop;
         wait;
     end process;
 
