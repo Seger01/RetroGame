@@ -11,6 +11,7 @@ ENTITY BackGroundPixels IS
 		SCREAN_HIGHT                   : INTEGER := 480;
 		-- amount of tiles visible on screan
 		TILE_AMOUNT                    : INTEGER := (15 * 15);
+		TILE_AMOUNT_WITH_AND_HIGHT     : INTEGER := 15;
 		-- amount of bit to identify one tile
 		TILE_NUMBER_SIZE               : INTEGER := 6;
 		TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16;
@@ -28,7 +29,7 @@ ENTITY BackGroundPixels IS
 		-- VGA module connections
 		Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
 		-- vector with map tile numbers		-- tile number starting top left going left to richt and down
-		tileNumberVector       : IN  STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
+		tileNumberVector  : IN  STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
 		Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
 	);
 END BackGroundPixels;
@@ -50,7 +51,8 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	SIGNAL currentTileXYPosition : UNSIGNED(7 downto 0);
 	SIGNAL tileRGB : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
 	SIGNAL tileAdress : STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
-	SIGNAL tileMapNumber : STD_LOGIC_VECTOR(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile	
+	SIGNAL tileMapNumber : STD_LOGIC_VECTOR(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
+	SIGNAL temp1 : INTEGER range 0 to 500000 := 0; --todo: calc max
 	
 BEGIN
 	-- map ports
@@ -68,18 +70,31 @@ BEGIN
 	XVGA <= (to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING;
 	YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 	
-	--todo: add the code
-	tileMapNumber <= (OTHERS => debugIn(9));    
+	-- get current tile number to display on screan + offset
+	--                                           (x position  / size of tile)                      +   (y position  / size of tile) * tile amount in with
+	--tileMapNumber <= std_logic_vector((to_unsigned(XVGA       /  TILE_PIXEL_HIGHT_AND_WITH, 6)      + ((YVGA    /  TILE_PIXEL_HIGHT_AND_WITH)   * TILE_AMOUNT_WITH_AND_HIGHT))); -- //todo: add offset in x and y count;
 	
-	--todo: resize hoe werkt dat wordt er niets van de data halverwege af gekipt
+--	-- get current tile number to display on screan + offset
+--	-- read tile nr out of vector          get tile nr of x-as 
+--	tileMapNumber <= tileNumberVector(   ((XVGA    /  TILE_PIXEL_HIGHT_AND_WITH)
+--	--                                     add tile nr of y-as   *   amount of tiles on one row        + TILE_NUMBER_SIZE to read current tile 
+--                                       + ((YVGA    /  TILE_PIXEL_HIGHT_AND_WITH)   * TILE_AMOUNT_WITH_AND_HIGHT) + TILE_NUMBER_SIZE)
+--                                       downto 
+--                                       -- same as above, without + TILE_NUMBER_SIZE
+--                                         ((XVGA    /  TILE_PIXEL_HIGHT_AND_WITH)
+--                                       + ((YVGA    /  TILE_PIXEL_HIGHT_AND_WITH)   * TILE_AMOUNT_WITH_AND_HIGHT)));
+
+    temp1 <= (((XVGA) / TILE_PIXEL_HIGHT_AND_WITH) + ((YVGA / TILE_PIXEL_HIGHT_AND_WITH) * TILE_AMOUNT_WITH_AND_HIGHT));
+                     
+    tileMapNumber <= tileNumberVector(( temp1 + TILE_NUMBER_SIZE - 1) downto (temp1));
+    --tileMapNumber <= std_logic_vector(to_unsigned (6, tileMapNumber'length));
 	
+	-- get postion of pixel on tile to display
 	--                                 ((currend x position      MOD 16)   +    ((  y position      MOD  hight tile)               * tile hight))
-	--currentTileXYPosition <= resize((unsigned(Xcount)       MOD 16      + ((unsigned(Ycount)    MOD TILE_PIXEL_HIGHT_AND_WITH)   * TILE_PIXEL_HIGHT_AND_WITH)), 8); -- //todo: add offset in x and y count
-	currentTileXYPosition <= resize((to_unsigned(XVGA       MOD TILE_PIXEL_HIGHT_AND_WITH, 8)      + ((YVGA    MOD TILE_PIXEL_HIGHT_AND_WITH)   * TILE_PIXEL_HIGHT_AND_WITH)), 8); -- //todo: add offset in x and y count
-	--currentTileXYPosition <= to_unsigned(to_integer(unsigned(Xcount) MOD 16) + to_integer(unsigned(Ycount) MOD 16) * TILE_PIXEL_HIGHT_AND_WITH, 16);
-	--currentTileXYPosition <= to_unsigned((unsigned(Xcount) MOD 16) + ((unsigned(Ycount) MOD 16) * TILE_PIXEL_HIGHT_AND_WITH, 16));
+	currentTileXYPosition <= resize((to_unsigned(XVGA       MOD TILE_PIXEL_HIGHT_AND_WITH, currentTileXYPosition'length)      + ((YVGA    MOD TILE_PIXEL_HIGHT_AND_WITH)   * TILE_PIXEL_HIGHT_AND_WITH)), currentTileXYPosition'length); -- //todo: add offset in x and y count
 	
 	PROCESS (reset, clk)
+	   variable temp: unsigned (13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 	BEGIN
 		-- if reset
 		IF (reset = '1') THEN
@@ -89,6 +104,7 @@ BEGIN
 			Gout <= (OTHERS => '0');
 			Bout <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
+			temp := (OTHERS => '0');
 			
 			-- if clk rising_edge
 		ELSIF rising_edge(clk) THEN
@@ -99,10 +115,17 @@ BEGIN
 			Bout <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
 			
-			--spritePixleAdress <= spritePositon(0 to spritePixleAdress'length - 1);
-			--spritePixleAdress <= spritePositon(spritePixleAdress'length - 1 downto 0);
 			--                                                                       tile to read    *   size of one tile                                     +  position of tile to read
-			tileAdress <= STD_LOGIC_VECTOR(resize(unsigned(STD_LOGIC_VECTOR((unsigned(tileMapNumber) * (TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH)) + currentTileXYPosition)),14)); --todo: offsett
+			--tileAdress <= STD_LOGIC_VECTOR(resize(unsigned(STD_LOGIC_VECTOR((unsigned(tileMapNumber) * (TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH)) + currentTileXYPosition)),14)); --todo: offsett
+			temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);
+			
+			if (debugIn(6) = '1') then
+			     temp := resize((4 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);			     
+			elsif (debugIn(7) = '1') then
+			     temp := resize(currentTileXYPosition, temp'length);
+			end if;
+			
+			tileAdress <= STD_LOGIC_VECTOR(temp); --todo: offsett			
 			
 			-- if currend displayed pixel is in visible part of screen.
 			IF       (((XVGA >= 0)                              AND (YVGA >= 0) 

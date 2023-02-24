@@ -177,19 +177,26 @@ BEGIN
 	);
 	
 	sDCounter <= 0;
-	sDebug <= (OTHERS => '0');
-	
-	--todo: fix add code (for debug)
-	sDebugTileNumberVector <= (OTHERS => '0');
+	sDebug <= (OTHERS => '0');	
 	
 	PROCESS (clk_25)
 		VARIABLE vEntityVectorOffset : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
 		VARIABLE vEntityVectorOffset1 : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
+	    --VARIABLE sDebugTileNumberVectorTemp : NATURAL RANGE 0 TO ((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1) := 0;
+	    
 	BEGIN
 		IF (rising_edge (clk_25)) THEN
 			iTestCounter <= iTestCounter + 1;
 			sTest <= sTest;
-			sTestData <= (OTHERS => '0');
+			sTestData <= (OTHERS => '0');			
+			
+            --todo: fix add code (for debug) tiles
+            sDebugTileNumberVector <= (OTHERS => '0');
+            FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
+                sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(tileCount mod 20, 6));
+            END LOOP;
+            
+			
 			IF (iTestCounter >= 25000) THEN
 				-- loop for
 				sTest <= (OTHERS => '0');
