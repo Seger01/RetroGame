@@ -308,7 +308,7 @@ void fpgaReset() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 	//HAL_Delay(100);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-	//HAL_Delay(100);
+	HAL_Delay(100);
 
 //	for (int i = 0; i < 17; i++) {
 //		serialClockWrite(1);
@@ -351,37 +351,50 @@ void fpgaReset() {
 void startSend(void *argument) {
 	/* USER CODE BEGIN 5 */
 	fpgaReset();
-	uint8_t buffer[155] = { 0 };
+	uint8_t buffer[226] = { 0 };
 
-	for (int i = 0; i < 10; i++) {
-		HAL_SPI_Transmit(&hspi1, (uint8_t*) buffer, 155, 100);
+	for (int i = 0; i < 2; i++) {
+		HAL_SPI_Transmit(&hspi1, (uint8_t*) buffer, 226, 100);
 
 	}
 	fpgaReset();
 	/* Infinite loop */
-	for (;;) {
-		osDelay(1000);
+	uint8_t bufferTiles[226] = { 0 };
+	uint8_t bufferEntitys[226] = {0};
 
-		Entity entities[50];
-		uint8_t buffer[155] = { 0 };
+	bufferTiles[0] = 0xFF;
+	for (;;) {
+		osDelay(400);
+
+		//Entity entities[50];
+
+
+		// last index of Entitys is 154
 
 		if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) {
-			buffer[0] = 0xFF;
-
+			bufferTiles[225]++;
+			HAL_SPI_Transmit(&hspi1, (uint8_t*) bufferTiles, 226, 100);
+		} else {
+			bufferEntitys[154]++;
+			HAL_SPI_Transmit(&hspi1, (uint8_t*) bufferEntitys, 226, 100);
+			//bufferEntitys[153]++;
 		}
-		TickType_t before = xTaskGetTickCount();
+//		for (int i = 0; i < 226; i++) {
+//			buffer[i] = 0xFF;
+//		}
+//		TickType_t before = xTaskGetTickCount();
 
-		for (int j = 0; j < 50; j++) {
-			buffer[(j * 3) + 0 + 1] = entities[j].getXPos();
-			buffer[(j * 3) + 1 + 1] = entities[j].getYPos();
-			buffer[(j * 3) + 2 + 1] = entities[j].getSpriteId();
-		}
+//		for (int j = 0; j < 50; j++) {
+//			buffer[(j * 3) + 0 + 1] = entities[j].getXPos();
+//			buffer[(j * 3) + 1 + 1] = entities[j].getYPos();
+//			buffer[(j * 3) + 2 + 1] = entities[j].getSpriteId();
+//		}
 
-		HAL_SPI_Transmit(&hspi1, (uint8_t*) buffer, 155, 100);
 
-		TickType_t after = xTaskGetTickCount();
 
-		TickType_t totalTime = after - before;
+//		TickType_t after = xTaskGetTickCount();
+//
+//		TickType_t totalTime = after - before;
 
 //		const int dataLength = 1200;
 //		_Bool dataArray[16] = { 0 };

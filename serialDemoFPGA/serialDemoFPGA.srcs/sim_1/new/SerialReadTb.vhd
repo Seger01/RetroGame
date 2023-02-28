@@ -43,13 +43,13 @@ architecture Behavioral of SerialReadTb is
             dataInExternal : IN STD_LOGIC;
             clk_100Mhz : IN STD_LOGIC;
             sysReset : IN STD_LOGIC;
-            tileData : OUT STD_LOGIC_VECTOR (1800 -1 DOWNTO 0)
+            tileData : OUT STD_LOGIC_VECTOR (1808 -1 DOWNTO 0)
         );
     END component SerialRead;
 
     signal clk : STD_LOGIC := '0';
     signal data : STD_LOGIC := '0';
-    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
+    signal tileData : STD_LOGIC_VECTOR(1808 -1 downto 0);
     signal sysReset : STD_LOGIC := '0';
     signal clk_100Mhz : STD_LOGIC := '0';
 

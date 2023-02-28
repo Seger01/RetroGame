@@ -35,8 +35,7 @@ ENTITY SerialRead IS
         dataInExternal : IN STD_LOGIC;
         clk_100Mhz : IN STD_LOGIC;
         sysReset : IN STD_LOGIC;
-        tileData : OUT STD_LOGIC_VECTOR (1800 -1 DOWNTO 0);
-        backGroundFlag : OUT STD_LOGIC
+        serialData : OUT STD_LOGIC_VECTOR (1808 -1 DOWNTO 0)
     );
 END SerialRead;
 
@@ -51,12 +50,10 @@ ARCHITECTURE Behavioral OF SerialRead IS
              clk_ExternalHardwareOut : out STD_LOGIC);
     end component SerialReader;
 
-    signal received_data : STD_LOGIC_VECTOR (1800 -1 downto 0) := (others => '0');
+    signal received_data : STD_LOGIC_VECTOR (1808 -1 downto 0) := (others => '0');
     signal bit_counter : unsigned(10 downto 0);
 
     signal readDataFlag : STD_LOGIC := '0';
-    
-    signal backGroundFlagBuffer : STD_LOGIC := '0';
 
     signal data_ExternalHardwareSynch : STD_LOGIC;
     signal clk_ExternalHardwareSynch : STD_LOGIC;
@@ -127,28 +124,21 @@ begin
         end case;
     end process;
 
-
-    backGroundFlag <= backGroundFlagBuffer;
-    
     process(sysReset, readDataFlag, clk_100Mhz)
     begin
         if sysReset = '1' then
-            tileData <= (others => '0');
+            serialData <= (others => '1');
             bit_counter <= (others => '0');
-            received_data <= (others => '0');
+            received_data <= (others => '1');
         elsif rising_edge(clk_100Mhz) then
-            --tileData <= (others => '0');
-            backGroundFlagBuffer <= '0';
+            --serialData <= (others => '1'); 
             if (readDataFlag = '1') then
                 received_data(to_integer(bit_counter)) <= data_ExternalHardwareSynch;
                 bit_counter <= bit_counter + 1;
             else
-                if bit_counter >= 1240 and received_data(7 downto 0) = x"00" then
-                    tileData <= received_data;
-                    bit_counter <= (others => '0');                    
---                elsif bit_counter >= 1800 and received_data(7 downto 0) = x"FF" then
---                    tileData <= received_data;
---                    bit_counter <= (others => '0');                
+                if bit_counter >= 1808 then
+                    serialData <= received_data;
+                    bit_counter <= (others => '0');
                 else
                     null;
                 end if;
