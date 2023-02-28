@@ -125,3 +125,12 @@ xvlog.*
 ## checkpoint files
 *.dcp
 
+*.mif
+*.mif
+*.xml
+*.txt
+*.xci
+*.xml
+*.sh
+*.xpr
+*.xml
