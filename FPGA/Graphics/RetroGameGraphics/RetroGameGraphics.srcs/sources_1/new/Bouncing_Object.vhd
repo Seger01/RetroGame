@@ -149,7 +149,7 @@ BEGIN
         debugIn => debugIn,
         debugOut => debugOut,
         reset => reset,
-        clk  => clk_100MHz,
+        clk  => clk_25,
         Xcount => XpicelVGA,
         Ycount => YpicelVGA,
         tileNumberVector => sDebugTileNumberVector,
@@ -190,14 +190,9 @@ BEGIN
 			sTest <= sTest;
 			sTestData <= (OTHERS => '0');			
 			
-            --todo: fix add code (for debug) tiles
-            sDebugTileNumberVector <= (OTHERS => '0');
-            FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
-                sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(tileCount mod 20, 6));
-            END LOOP;
             
 			
-			IF (iTestCounter >= 25000) THEN
+			IF (iTestCounter >= 250000) THEN
 				-- loop for
 				sTest <= (OTHERS => '0');
 				iTestCounter <= 0;
@@ -213,6 +208,24 @@ BEGIN
 						sTest((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  STD_LOGIC_VECTOR(to_unsigned (count, 6)) & STD_LOGIC_VECTOR(to_unsigned (count * 16, 8)) & STD_LOGIC_VECTOR(to_unsigned (count, 8));
 					END IF;
 				END LOOP;
+				
+				
+                --todo: fix add code (for debug) tiles
+                sDebugTileNumberVector <= (OTHERS => '0');
+                FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
+                    if (tileCount < 15 or debugIn(5) = '1') then
+                        sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
+                    elsif (((tileCount-1) mod 15) = 0 or debugIn(6) = '1') then
+                        sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
+                    elsif ((tileCount mod 15) = 0) then
+                        sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
+                    elsif (tileCount > TILE_AMOUNT - 1 - 15) then
+                        sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
+                    else
+                        sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(0, 6));                              
+                    end if;
+                    
+                END LOOP;
 			END IF;
 		END IF;
 	END PROCESS;

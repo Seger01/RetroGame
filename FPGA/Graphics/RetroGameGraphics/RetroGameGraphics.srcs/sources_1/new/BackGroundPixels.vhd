@@ -84,8 +84,10 @@ BEGIN
 --                                         ((XVGA    /  TILE_PIXEL_HIGHT_AND_WITH)
 --                                       + ((YVGA    /  TILE_PIXEL_HIGHT_AND_WITH)   * TILE_AMOUNT_WITH_AND_HIGHT)));
 
-    temp1 <= (((XVGA) / TILE_PIXEL_HIGHT_AND_WITH) + ((YVGA / TILE_PIXEL_HIGHT_AND_WITH) * TILE_AMOUNT_WITH_AND_HIGHT));
-                     
+    --          x position offset of 0,0            + y position offset of 0,0 * total tiles in with
+    temp1 <= (((XVGA) / TILE_PIXEL_HIGHT_AND_WITH) + ((YVGA / TILE_PIXEL_HIGHT_AND_WITH) * TILE_AMOUNT_WITH_AND_HIGHT)); --todo: offset??
+    
+    --               get tile number
     tileMapNumber <= tileNumberVector(( temp1 + TILE_NUMBER_SIZE - 1) downto (temp1));
     --tileMapNumber <= std_logic_vector(to_unsigned (6, tileMapNumber'length));
 	
@@ -117,12 +119,23 @@ BEGIN
 			
 			--                                                                       tile to read    *   size of one tile                                     +  position of tile to read
 			--tileAdress <= STD_LOGIC_VECTOR(resize(unsigned(STD_LOGIC_VECTOR((unsigned(tileMapNumber) * (TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH)) + currentTileXYPosition)),14)); --todo: offsett
-			temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);
+			--temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);
+			--todo: uncommend
 			
-			if (debugIn(6) = '1') then
-			     temp := resize((4 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);			     
+			if (debugIn(12) = '1') then
+			     temp := resize((20 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);			     
 			elsif (debugIn(7) = '1') then
+			     temp := resize((unsigned(tileMapNumber)* 2 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
+			elsif (debugIn(8) = '1') then
+			     temp := resize((unsigned(tileMapNumber)* 3 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	 
+			elsif (debugIn(9) = '1') then
+			     temp := resize((unsigned(tileMapNumber)*0 + 14 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);		
+			elsif (debugIn(10) = '1') then
+			     temp := resize((unsigned(tileMapNumber)*0 + 4 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
+			elsif (debugIn(11) = '1') then
 			     temp := resize(currentTileXYPosition, temp'length);
+			else				
+			     temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			end if;
 			
 			tileAdress <= STD_LOGIC_VECTOR(temp); --todo: offsett			
