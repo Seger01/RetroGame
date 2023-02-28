@@ -10,8 +10,9 @@ ENTITY BackGroundPixels IS
 		SCREAN_WIDTH                   : INTEGER := 640;
 		SCREAN_HIGHT                   : INTEGER := 480;
 		-- amount of tiles visible on screan
-		TILE_AMOUNT                    : INTEGER := (15 * 15);
-		TILE_AMOUNT_WITH_AND_HIGHT     : INTEGER := 15;
+		TILE_AMOUNT                    : INTEGER := (15 * 20);
+		TILE_AMOUNT_HIGHT              : INTEGER := 15;
+		TILE_AMOUNT_WITH               : INTEGER := 20;
 		-- amount of bit to identify one tile
 		TILE_NUMBER_SIZE               : INTEGER := 6;
 		TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16;
@@ -85,10 +86,10 @@ BEGIN
 --                                       + ((YVGA    /  TILE_PIXEL_HIGHT_AND_WITH)   * TILE_AMOUNT_WITH_AND_HIGHT)));
 
     --          x position offset of 0,0            + y position offset of 0,0 * total tiles in with
-    temp1 <= (((XVGA) / TILE_PIXEL_HIGHT_AND_WITH) + ((YVGA / TILE_PIXEL_HIGHT_AND_WITH) * TILE_AMOUNT_WITH_AND_HIGHT)); --todo: offset??
+    temp1 <= (((XVGA) / TILE_PIXEL_HIGHT_AND_WITH) + ((YVGA / TILE_PIXEL_HIGHT_AND_WITH) * TILE_AMOUNT_WITH)); --todo: offset??
     
     --               get tile number
-    tileMapNumber <= tileNumberVector(( temp1 + TILE_NUMBER_SIZE - 1) downto (temp1));
+    tileMapNumber <= tileNumberVector(( temp1*TILE_NUMBER_SIZE + TILE_NUMBER_SIZE - 1) downto (temp1*TILE_NUMBER_SIZE));
     --tileMapNumber <= std_logic_vector(to_unsigned (6, tileMapNumber'length));
 	
 	-- get postion of pixel on tile to display
