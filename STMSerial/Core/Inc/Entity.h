@@ -23,7 +23,8 @@ public:
 	Entity();
 	virtual ~Entity();
 
-
+	void setXPos(uint8_t newPos);
+	void setYPos(uint8_t newPos);
 
 	uint8_t getXPos();
 	uint8_t getYPos();
