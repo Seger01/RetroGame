@@ -1,34 +1,38 @@
 #pragma once
 #include <string>
+struct pointVector {
+	int X;
+	int Y;
+};
 class entity
 {
 private:
 	std::string name;
-	int colRight = 0;
-	int colLeft = 0;
-	int colTop = 0;
-	int colBottom = 0;
-	int x = 0;
-	int y = 0;
+	int health = 1;
+	int strength = 0;
+	int speed = 0;
+	int textureID = 0;
+	pointVector position;
 	int width=0;
 	int height = 0;
 public: 
+
 	entity(std::string name,int x,int y,int width,int height);
+	pointVector getHalfSize();
+	void stepX();
+	void stepY();
 	void moveX(int);
 	void moveY(int);
-	//void isColliding(entity& object);
 	void newLocation(int, int);
 	std::string getName();
-	void setColLeft(int);
-	void setColRight(int);
-	void setColTop(int);
-	void setColBottom(int);
 	int getX();
 	int getY();
 	int getWidth();
 	int getHeight();
-	void getPosition();
-	void onCollide();
+	pointVector getPosition();
+	bool checkCollision(entity& object);
+	void onCollide(entity& object);
+	void onDeath();
 
 };
 

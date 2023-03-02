@@ -5,7 +5,7 @@
 #include "collision.h"
 int main()
 {
-    collision cubes;
+    collider cubes;
     while (true) {
         int option1 = -1;
         int XY = -1;

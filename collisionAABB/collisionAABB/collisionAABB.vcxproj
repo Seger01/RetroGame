@@ -127,13 +127,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="collision.cpp" />
+    <ClCompile Include="collider.cpp" />
     <ClCompile Include="collisionAABB.cpp" />
     <ClCompile Include="entity.cpp" />
+    <ClCompile Include="entityManager.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="collision.h" />
     <ClInclude Include="entity.h" />
+    <ClInclude Include="entityManager.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

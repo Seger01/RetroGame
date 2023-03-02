@@ -1,10 +1,10 @@
 #pragma once
 #include "entity.h"
 #include <vector>
-class collision
+class collider
 {
 public:
-	collision();
+	collider();
 	std::vector<entity*> getCubes();
 	void checkAll();
 	void checkMoved();
