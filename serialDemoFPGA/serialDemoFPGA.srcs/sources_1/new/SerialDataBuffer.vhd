@@ -68,6 +68,7 @@ begin
             
             previousSerialData <= (others => '0');
         elsif(rising_edge(clk100Mhz)) then
+<<<<<<< Updated upstream
 --            if (serialData /= previousSerialData) then
 --                previousSerialData <= serialData;
                 if(serialData(7 downto 0) = x"FF") then
@@ -77,6 +78,14 @@ begin
                     entityData <= entityDataBuffer;
                     soundData <= soundDataBuffer;
                     hudData <= hudDataBuffer;
+=======
+            if (serialData /= previousSerialData) then
+                previousSerialData <= serialData;
+                if(serialData(7 downto 0) = x"FF") then
+                    tileDataBuffer <= serialData(1808 -1 downto 8);
+                    tileData <= serialData(1808 -1 downto 8);
+                --entityData <= entityDataBuffer;
+>>>>>>> Stashed changes
 
                 else
                     entityData <= serialData(1208 -1 downto 8);
@@ -87,6 +96,7 @@ begin
 
                     hudData <= serialData(1240 -1 downto 1216);
                     hudDataBuffer <= serialData(1240 -1 downto 1216);
+<<<<<<< Updated upstream
                     
                     tileData <= tileDataBuffer;
 
@@ -101,6 +111,20 @@ begin
 --                soundDataBuffer <= soundDataBuffer;
 --                hudDataBuffer <= hudDataBuffer;
 --            end if;
+=======
+
+                end if;
+            else
+                tileData <= tileDataBuffer;
+                entityData <= entityDataBuffer;
+                soundData <= soundDataBuffer;
+                hudData <= hudDataBuffer;
+                tileDataBuffer <= tileDataBuffer;
+                entityDataBuffer <= entityDataBuffer;
+                soundDataBuffer <= soundDataBuffer;
+                hudDataBuffer <= hudDataBuffer;
+            end if;
+>>>>>>> Stashed changes
         else
 
         end if;

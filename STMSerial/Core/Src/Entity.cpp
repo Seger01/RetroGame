@@ -21,6 +21,15 @@ uint8_t Entity::getXPos(){
 uint8_t Entity::getYPos(){
 	return yPos;
 }
+
+void Entity::setXPos(uint8_t newPos){
+	this->xPos = newPos;
+}
+
+void Entity::setYPos(uint8_t newPos){
+	this->yPos = newPos;
+}
+
 uint8_t Entity::getSpriteId(){
 	return spriteId;
 }
