@@ -217,11 +217,11 @@ BEGIN
                 FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
                     if (tileCount < 20 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
-                    elsif (((tileCount+1) mod 20) = 0 and debugIn(6) = '1') then
+                    elsif (((tileCount+1) mod 20) = 0 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
                     elsif ((tileCount mod 20) = 0 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
-                    elsif (tileCount > TILE_AMOUNT - 1 - 20) then
+                    elsif (tileCount > TILE_AMOUNT - 1 - 20 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
                     else
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(0, 6));                              

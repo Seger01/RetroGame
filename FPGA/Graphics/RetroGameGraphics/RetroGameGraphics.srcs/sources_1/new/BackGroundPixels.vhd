@@ -17,7 +17,7 @@ ENTITY BackGroundPixels IS
 		TILE_NUMBER_SIZE               : INTEGER := 6;
 		TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16;
 		-- Offsets
-		OFFSET_CLK_TO_VGA              : INTEGER := 1; --todo: calc for this one
+		OFFSET_CLK_TO_VGA              : INTEGER := 4; --todo: calc for this one
 		OFFSET_CLK_TO_ROM              : INTEGER := 2;
 		-- vga
 		PIXEL_SCALING                  : INTEGER := 2
@@ -126,16 +126,17 @@ BEGIN
 			if (debugIn(12) = '1') then
 			     temp := resize((20 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);			     
 			elsif (debugIn(7) = '1') then
-			     temp := resize((unsigned(tileMapNumber)* 2 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
+			     temp := resize(((unsigned(tileMapNumber)* 2 + 1) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			elsif (debugIn(8) = '1') then
-			     temp := resize((unsigned(tileMapNumber)* 3 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	 
+			     temp := resize(((unsigned(tileMapNumber)* 3 - 4) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	 
 			elsif (debugIn(9) = '1') then
 			     temp := resize((unsigned(tileMapNumber)*0 + 14 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);		
 			elsif (debugIn(10) = '1') then
 			     temp := resize((unsigned(tileMapNumber)*0 + 4 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			elsif (debugIn(11) = '1') then
 			     temp := resize(currentTileXYPosition, temp'length);
-			else				
+			else		
+			-- debug dit is echte output		
 			     temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			end if;
 			
@@ -143,8 +144,7 @@ BEGIN
 			
 			-- if currend displayed pixel is in visible part of screen.
 			IF       (((XVGA >= 0)                              AND (YVGA >= 0) 
-			     AND   (XVGA < (SCREAN_WIDTH /PIXEL_SCALING))   AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING)))
-			     OR debugIn(8) = '1') THEN -- //todo:add ofset
+			     AND   (XVGA < (SCREAN_WIDTH /PIXEL_SCALING))   AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING)))) THEN -- //todo:add ofset
 				--display object whith this color todo background tiles are never transparrent 
                 Rout <=         tileRGB(7 downto 5) & tileRGB(7);
                 Gout <=         tileRGB(4 downto 2) & tileRGB(4);
