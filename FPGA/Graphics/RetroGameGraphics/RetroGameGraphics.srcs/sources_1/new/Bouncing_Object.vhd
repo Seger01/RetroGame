@@ -17,9 +17,9 @@ ENTITY Bouncing_Object IS
 		ENTITY_Y_BIT_SIZE      : INTEGER := 8;
 		ENTITY_NUMMER_BIT_SIZE : INTEGER := 6;
 		-- amount of tiles visible on screan
-		TILE_AMOUNT                    : INTEGER := (15 * 20);
+		TILE_AMOUNT                    : INTEGER := (15 * 15);
 		TILE_AMOUNT_HIGHT              : INTEGER := 15;
-		TILE_AMOUNT_WITH               : INTEGER := 20;
+		TILE_AMOUNT_WITH               : INTEGER := 15;
 		-- amount of bit to identify one tile
 		TILE_NUMBER_SIZE               : INTEGER := 6
 	);
@@ -215,13 +215,13 @@ BEGIN
                 --todo: fix add code (for debug) tiles
                 sDebugTileNumberVector <= (OTHERS => '0');
                 FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
-                    if (tileCount < 20 and debugIn(5) = '1') then
+                    if (tileCount < 15 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
-                    elsif (((tileCount+1) mod 20) = 0 and debugIn(5) = '1') then
+                    elsif (((tileCount+1) mod 15) = 0 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
-                    elsif ((tileCount mod 20) = 0 and debugIn(5) = '1') then
+                    elsif ((tileCount mod 15) = 0 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
-                    elsif (tileCount > TILE_AMOUNT - 1 - 20 and debugIn(5) = '1') then
+                    elsif (tileCount > TILE_AMOUNT - 1 - 15 and debugIn(5) = '1') then
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(8, 6));
                     else
                         sDebugTileNumberVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= std_logic_vector(to_unsigned(0, 6));                              
