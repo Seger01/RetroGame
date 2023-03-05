@@ -19,8 +19,8 @@ public:
 
 	entity(std::string name,int x,int y,int width,int height);
 	pointVector getHalfSize();
-	void stepX();
-	void stepY();
+	void stepX(int);
+	void stepY(int);
 	void moveX(int);
 	void moveY(int);
 	void newLocation(int, int);
@@ -29,6 +29,10 @@ public:
 	int getY();
 	int getWidth();
 	int getHeight();
+	int getSpeed();
+	int getStrength();
+	void setHealth(int);
+	int getHealth();
 	pointVector getPosition();
 	bool checkCollision(entity& object);
 	void onCollide(entity& object);

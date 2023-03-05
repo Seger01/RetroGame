@@ -7,6 +7,13 @@ entity::entity(std::string name, int x, int y, int width, int height) {
 	this->width = width;
 	this->height = height;
 }
+void entity::setHealth(int health) {
+	this->health = health;
+
+}
+int entity::getHealth() {
+	return health;
+}
 pointVector entity::getHalfSize(){
 	pointVector halfsize;
 	halfsize.X = width / 2;
@@ -74,38 +81,28 @@ bool entity::checkCollision(entity& object) {
 	}
 	return false;
 }
+int entity::getSpeed() {
+	return speed;
+}
+
+int entity::getStrength() {
+	return strength;
+}
+void entity::stepX(int direction) {
+	if (direction == 1) {
+		this->position.X += speed;
+	}
+	else if(direction == -1) {
+		this->position.X -= speed;
+	}
+}
+void entity::stepY(int direction) {
+	if (direction == 1) {
+		this->position.Y += speed;
+	}
+	else if (direction == -1) {
+		this->position.Y -= speed;
+	}
+}
 void entity::onCollide(entity& object) {
-
-	/*
-	std::cout << "left: " << colLeft << std::endl;
-	std::cout << "right: " << colRight << std::endl;
-	std::cout << "top: " << colTop << std::endl;
-	std::cout << "bottom " << colBottom << std::endl;
-	*/
-
-	/*
-	if (colLeft < -10) {
-		moveX(-(20+colLeft));
-	}else if(colLeft >= -10){
-		moveX(-colLeft);
-	}else if(colTop > 10){
-		moveY(20 - colBottom);
-	}else {
-		moveY(-(20 + colBottom));
-	}*/
-	/*
-	if (colLeft <= 0) {
-		moveX(colLeft);
-	}
-	else if (colRight > 0) {
-		moveX(colRight);
-	}
-	else if (colTop > 0) {
-		moveY(colTop);
-	}
-	else if (colBottom < 0) {
-		moveY(colBottom);
-	}*/
-	//x = x + colX;
-	//y = y + colY;
 }
