@@ -19,6 +19,7 @@ ENTITY EntityPixels IS
 		ENTITY_Y_BIT_SIZE              : INTEGER := 8;
 		ENTITY_NUMMER_BIT_SIZE         : INTEGER := 6;
 		ENTITY_PIXEL_HIGHT_AND_WITH    : INTEGER := 16;
+		ENTITY_PIXEL_START_OFFSET      : INTEGER := 16 +16 +8;
 		-- Offsets
 		OFFSET_CLK_TO_VGA              : INTEGER := 1;
 		OFFSET_CLK_TO_ROM              : INTEGER := 2;
@@ -68,7 +69,7 @@ BEGIN
 	-- convert Xcount and Ycount to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
 	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA
-	XVGA <= (to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING;
+	XVGA <= ((to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - ENTITY_PIXEL_START_OFFSET;
 	YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 	PROCESS (reset, clk)
 		VARIABLE vEntityXPosition    : NATURAL RANGE 0 TO 256                                                                                      := 0;
@@ -98,8 +99,8 @@ BEGIN
 			EntityLoop : FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
 				-- vector entity 0 => 49 by count    *     total entity size
 				vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-				-- read x position      read vector entity 0 => 49 by count          +        x entity size -1                      downto     read vector entity 0 => 49 by count only
-				vEntityXPosition    := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE - 1 DOWNTO vEntityVectorOffset)));
+				-- read x position      read vector entity 0 => 49 by count          +        x entity size -1                      downto     read vector entity 0 => 49 by count only  - offset to start first pixels ENTITY_PIXEL_START_OFFSET pixels later
+				vEntityXPosition    := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE - 1 DOWNTO vEntityVectorOffset))); 
 				-- read y position      read vector entity 0 => 49 by count          +        x entity size -1 + y size             downto    read vector entity 0 => 49 by count  +    Y entity size only
 				vEntityYPosition    := to_integer (unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE)));
 				-- if entity pixel is going to be on screen.
@@ -107,7 +108,7 @@ BEGIN
 
 				-- top left pixel of entity, X
 				-- to be next vga location  >= count x position
-				-- current vga x pixel with offset to vga entity   +   offset to read rom   >=     current x position entity
+				-- current vga x pixel with offset to vga entity   +   offset to read rom   >=     current x position entity 
 				IF ((((XVGA + OFFSET_CLK_TO_ROM)            >= vEntityXPosition)
 					-- top left pixel of entity, Y
 					-- to be next vga location  >= count y position
@@ -170,8 +171,9 @@ BEGIN
 					END IF;
 				END IF;
 			END LOOP;
-			-- if currend displayed pixel is in visible part of screen.
-			IF ((XVGA >= 0) AND (YVGA >= 0) AND (XVGA < (SCREAN_WIDTH /PIXEL_SCALING)) AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING))) THEN
+			-- if currend displayed pixel is in visible part of screen. plus ENTITY_PIXEL_START_OFFSET offset to make game 15*15 tile ratio
+			IF ((XVGA >= 0)                                  AND (YVGA >= 0) AND 
+			    (XVGA + ENTITY_PIXEL_START_OFFSET*2 < (SCREAN_WIDTH /PIXEL_SCALING))   AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING))) THEN
 				--display objects pixels that are not transparrent color
 				IF (entityRGB /= X"00") THEN
 					-- sprite RGB data

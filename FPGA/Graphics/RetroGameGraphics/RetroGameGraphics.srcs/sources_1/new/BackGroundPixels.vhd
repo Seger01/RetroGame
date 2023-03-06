@@ -10,14 +10,15 @@ ENTITY BackGroundPixels IS
 		SCREAN_WIDTH                   : INTEGER := 640;
 		SCREAN_HIGHT                   : INTEGER := 480;
 		-- amount of tiles visible on screan
-		TILE_AMOUNT                    : INTEGER := (15 * 20);
+		TILE_AMOUNT                    : INTEGER := (15 * 15);
 		TILE_AMOUNT_HIGHT              : INTEGER := 15;
-		TILE_AMOUNT_WITH               : INTEGER := 20;
+		TILE_AMOUNT_WITH               : INTEGER := 15;
+		TILE_SCREEN_PIXEL_START_OFFSET : INTEGER := 16 +16 +8;
 		-- amount of bit to identify one tile
 		TILE_NUMBER_SIZE               : INTEGER := 6;
 		TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16;
 		-- Offsets
-		OFFSET_CLK_TO_VGA              : INTEGER := 1; --todo: calc for this one
+		OFFSET_CLK_TO_VGA              : INTEGER := 3; --todo: calc for this one (horizontal move background)
 		OFFSET_CLK_TO_ROM              : INTEGER := 2;
 		-- vga
 		PIXEL_SCALING                  : INTEGER := 2
@@ -53,7 +54,7 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	SIGNAL tileRGB : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
 	SIGNAL tileAdress : STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 	SIGNAL tileMapNumber : STD_LOGIC_VECTOR(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
-	SIGNAL temp1 : INTEGER range 0 to 500000 := 0; --todo: calc max
+	SIGNAL temp1 : INTEGER range -5000 to 500000 := 0; --todo: calc max
 	
 BEGIN
 	-- map ports
@@ -68,7 +69,7 @@ BEGIN
     -- convert Xcount and Yco`unt to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
 	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA
-	XVGA <= (to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING;
+	XVGA <= ((to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - TILE_SCREEN_PIXEL_START_OFFSET;
 	YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 	
 	-- get current tile number to display on screan + offset
@@ -86,6 +87,7 @@ BEGIN
 --                                       + ((YVGA    /  TILE_PIXEL_HIGHT_AND_WITH)   * TILE_AMOUNT_WITH_AND_HIGHT)));
 
     --          x position offset of 0,0            + y position offset of 0,0 * total tiles in with
+    -- mapp index nr to display
     temp1 <= (((XVGA) / TILE_PIXEL_HIGHT_AND_WITH) + ((YVGA / TILE_PIXEL_HIGHT_AND_WITH) * TILE_AMOUNT_WITH)); --todo: offset??
     
     --               get tile number
@@ -108,6 +110,7 @@ BEGIN
 			Bout <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
 			temp := (OTHERS => '0');
+			debugOut <= (OTHERS => '0');-- used for debug
 			
 			-- if clk rising_edge
 		ELSIF rising_edge(clk) THEN
@@ -117,6 +120,7 @@ BEGIN
 			Gout <= (OTHERS => '0');
 			Bout <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
+			debugOut <= (OTHERS => '0'); -- used for debug
 			
 			--                                                                       tile to read    *   size of one tile                                     +  position of tile to read
 			--tileAdress <= STD_LOGIC_VECTOR(resize(unsigned(STD_LOGIC_VECTOR((unsigned(tileMapNumber) * (TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH)) + currentTileXYPosition)),14)); --todo: offsett
@@ -126,25 +130,25 @@ BEGIN
 			if (debugIn(12) = '1') then
 			     temp := resize((20 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);			     
 			elsif (debugIn(7) = '1') then
-			     temp := resize((unsigned(tileMapNumber)* 2 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
+			     temp := resize(((unsigned(tileMapNumber)* 2 + 1) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			elsif (debugIn(8) = '1') then
-			     temp := resize((unsigned(tileMapNumber)* 3 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	 
+			     temp := resize(((unsigned(tileMapNumber)* 3 - 4) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	 
 			elsif (debugIn(9) = '1') then
 			     temp := resize((unsigned(tileMapNumber)*0 + 14 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);		
 			elsif (debugIn(10) = '1') then
 			     temp := resize((unsigned(tileMapNumber)*0 + 4 * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			elsif (debugIn(11) = '1') then
 			     temp := resize(currentTileXYPosition, temp'length);
-			else				
+			else		
+			-- debug dit is echte output		
 			     temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			end if;
 			
 			tileAdress <= STD_LOGIC_VECTOR(temp); --todo: offsett			
 			
 			-- if currend displayed pixel is in visible part of screen.
-			IF       (((XVGA >= 0)                              AND (YVGA >= 0) 
-			     AND   (XVGA < (SCREAN_WIDTH /PIXEL_SCALING))   AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING)))
-			     OR debugIn(8) = '1') THEN -- //todo:add ofset
+			IF       (((XVGA >= 0)                                  AND (YVGA >= 0) 
+			     AND  ((XVGA + (TILE_SCREEN_PIXEL_START_OFFSET*2)) < (SCREAN_WIDTH /PIXEL_SCALING))   AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING)))) THEN -- //todo:add ofset and explane (TILE_SCREEN_PIXEL_START_OFFSET)
 				--display object whith this color todo background tiles are never transparrent 
                 Rout <=         tileRGB(7 downto 5) & tileRGB(7);
                 Gout <=         tileRGB(4 downto 2) & tileRGB(4);
