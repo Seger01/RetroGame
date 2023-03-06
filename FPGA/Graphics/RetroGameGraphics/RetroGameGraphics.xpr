@@ -3,7 +3,7 @@
 <!--                                                         -->
 <!-- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.   -->
 
-<Project Version="7" Minor="60" Path="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.xpr">
+<Project Version="7" Minor="60" Path="C:/Users/coole/Documents/GIT/ProjectGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.xpr">
   <DefaultLaunch Dir="$PRUNDIR"/>
   <Configuration>
     <Option Name="Id" Val="27f36e51951b40ad9f62a35386c288c7"/>
@@ -44,7 +44,6 @@
     <Option Name="SimulatorGccVersionActiveHdl" Val="9.3.0"/>
     <Option Name="TargetLanguage" Val="VHDL"/>
     <Option Name="BoardPart" Val="digilentinc.com:basys3:part0:1.2"/>
-    <Option Name="BoardPartRepoPaths" Val="C:/Users/hmkam/AppData/Roaming/Xilinx/Vivado/2022.1/xhub/board_store/xilinx_board_store"/>
     <Option Name="ActiveSimSet" Val="sim_1"/>
     <Option Name="DefaultLib" Val="xil_defaultlib"/>
     <Option Name="ProjectType" Val="Default"/>
@@ -102,9 +101,33 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
+      <File Path="$PSRCDIR/sources_1/imports/new/SerialDataBuffer.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../serialDemoFPGA/serialDemoFPGA.srcs/sources_1/new/SerialDataBuffer.vhd"/>
+          <Attr Name="ImportTime" Val="1678111068"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/new/SerialRead.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../serialDemoFPGA/serialDemoFPGA.srcs/sources_1/new/SerialRead.vhd"/>
+          <Attr Name="ImportTime" Val="1678111068"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <File Path="$PSRCDIR/sources_1/imports/new/clockSynchronizer.vhd">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../serialDemoFPGA/serialDemoFPGA.srcs/sources_1/new/clockSynchronizer.vhd"/>
+          <Attr Name="ImportTime" Val="1678111068"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
       <File Path="$PSRCDIR/sources_1/imports/Week 5 + 6 - Bounching Square - Ball/vga.vhd">
         <FileInfo>
-          <Attr Name="ImportPath" Val="C:/Users/hmkam/Downloads/Bijlage opdrachten/Bijlage opdrachten/Week 5 + 6 - Bounching Square - Ball/vga.vhd"/>
+          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../../../hmkam/Downloads/Bijlage opdrachten/Bijlage opdrachten/Week 5 + 6 - Bounching Square - Ball/vga.vhd"/>
           <Attr Name="ImportTime" Val="1572277796"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -118,14 +141,18 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../COE/veelEntitys.coe.coe">
+      <File Path="$PSRCDIR/sources_1/imports/COE/veelEntitys.coe.coe">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../COE/veelEntitys.coe.coe"/>
+          <Attr Name="ImportTime" Val="1678111067"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../COE/AllTilesV3.0.coe">
+      <File Path="$PSRCDIR/sources_1/imports/COE/AllTilesV3.0.coe">
         <FileInfo>
+          <Attr Name="ImportPath" Val="$PPRDIR/../COE/AllTilesV3.0.coe"/>
+          <Attr Name="ImportTime" Val="1678111067"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -169,14 +196,10 @@
     </FileSet>
     <FileSet Name="utils_1" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
       <Filter Type="Utils"/>
-      <File Path="$PSRCDIR/utils_1/imports/synth_1/VGA_Controller.dcp">
+      <File Path="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/synth_1/Bouncing_Object.dcp">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/synth_1/VGA_Controller.dcp"/>
-          <Attr Name="ImportTime" Val="1675423486"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedInSteps" Val="synth_1"/>
-          <Attr Name="AutoDcp" Val="1"/>
         </FileInfo>
       </File>
       <Config>
@@ -256,21 +279,19 @@
     </Simulator>
   </Simulators>
   <Runs Version="1" Minor="19">
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" IncrementalCheckpoint="$PSRCDIR/utils_1/imports/synth_1/VGA_Controller.dcp" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/synth_1" AutoRQSDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/synth_1">
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/synth_1" AutoRQSDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
           <Desc>Vivado Synthesis Defaults</Desc>
         </StratHandle>
-        <Step Id="synth_design">
-          <Option Id="FlattenHierarchy">1</Option>
-        </Step>
+        <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="prescaler_synth_1" Type="Ft3:Synth" SrcSet="prescaler" Part="xc7a35tcpg236-1" ConstrsSet="prescaler" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/prescaler_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_synth_1" AutoRQSDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_synth_1">
+    <Run Id="prescaler_synth_1" Type="Ft3:Synth" SrcSet="prescaler" Part="xc7a35tcpg236-1" ConstrsSet="prescaler" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/prescaler_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_synth_1" AutoRQSDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
@@ -280,7 +301,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="AllEntitys_synth_1" Type="Ft3:Synth" SrcSet="AllEntitys" Part="xc7a35tcpg236-1" ConstrsSet="AllEntitys" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/AllEntitys_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/AllEntitys_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/AllEntitys_synth_1">
+    <Run Id="AllEntitys_synth_1" Type="Ft3:Synth" SrcSet="AllEntitys" Part="xc7a35tcpg236-1" ConstrsSet="AllEntitys" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/AllEntitys_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllEntitys_synth_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllEntitys_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
@@ -290,7 +311,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="AllBackgroundTiles_synth_1" Type="Ft3:Synth" SrcSet="AllBackgroundTiles" Part="xc7a35tcpg236-1" ConstrsSet="AllBackgroundTiles" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/AllBackgroundTiles_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/AllBackgroundTiles_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/AllBackgroundTiles_synth_1">
+    <Run Id="AllBackgroundTiles_synth_1" Type="Ft3:Synth" SrcSet="AllBackgroundTiles" Part="xc7a35tcpg236-1" ConstrsSet="AllBackgroundTiles" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/AllBackgroundTiles_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_synth_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
@@ -300,19 +321,19 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/impl_1" AutoRQSDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/impl_1">
+    <Run Id="impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/impl_1" SynthRun="synth_1" IncludeInArchive="true" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/impl_1" AutoRQSDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
           <Desc>Default settings for Implementation.</Desc>
         </StratHandle>
         <Step Id="init_design"/>
-        <Step Id="opt_design" EnableStepBool="0"/>
+        <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
         <Step Id="place_design"/>
         <Step Id="post_place_power_opt_design"/>
         <Step Id="phys_opt_design"/>
         <Step Id="route_design"/>
-        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="post_route_phys_opt_design" EnableStepBool="1"/>
         <Step Id="write_bitstream"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -320,7 +341,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="prescaler_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="prescaler" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="prescaler_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_impl_1" AutoRQSDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_impl_1">
+    <Run Id="prescaler_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="prescaler" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="prescaler_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_impl_1" AutoRQSDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
@@ -337,7 +358,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="AllEntitys_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="AllEntitys" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="AllEntitys_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/AllEntitys_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/AllEntitys_impl_1">
+    <Run Id="AllEntitys_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="AllEntitys" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="AllEntitys_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllEntitys_impl_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllEntitys_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
@@ -354,7 +375,7 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="AllBackgroundTiles_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="AllBackgroundTiles" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="AllBackgroundTiles_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/AllBackgroundTiles_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/AllBackgroundTiles_impl_1">
+    <Run Id="AllBackgroundTiles_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="AllBackgroundTiles" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="AllBackgroundTiles_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_impl_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
@@ -372,6 +393,20 @@
       <RQSFiles/>
     </Run>
   </Runs>
+  <MsgRule>
+    <MsgAttr Name="RuleType" Val="0"/>
+    <MsgAttr Name="Limit" Val="-1"/>
+    <MsgAttr Name="NewSeverity" Val="ANY"/>
+    <MsgAttr Name="Id" Val="Project 1-311"/>
+    <MsgAttr Name="Severity" Val="ANY"/>
+    <MsgAttr Name="ShowRule" Val="1"/>
+    <MsgAttr Name="RuleSource" Val="16"/>
+    <MsgAttr Name="StringIsRegExp" Val="0"/>
+    <MsgAttr Name="RuleId" Val="1"/>
+    <MsgAttr Name="Note" Val=""/>
+    <MsgAttr Name="Author" Val=""/>
+    <MsgAttr Name="CreatedTimestamp" Val=""/>
+  </MsgRule>
   <Board>
     <Jumpers/>
   </Board>

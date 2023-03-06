@@ -15,7 +15,7 @@ ENTITY BackGroundPixels IS
 		TILE_AMOUNT_WITH               : INTEGER := 15;
 		TILE_SCREEN_PIXEL_START_OFFSET : INTEGER := 16 +16 +8;
 		-- amount of bit to identify one tile
-		TILE_NUMBER_SIZE               : INTEGER := 6;
+		TILE_NUMBER_SIZE               : INTEGER := 8;
 		TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16;
 		-- Offsets
 		OFFSET_CLK_TO_VGA              : INTEGER := 3; --todo: calc for this one (horizontal move background)

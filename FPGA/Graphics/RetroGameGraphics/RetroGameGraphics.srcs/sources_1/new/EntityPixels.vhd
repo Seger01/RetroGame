@@ -17,7 +17,7 @@ ENTITY EntityPixels IS
 		ENTITY_AMOUNT                  : INTEGER := 50;
 		ENTITY_X_BIT_SIZE              : INTEGER := 8;
 		ENTITY_Y_BIT_SIZE              : INTEGER := 8;
-		ENTITY_NUMMER_BIT_SIZE         : INTEGER := 6;
+		ENTITY_NUMMER_BIT_SIZE         : INTEGER := 8;
 		ENTITY_PIXEL_HIGHT_AND_WITH    : INTEGER := 16;
 		ENTITY_PIXEL_START_OFFSET      : INTEGER := 16 +16 +8;
 		-- Offsets
@@ -133,7 +133,7 @@ BEGIN
 						--                                  get entity to display
 						-- use of vtemp becouse vivado synthesis failed 12 does not fid in 9 and resize does not work
 						--                              get entity number
-						IF (debugIn(1) = '1') THEN
+						IF (debugIn(1) = '0') THEN
 						      -- get entitie number
 						    vTemp := to_integer(unsigned (dataVector(vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO vEntityVectorOffset + ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE)));
 						    -- calculate offset of entities by multiply by size of an entity
