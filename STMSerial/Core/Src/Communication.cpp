@@ -44,6 +44,10 @@ void Communication::sendEntities(Entity **entities) {
 	buffer[2] = 100;
 	buffer[3]++;
 
+	buffer[4] = 200;
+	buffer[5] = 200;
+	buffer[6] = 2;
+
 	/*for (int j = 0; j < maxAmountOfEntities; j++) {
 	 if (&entities[j] == nullptr)
 	 continue;

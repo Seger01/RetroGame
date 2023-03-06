@@ -367,18 +367,15 @@ void startSend(void *argument) {
 
 	Communication communication(&hspi1);
 
-	communication.sendEntities(entities);
+
 
 	for (;;) {
-		osDelay(100);
-		//communication.sendEntities(entities);
+		osDelay(10);
+		communication.sendEntities(entities);
 
-
-		//osDelay(100);
+		osDelay(10);
 		communication.sendMap(levelManager.getMap());
 
-
-		//while(1);
 	}
 	/* USER CODE END 5 */
 }
