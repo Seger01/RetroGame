@@ -17,15 +17,16 @@ public:
 	Communication();
 	virtual ~Communication();
 
-	Communication(SPI_HandleTypeDef* hspi1);
+	Communication(SPI_HandleTypeDef *hspi1);
 
-	void sendMap(int* map);
-	void sendEntities(Entity* entities);
+	void sendEntities(Entity **entities);
 
-	void sendBoth(int* map, Entity* entities);
+	void sendMap(uint8_t *map);
+
+	void sendBoth(uint8_t *map, Entity **entities);
 
 private:
-	SPI_HandleTypeDef* hspi1;
+	SPI_HandleTypeDef *hspi1;
 };
 
 #endif /* SRC_COMMUNICATION_H_ */

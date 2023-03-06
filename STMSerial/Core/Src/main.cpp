@@ -29,6 +29,8 @@ extern "C" {
 }
 
 #include "Entity.h"
+#include "LevelManager.h"
+#include "Communication.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -359,93 +361,19 @@ void startSend(void *argument) {
 	}
 	fpgaReset();
 	/* Infinite loop */
-	uint8_t bufferTiles[226] = { 0 };
-	uint8_t bufferEntitys[226] = {0};
+	Entity *entities[50];
 
-	bufferTiles[0] = 0xFF;
+	LevelManager levelManager;
+
+	Communication communication;
+
 	for (;;) {
-		osDelay(400);
+		osDelay(1);
 
-		//Entity entities[50];
+		communication.sendEntities(entities);
 
+		communication.sendMap(levelManager.getMap());
 
-		// last index of Entitys is 154
-
-		if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) {
-			bufferTiles[225]++;
-			HAL_SPI_Transmit(&hspi1, (uint8_t*) bufferTiles, 226, 100);
-		} else {
-			bufferEntitys[154]++;
-			HAL_SPI_Transmit(&hspi1, (uint8_t*) bufferEntitys, 226, 100);
-			//bufferEntitys[153]++;
-		}
-//		for (int i = 0; i < 226; i++) {
-//			buffer[i] = 0xFF;
-//		}
-//		TickType_t before = xTaskGetTickCount();
-
-//		for (int j = 0; j < 50; j++) {
-//			buffer[(j * 3) + 0 + 1] = entities[j].getXPos();
-//			buffer[(j * 3) + 1 + 1] = entities[j].getYPos();
-//			buffer[(j * 3) + 2 + 1] = entities[j].getSpriteId();
-//		}
-
-
-
-		//TickType_t after = xTaskGetTickCount();
-//
-//		TickType_t totalTime = after - before;
-
-//		const int dataLength = 1200;
-//		_Bool dataArray[16] = { 0 };
-//
-//		for (int i = 0; i < 16; i++) {
-//			dataArray[i] = i % 2;
-//		}
-//		static int counter = 0;
-//
-//		int state = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13);
-//
-//		if (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13) == 0) {
-//			counter++;
-//
-//		}
-//
-//		if (counter == 16)
-//			counter = 0;
-//		int before = xTaskGetTickCount();
-//		//for (int j = 0; j < 30; j++) {
-//		for (int i = 0; i < 16; i++) {
-//
-//			serialDataWrite(dataArray[i]);
-//
-//			serialClockWrite(1);
-//
-//			serialDataWrite(0);
-//			serialClockWrite(0);
-//
-//		}
-//		serialDataWrite(0);
-//		serialClockWrite(1);
-//		serialClockWrite(0);
-//		//}
-//		int after = xTaskGetTickCount();
-//
-//		int elapsedMs = after - before;
-		/*serialDataWrite(1);
-		 while(1){
-		 serialClockWrite(1);
-		 serialClockWrite(0);
-		 }*/
-
-		/*serialDataWrite(1);
-		 serialClockWrite(1);
-
-		 serialClockWrite(0);
-		 serialDataWrite(0);
-		 serialClockWrite(1);
-
-		 serialClockWrite(0);*/
 
 	}
 	/* USER CODE END 5 */
