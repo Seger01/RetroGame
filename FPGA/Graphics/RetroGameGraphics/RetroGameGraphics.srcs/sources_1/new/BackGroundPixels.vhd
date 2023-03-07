@@ -1,6 +1,27 @@
-LIBRARY IEEE;
-USE IEEE.STD_LOGIC_1164.ALL;
-USE IEEE.NUMERIC_STD.ALL;
+----------------------------------------------------------------------------------
+-- Company: -
+-- Engineer: Martijn Kamphof
+-- 
+-- Create Date: 06.02.2023
+-- Design Name: 
+-- Module Name: EntityPixels - Behavioral
+-- Project Name: Retro Game
+-- Target Devices: Digilent Basys 3
+-- Tool Versions: Vivado 2022.1
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.02 - More Modulare design
+-- Additional Comments:
+-- All entities and tiles RGB outputs will be controlled by the CollorOutputSelector
+----------------------------------------------------------------------------------
+
+library IEEE;
+use IEEE.STD_LOGIC_1164.ALL;
+use IEEE.NUMERIC_STD.ALL;
+
 
 ENTITY BackGroundPixels IS
 	GENERIC (

@@ -4,7 +4,7 @@
 -- 
 -- Create Date:     07.03.2023 10:19:45
 -- Design Name: 
--- Module Name:     EntityPixels - Behavioral
+-- Module Name:     PlayerPixels - Behavioral
 -- Project Name:    Retro Game
 -- Target Devices:  Digilent Basys 3
 -- Tool Versions:   Vivado 2022.1
@@ -22,7 +22,7 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-ENTITY EntityPixels IS
+ENTITY PlayerPixels IS
 	GENERIC
 	(
 		-- VGA, start visible part of screen
@@ -45,7 +45,7 @@ ENTITY EntityPixels IS
 		-- vga
 		PIXEL_SCALING                  : INTEGER := 2;
 		-- EntityPixels
-		ENTITY_ROM_ADRESS_BIT_SIZE     : INTEGER := 7
+		PLAYER_ROM_ADRESS_BIT_SIZE     : INTEGER := 7
 	);
 	PORT (
 		debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
@@ -57,11 +57,11 @@ ENTITY EntityPixels IS
 		-- VGA module connections
 		Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 		-- ROM block entity
-		entityAdress   : OUT unsigned(ENTITY_ROM_ADRESS_BIT_SIZE+1 DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+		entityAdress   : OUT unsigned(PLAYER_ROM_ADRESS_BIT_SIZE+1 DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
 	);
-END EntityPixels;
+END PlayerPixels;
 
-ARCHITECTURE Behavioral OF EntityPixels IS
+ARCHITECTURE Behavioral OF PlayerPixels IS
 	SIGNAL XVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 	SIGNAL YVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 BEGIN
