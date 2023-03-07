@@ -3,8 +3,19 @@
 
 #include <iostream>
 #include "collision.h"
+#include "entityManager.h"
+#include "simulator.h"
 int main()
 {
+    
+    simulator sim;
+    sim.setup();
+    while (true) {
+        sim.loop();
+    }
+    
+    /*
+    //entityManager EntityManger;
     collider cubes;
     while (true) {
         int option1 = -1;
@@ -61,6 +72,7 @@ int main()
             //cubes.checkAll();
             std::cout << std::endl;
     }
+    */
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

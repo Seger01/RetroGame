@@ -1,9 +1,11 @@
 #include "collision.h"
 #include <iostream>
 collider::collider() {
+	/*
 		entityList.push_back(new entity("cube 1",10,10, 10, 10));
 		entityList.push_back(new entity("cube 2", 30, 10, 10, 10));
 		entityList.push_back(new entity("cube 3", 30, 30, 10, 10));
+		*/
 }
 void collider::checkAll() {
 	for (int i = 0; i < entityList.size(); i++) {
@@ -22,17 +24,7 @@ std::vector<entity*> collider::getCubes() {
 	return entityList;
 }
 void collider::moveEntity(entity* sprite, int X, int Y) {
-	sprite->moveX(X);
-	sprite->moveY(Y);
-	for (int j = 0; j < entityList.size(); j++) {
-		if (sprite == entityList[j]) {
-			continue;
-		}
-		if (sprite->checkCollision(*entityList[j])) {
-			sprite->onCollide(*entityList[j]);
-			std::cout << sprite->getName() << " collides with " << entityList[j]->getName() << std::endl;
-		}
-	}
+	
 
 }
 bool collider::checkTwo( entity &one,entity &two){
