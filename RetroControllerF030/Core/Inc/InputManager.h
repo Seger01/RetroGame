@@ -15,10 +15,12 @@ class InputManager {
 public:
 	InputManager();
 	virtual ~InputManager();
-	int getCurrentInput();
-	void readInput(int input);
+	uint8_t getCurrentMovementInput();
+	bool getCurrentShootInput();
+	void readInput(uint8_t inputMovement, bool inputShoot);
 private:
-	int inputResult;
+	uint8_t inputMovementResult;
+	bool inputShootResult;
 };
 
 #endif /* INPUTMANAGER_H_ */

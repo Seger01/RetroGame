@@ -1,5 +1,6 @@
 InputManager.cpp:10:1:InputManager::InputManager()	1
-InputManager.cpp:15:1:InputManager::~InputManager()	1
-InputManager.cpp:15:1:virtual InputManager::~InputManager()	1
-InputManager.cpp:19:6:void InputManager::readInput(int)	1
-InputManager.cpp:23:5:int InputManager::getCurrentInput()	1
+InputManager.cpp:16:1:InputManager::~InputManager()	1
+InputManager.cpp:16:1:virtual InputManager::~InputManager()	1
+InputManager.cpp:21:6:void InputManager::readInput(uint8_t, bool)	12
+InputManager.cpp:66:9:uint8_t InputManager::getCurrentMovementInput()	1
+InputManager.cpp:70:6:bool InputManager::getCurrentShootInput()	1

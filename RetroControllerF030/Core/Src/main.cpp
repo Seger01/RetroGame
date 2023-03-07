@@ -179,22 +179,28 @@ static void MX_GPIO_Init(void) {
 /* USER CODE BEGIN 4 */
 void InputManagerMain() {
 	InputManager inputmanager;
-	unsigned int inputs = 0;
+
+	// reads controller inputs
 	bool up = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6); // 1
 	bool down = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7); // 2
 	bool left = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6); // 4
 	bool right = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7); // 8
 	bool shoot = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16
 
-	inputs = (up == 0) << 0 | (down == 0) << 1 | (left == 0) << 2
-			| (right == 0) << 3 | (shoot == 0) << 4;
+	// converts movement inputs to one number
+	uint8_t inputs = (up == 0) << 0 | (down == 0) << 1 | (left == 0) << 2
+			| (right == 0) << 3;
 
 	// up left is 5
 	// down right is 10
 	// down left is 6
 	// up right is 9
 
-	inputmanager.readInput(inputs);
+	// up and down is 3
+
+	// left right is 12
+
+	inputmanager.readInput(inputs, shoot);
 }
 /* USER CODE END 4 */
 
