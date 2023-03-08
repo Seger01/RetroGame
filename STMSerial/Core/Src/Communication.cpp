@@ -42,7 +42,7 @@ void Communication::sendEntities(Entity **entities) {
 
 	buffer[1] = 100;
 	buffer[2] = 100;
-	buffer[3]++;
+	buffer[3] = 3;
 
 	buffer[4] = 200;
 	buffer[5] = 200;

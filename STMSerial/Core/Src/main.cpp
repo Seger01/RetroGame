@@ -31,6 +31,8 @@ extern "C" {
 #include "Entity.h"
 #include "LevelManager.h"
 #include "Communication.h"
+
+#include "Game.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -361,21 +363,11 @@ void startSend(void *argument) {
 	}
 	fpgaReset();
 	/* Infinite loop */
-	Entity *entities[50];
 
-	LevelManager levelManager;
-
-	Communication communication(&hspi1);
-
-
+	Game game(&hspi1);
 
 	for (;;) {
-		osDelay(10);
-		communication.sendEntities(entities);
-
-		osDelay(10);
-		communication.sendMap(levelManager.getMap());
-
+		game.run();
 	}
 	/* USER CODE END 5 */
 }

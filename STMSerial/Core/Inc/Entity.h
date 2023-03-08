@@ -1,35 +1,62 @@
-/*
- * Entity.h
- *
- *  Created on: Feb 22, 2023
- */
-
-#ifndef SRC_ENTITY_H_
-#define SRC_ENTITY_H_
-
-#include "main.h"
-#include "cmsis_os.h"
-
-class Entity {
+#pragma once
+#include <string>
+//class tile {
+//private:
+//	int posY = 0;
+//	int posX = 0;
+//	int width = 16;
+//	int height = 16;
+//public:
+//	tile(int x, int y) { this->posX = x; this->posY = y; };
+//	int getPosX() { return posX; };
+//	int getPosY() { return posY; };
+//	int getWidth() {
+//		return width;
+//	}
+//	int getHeight() {
+//		return height;
+//	}
+//};
+//struct pointVector {
+//	int X;
+//	int Y;
+//
+//};
+class Entity
+{
 private:
-
-	uint8_t xPos = 123;
-	uint8_t yPos = 213;
-
-	uint8_t spriteId = 2;
-
-
-public:
-	Entity();
-	virtual ~Entity();
-
-	void setXPos(uint8_t newPos);
-	void setYPos(uint8_t newPos);
-
-	uint8_t getXPos();
-	uint8_t getYPos();
-	uint8_t getSpriteId();
+	std::string name;
+	int health = 1;
+	int strength = 0;
+	int speed = 0;
+	int textureID = 0;
+	pointVector position;
+	int width = 16;
+	int height = 16;
+public: 
+	void setTexture(int texture);
+	Entity(std::string name,int x,int y,int width,int height,int health,int speed, int strength);
+	pointVector getHalfSize();
+	void stepX(int);
+	void stepY(int);
+	void moveX(int);
+	void moveY(int);
+	void newLocation(int, int);
+	pointVector getStart();
+	std::string getName();
+	int getX();
+	int getY();
+	int getWidth();
+	int getHeight();
+	int getSpeed();
+	int getStrength();
+	void setHealth(int);
+	int getHealth();
+	pointVector getPosition();
+	virtual bool checkEntities(Entity& object);
+	virtual bool checkTiles(tile& object);
+	virtual void onCollide(Entity& object);
+	virtual void onDeath();
 
 };
 
-#endif /* SRC_ENTITY_H_ */
