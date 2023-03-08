@@ -1,18 +1,18 @@
 #include "bullet.h"
 #include "enemy.h"
-bullet::bullet(std::string name, int x, int y, int width, int height, int health, int speed, int strength) : entity(name, x, y, width, height, health, speed, strength) {
+Bullet::Bullet(std::string name, int x, int y, int width, int height, int health, int speed, int strength) : Entity(name, x, y, width, height, health, speed, strength) {
 	
 }
-void bullet::onCollide(entity& object) {
-	if(dynamic_cast<enemy*>(&object)) {
+void Bullet::onCollide(Entity& object) {
+	if(dynamic_cast<Enemy*>(&object)) {
 		object.setHealth(object.getHealth() - this->getStrength());
 	}
 }
-void bullet::onCollideWall() {
+void Bullet::onCollideWall() {
 }
-void bullet::setTravelDirection(int direction) {
+void Bullet::setTravelDirection(int direction) {
 	this->travelDirection = direction;
 }
-int bullet::getTravelDirection() {
+int Bullet::getTravelDirection() {
 	return travelDirection;
 }

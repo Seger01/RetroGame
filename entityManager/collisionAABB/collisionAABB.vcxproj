@@ -143,7 +143,7 @@
     <ClInclude Include="bullet.h" />
     <ClInclude Include="collision.h" />
     <ClInclude Include="enemy.h" />
-    <ClInclude Include="entity.h" />
+    <ClInclude Include="Entity.h" />
     <ClInclude Include="entityManager.h" />
     <ClInclude Include="item.h" />
     <ClInclude Include="player.h" />

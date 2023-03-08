@@ -5,12 +5,12 @@ class collider
 {
 public:
 	collider();
-	std::vector<entity*> getCubes();
+	std::vector<Entity*> getCubes();
 	void checkAll();
 	void checkMoved();
-	void moveEntity(entity*, int X, int Y);
-	bool checkTwo(entity &one, entity &two);
+	void moveEntity(Entity*, int X, int Y);
+	bool checkTwo(Entity &one, Entity &two);
 private:
-	std::vector<entity*> entityList;
+	std::vector<Entity*> entityList;
 
 };

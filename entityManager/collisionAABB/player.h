@@ -10,8 +10,8 @@
 
 class powerUpHandler {
 };
-class player :
-    public entity
+class Player :
+    public Entity
 {
 private:
     powerUpHandler PowerUpHandler;
@@ -20,8 +20,8 @@ private:
     int textureID = 1;
     int weapon = -1;
 public:
-    player(std::string name, int x, int y, int width, int height, int health, int speed, int strength);
-    void onCollide(entity& object) override;
+    Player(std::string name, int x, int y, int width, int height, int health, int speed, int strength);
+    void onCollide(Entity& object) override;
     void setTexture(int);
     int getDirection();
     void setDirection(int);

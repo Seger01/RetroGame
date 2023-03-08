@@ -8,7 +8,7 @@
 int main()
 {
     
-    simulator sim;
+    Simulator sim;
     sim.setup();
     while (true) {
         sim.loop();

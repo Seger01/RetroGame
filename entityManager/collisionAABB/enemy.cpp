@@ -1,14 +1,14 @@
 #include "enemy.h"
 #include "player.h"
-int enemy::getRemainingSteps() {
+int Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }
-void enemy::onCollide(entity& object) {
-	if (dynamic_cast<player*>(&object)) {
+void Enemy::onCollide(Entity& object) {
+	if (dynamic_cast<Player*>(&object)) {
 		object.setHealth(object.getHealth() - this->getStrength());
 
 	}
-	else if (dynamic_cast<enemy*>(&object)) {
+	else if (dynamic_cast<Enemy*>(&object)) {
 		if (stepsRemaining <= 0) { // Need to generate a new random direction
 			// Generate a random direction
 			directionX = rand() % 3 - 1; // Random integer between -1 and 1
@@ -17,20 +17,20 @@ void enemy::onCollide(entity& object) {
 		}
 	}
 }
-void enemy::onDeath() {
+void Enemy::onDeath() {
 
 }
-pointVector enemy::getDirection() {
+pointVector Enemy::getDirection() {
 	pointVector pos;
 	pos.X = directionX;
 	pos.Y = directionY;
 	return pos;
 }
-void enemy::decrementRemainingSteps() {
+void Enemy::decrementRemainingSteps() {
 	stepsRemaining--;
 }
-bool enemy::checkEntities(entity& object) {
-	if (dynamic_cast<item*>(&object)) {
+bool Enemy::checkEntities(Entity& object) {
+	if (dynamic_cast<Item*>(&object)) {
 		return false;
 	}
 	pointVector otherPosition = object.getPosition();

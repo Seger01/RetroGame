@@ -2,18 +2,18 @@
 #include "entity.h"
 #include <vector>
 
-class entityManager
+class EntityManager
 {
 private:
-	entity *entities[50];
+	Entity *entities[50];
 	//soundManager: SoundManager;
 	std::vector<tile*> collidableTiles;
 	std::vector<pointVector> spawnpoints;
 public:
-	entityManager(std::vector<tile*> collidableTiles);
-	virtual ~entityManager();
+	EntityManager(std::vector<tile*> collidableTiles);
+	virtual ~EntityManager();
 	void updateTiles(std::vector<tile*> collidableTiles);
-	entity** getEntities();
+	Entity** getEntities();
 	void playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight,bool playerShoot);
 	void spawnEntities(int currentLevel, int spawnDifficulty, int amountOfEnemies);
 	void clear();

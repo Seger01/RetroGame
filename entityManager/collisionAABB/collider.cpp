@@ -2,9 +2,9 @@
 #include <iostream>
 collider::collider() {
 	/*
-		entityList.push_back(new entity("cube 1",10,10, 10, 10));
-		entityList.push_back(new entity("cube 2", 30, 10, 10, 10));
-		entityList.push_back(new entity("cube 3", 30, 30, 10, 10));
+		entityList.push_back(new Entity("cube 1",10,10, 10, 10));
+		entityList.push_back(new Entity("cube 2", 30, 10, 10, 10));
+		entityList.push_back(new Entity("cube 3", 30, 30, 10, 10));
 		*/
 }
 void collider::checkAll() {
@@ -20,14 +20,14 @@ void collider::checkAll() {
 		}
 	}
 }
-std::vector<entity*> collider::getCubes() {
+std::vector<Entity*> collider::getCubes() {
 	return entityList;
 }
-void collider::moveEntity(entity* sprite, int X, int Y) {
+void collider::moveEntity(Entity* sprite, int X, int Y) {
 	
 
 }
-bool collider::checkTwo( entity &one,entity &two){
+bool collider::checkTwo( Entity &one,Entity &two){
 
 	return true;
 	/*

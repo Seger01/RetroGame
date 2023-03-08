@@ -1,12 +1,12 @@
 #pragma once
 #include "entity.h"
-class item :
-    public entity
+class Item :
+    public Entity
 {
 private:
     int itemType;
 public:
 
-    void onCollide(entity& object) override;
+    void onCollide(Entity& object) override;
 };
 

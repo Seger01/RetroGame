@@ -1,13 +1,13 @@
 #pragma once
 #include "entity.h"
-class bullet :
-    public entity
+class Bullet :
+    public Entity
 {
 private:
     int travelDirection = 0;
 public:
-    bullet(std::string name, int x, int y, int width, int height, int health, int speed, int strength);
-    void onCollide(entity& object) override;
+    Bullet(std::string name, int x, int y, int width, int height, int health, int speed, int strength);
+    void onCollide(Entity& object) override;
     void onCollideWall();
     void setTravelDirection(int);
     int getTravelDirection();

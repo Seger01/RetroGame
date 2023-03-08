@@ -1,17 +1,17 @@
 #include "simulator.h"
 #include <vector>
 #include <iostream>
-void simulator::setup() {
+void Simulator::setup() {
 	tile *wall1 = new tile(10, 20);
 	tile *wall2 = new tile(40, 20);
 	tiles.push_back(wall1);
 	tiles.push_back(wall2);
-	em = new entityManager(tiles);
+	em = new EntityManager(tiles);
     em->spawnEntities(1, 1, 3);
     
     //drawField();
 }
-void simulator::drawField() {
+void Simulator::drawField() {
     std::string field = "";
 
     // Create empty field
@@ -36,7 +36,7 @@ void simulator::drawField() {
     }
 
     // Add enemies to field
-    entity** entities = em->getEntities();
+    Entity** entities = em->getEntities();
     for (int i = 1; i < 50; i++) {
         if (entities[i] != nullptr) {
             int x = entities[i]->getX();
@@ -51,7 +51,7 @@ void simulator::drawField() {
         }
     }
 
-    // Add player to field
+    // Add Player to field
     if (entities[0] != nullptr) {
         int x = entities[0]->getX();
         int y = entities[0]->getY();
@@ -68,7 +68,7 @@ void simulator::drawField() {
     // Print field to console
     std::cout << field << std::endl;
 }
-void simulator::loop() {
+void Simulator::loop() {
   
     char input = '~';
     bool left = false;
@@ -103,7 +103,7 @@ void simulator::loop() {
     em->playerAction(up, down, left, right, shoot);
 	// Update entities
 	em->moveEntities();
-    entity** entityList = em->getEntities();
+    Entity** entityList = em->getEntities();
     for (int i = 0; i < 50; i++) {
         if (entityList[i] != nullptr) {
             std::cout << entityList[i]->getName() << std::endl;

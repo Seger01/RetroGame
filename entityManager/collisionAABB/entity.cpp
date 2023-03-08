@@ -1,7 +1,7 @@
 #include "entity.h"
 #include <iostream>
 
-entity::entity(std::string name, int x, int y, int width,int height, int health, int speed, int strength) {
+Entity::Entity(std::string name, int x, int y, int width,int height, int health, int speed, int strength) {
 	this->speed = speed;
 	this->health = health;
 	this->strength = strength;
@@ -11,63 +11,63 @@ entity::entity(std::string name, int x, int y, int width,int height, int health,
 	this->width = width;
 	this->height = height;
 }
-pointVector entity::getStart() {
+pointVector Entity::getStart() {
 	pointVector start;
 	pointVector half = getHalfSize();
 	start.X = this->position.X + half.X;
 	start.Y = this->position.Y + half.Y;
 	return start;
 }
-void entity::setHealth(int health) {
+void Entity::setHealth(int health) {
 	this->health = health;
 
 }
-int entity::getHealth() {
+int Entity::getHealth() {
 	return health;
 }
-pointVector entity::getHalfSize(){
+pointVector Entity::getHalfSize(){
 	pointVector halfsize;
 	halfsize.X = width / 2;
 	halfsize.Y = height / 2;
 	return halfsize;
 }
-std::string entity::getName() {
+std::string Entity::getName() {
 	return name;
 }
-void entity::moveX(int shift) {
+void Entity::moveX(int shift) {
 	this->position.X += shift;
 }
-void entity::moveY(int shift) {
+void Entity::moveY(int shift) {
 	this->position.Y += shift;
 }
 
 
-int entity::getWidth() {
+int Entity::getWidth() {
 	return width;
 }
-int entity::getHeight() {
+int Entity::getHeight() {
 	return height;
 }
-int entity::getX() {
+int Entity::getX() {
 	return position.X;
 }
-int entity::getY() 
+int Entity::getY() 
 {
 	return position.Y;
 }
-pointVector entity::getPosition() {
+pointVector Entity::getPosition() {
 	
 	return position;
 }
 
-int entity::getSpeed() {
+int Entity::getSpeed() {
 	return speed;
 }
 
-int entity::getStrength() {
+int Entity::getStrength() {
 	return strength;
 }
-void entity::stepX(int direction) {
+void Entity::stepX(int direction) {
 	if (direction == 1) {
 		this->position.X += speed;
 	}
@@ -75,7 +75,7 @@ void entity::stepX(int direction) {
 		this->position.X -= speed;
 	}
 }
-void entity::stepY(int direction) {
+void Entity::stepY(int direction) {
 	if (direction == 1) {
 		this->position.Y += speed;
 	}
@@ -83,12 +83,12 @@ void entity::stepY(int direction) {
 		this->position.Y -= speed;
 	}
 }
-void entity::setTexture(int texture) {
+void Entity::setTexture(int texture) {
 	textureID = texture;
 }
-void entity::onCollide(entity& object) {
+void Entity::onCollide(Entity& object) {
 }
-bool entity::checkTiles(tile& object) {
+bool Entity::checkTiles(tile& object) {
 	pointVector otherPosition;
 	otherPosition.X = object.getPosX();
 	otherPosition.Y = object.getPosY();
@@ -125,10 +125,10 @@ bool entity::checkTiles(tile& object) {
 	}
 	return false;
 }
-void entity::onDeath() {
+void Entity::onDeath() {
 
 }
-bool entity::checkEntities(entity& object) {
+bool Entity::checkEntities(Entity& object) {
 	pointVector otherPosition = object.getPosition();
 	pointVector otherHalfsize = object.getHalfSize();
 	pointVector thisPosition = this->getPosition();

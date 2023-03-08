@@ -1,22 +1,22 @@
 #include "player.h"
-player::player(std::string name, int x, int y, int width, int height, int health, int speed, int strength) : entity(name,x,y,width,height,health,speed,strength)
+Player::Player(std::string name, int x, int y, int width, int height, int health, int speed, int strength) : Entity(name,x,y,width,height,health,speed,strength)
 {
 
 }
-void player::onCollide(entity& object) {
-	if (dynamic_cast<boss*>(&object) || dynamic_cast<enemy*>(&object)) {
+void Player::onCollide(Entity& object) {
+	if (dynamic_cast<Boss*>(&object) || dynamic_cast<Enemy*>(&object)) {
 		this->setHealth(this->getHealth() - object.getStrength());
 		this->invincible = true;
 	}
-	else if (dynamic_cast<item*>(&object)) {
+	else if (dynamic_cast<Item*>(&object)) {
 		//power up
 		//powerUphandler.setPowerUp()
 	}
 }
-int player::getDirection() {
+int Player::getDirection() {
 	return direction;
 }
-void player::setDirection(int direction) {
+void Player::setDirection(int direction) {
 	this->direction = direction;
 	switch(direction) {
 	case 0:
@@ -34,7 +34,7 @@ void player::setDirection(int direction) {
 
 	}
 }	
-void player::onDeath(){
+void Player::onDeath(){
 	
 	//game over
 	

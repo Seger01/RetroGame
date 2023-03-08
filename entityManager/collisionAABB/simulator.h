@@ -1,9 +1,9 @@
 #pragma once
 #include "entityManager.h"
-class simulator
+class Simulator
 {
 private:
-	entityManager *em;
+	EntityManager *em;
 	std::vector<tile*> tiles;
 public:
 	void setup();

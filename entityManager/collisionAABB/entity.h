@@ -22,7 +22,7 @@ struct pointVector {
 	int Y;
 	
 };
-class entity
+class Entity
 {
 private:
 	std::string name;
@@ -35,7 +35,7 @@ private:
 	int height = 16;
 public: 
 	void setTexture(int texture);
-	entity(std::string name,int x,int y,int width,int height,int health,int speed, int strength);
+	Entity(std::string name,int x,int y,int width,int height,int health,int speed, int strength);
 	pointVector getHalfSize();
 	void stepX(int);
 	void stepY(int);
@@ -53,9 +53,9 @@ public:
 	void setHealth(int);
 	int getHealth();
 	pointVector getPosition();
-	virtual bool checkEntities(entity& object);
+	virtual bool checkEntities(Entity& object);
 	virtual bool checkTiles(tile& object);
-	virtual void onCollide(entity& object);
+	virtual void onCollide(Entity& object);
 	virtual void onDeath();
 
 };
