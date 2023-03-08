@@ -7,6 +7,7 @@ void simulator::setup() {
 	tiles.push_back(wall1);
 	tiles.push_back(wall2);
 	em = new entityManager(tiles);
+    em->spawnEntities(1, 1, 3);
     
     //drawField();
 }
@@ -74,6 +75,7 @@ void simulator::loop() {
     bool right = false;
     bool up = false;
     bool down = false;
+    bool shoot = false;
         std::cout << "please input wsda key" << std::endl;
         std::cout << "key:";
         std::cin >> input;
@@ -92,10 +94,13 @@ void simulator::loop() {
         case 's':
             down = true;
             break;
+        case 'q':
+            shoot = true;
+            break;
         default:
             break;
     }
-    em->playerAction(up, down, left, right, false);
+    em->playerAction(up, down, left, right, shoot);
 	// Update entities
 	em->moveEntities();
     entity** entityList = em->getEntities();

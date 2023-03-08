@@ -23,6 +23,7 @@ public:
     player(std::string name, int x, int y, int width, int height, int health, int speed, int strength);
     void onCollide(entity& object) override;
     void setTexture(int);
+    int getDirection();
     void setDirection(int);
     void onDeath() override;
 };

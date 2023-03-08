@@ -13,20 +13,23 @@ void player::onCollide(entity& object) {
 		//powerUphandler.setPowerUp()
 	}
 }
+int player::getDirection() {
+	return direction;
+}
 void player::setDirection(int direction) {
 	this->direction = direction;
 	switch(direction) {
 	case 0:
-		textureID = 0;
+		textureID = 1;
 		break;
 	case 1:
-		textureID = 0;
+		textureID = 2;
 		break;
 	case 2:
-		textureID = 0;
+		textureID = 3;
 		break;
 	case 3:
-		textureID = 0;
+		textureID = 4;
 		break;
 
 	}

@@ -11,6 +11,7 @@ private:
 	std::vector<pointVector> spawnpoints;
 public:
 	entityManager(std::vector<tile*> collidableTiles);
+	virtual ~entityManager();
 	void updateTiles(std::vector<tile*> collidableTiles);
 	entity** getEntities();
 	void playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight,bool playerShoot);
