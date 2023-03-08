@@ -310,7 +310,7 @@ void fpgaReset() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 	//HAL_Delay(100);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-	HAL_Delay(100);
+	HAL_Delay(10);
 
 //	for (int i = 0; i < 17; i++) {
 //		serialClockWrite(1);
@@ -365,15 +365,16 @@ void startSend(void *argument) {
 
 	LevelManager levelManager;
 
-	Communication communication;
+	Communication communication(&hspi1);
+
+
 
 	for (;;) {
-		osDelay(1);
-
+		osDelay(10);
 		communication.sendEntities(entities);
 
+		osDelay(10);
 		communication.sendMap(levelManager.getMap());
-
 
 	}
 	/* USER CODE END 5 */

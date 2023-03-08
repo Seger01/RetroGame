@@ -28,6 +28,8 @@ uint8_t* LevelManager::getMap(){
 	} else {
 		return levels[(currentMapNumber * 2) + 0][0];
 	}
+
+	return levels[(currentMapNumber * 2) + 0][0];
 }
 
 void LevelManager::setLevel(uint8_t level){
