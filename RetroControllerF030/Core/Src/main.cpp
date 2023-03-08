@@ -178,19 +178,19 @@ static void MX_GPIO_Init(void) {
 	/*Configure GPIO pins : PA6 PA7 PA9 */
 	GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_9;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
 	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : PC7 */
 	GPIO_InitStruct.Pin = GPIO_PIN_7;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
 	/*Configure GPIO pin : PB6 */
 	GPIO_InitStruct.Pin = GPIO_PIN_6;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
-	GPIO_InitStruct.Pull = GPIO_PULLUP;
+	GPIO_InitStruct.Pull = GPIO_PULLDOWN;
 	HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
 
 }
@@ -221,9 +221,10 @@ void InputRead(void const *argument) {
 		bool right = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7); // 8
 		bool shoot = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16
 
+
 		// converts movement inputs to one number
-		uint8_t inputs = (up == 0) << 0 | (down == 0) << 1 | (left == 0) << 2
-				| (right == 0) << 3;
+		uint8_t inputs = (up == 1) << 0 | (down == 1) << 1 | (left == 1) << 2
+				| (right == 1) << 3;
 
 		// up left is 5
 		// down right is 10
