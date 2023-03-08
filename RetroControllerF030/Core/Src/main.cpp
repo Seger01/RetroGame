@@ -19,7 +19,7 @@
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
 #include "InputManager.h"
-#include <stdbool.h>
+#include "cmsis_os.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -41,7 +41,7 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
-
+osThreadId InputManagerHandle;
 /* USER CODE BEGIN PV */
 
 /* USER CODE END PV */
@@ -49,7 +49,8 @@
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
-void InputManagerMain();
+void InputRead(void const *argument);
+
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -90,10 +91,38 @@ int main(void) {
 
 	/* USER CODE END 2 */
 
+	/* USER CODE BEGIN RTOS_MUTEX */
+	/* add mutexes, ... */
+	/* USER CODE END RTOS_MUTEX */
+
+	/* USER CODE BEGIN RTOS_SEMAPHORES */
+	/* add semaphores, ... */
+	/* USER CODE END RTOS_SEMAPHORES */
+
+	/* USER CODE BEGIN RTOS_TIMERS */
+	/* start timers, add new ones, ... */
+	/* USER CODE END RTOS_TIMERS */
+
+	/* USER CODE BEGIN RTOS_QUEUES */
+	/* add queues, ... */
+	/* USER CODE END RTOS_QUEUES */
+
+	/* Create the thread(s) */
+	/* definition and creation of InputManager */
+	osThreadDef(InputManager, InputRead, osPriorityNormal, 0, 128);
+	InputManagerHandle = osThreadCreate(osThread(InputManager), NULL);
+
+	/* USER CODE BEGIN RTOS_THREADS */
+	/* add threads, ... */
+	/* USER CODE END RTOS_THREADS */
+
+	/* Start scheduler */
+	osKernelStart();
+
+	/* We should never get here as control is now taken by the scheduler */
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
-		InputManagerMain();
 		/* USER CODE END WHILE */
 
 		/* USER CODE BEGIN 3 */
@@ -146,9 +175,6 @@ static void MX_GPIO_Init(void) {
 	__HAL_RCC_GPIOC_CLK_ENABLE();
 	__HAL_RCC_GPIOB_CLK_ENABLE();
 
-	/*Configure GPIO pin Output Level */
-	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_10, GPIO_PIN_RESET);
-
 	/*Configure GPIO pins : PA6 PA7 PA9 */
 	GPIO_InitStruct.Pin = GPIO_PIN_6 | GPIO_PIN_7 | GPIO_PIN_9;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -161,13 +187,6 @@ static void MX_GPIO_Init(void) {
 	GPIO_InitStruct.Pull = GPIO_PULLUP;
 	HAL_GPIO_Init(GPIOC, &GPIO_InitStruct);
 
-	/*Configure GPIO pin : PA10 */
-	GPIO_InitStruct.Pin = GPIO_PIN_10;
-	GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-	GPIO_InitStruct.Pull = GPIO_NOPULL;
-	GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
-	HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
-
 	/*Configure GPIO pin : PB6 */
 	GPIO_InitStruct.Pin = GPIO_PIN_6;
 	GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -177,32 +196,49 @@ static void MX_GPIO_Init(void) {
 }
 
 /* USER CODE BEGIN 4 */
-void InputManagerMain() {
-	InputManager inputmanager;
 
-	// reads controller inputs
-	bool up = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6); // 1
-	bool down = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7); // 2
-	bool left = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6); // 4
-	bool right = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7); // 8
-	bool shoot = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16
-
-	// converts movement inputs to one number
-	uint8_t inputs = (up == 0) << 0 | (down == 0) << 1 | (left == 0) << 2
-			| (right == 0) << 3;
-
-	// up left is 5
-	// down right is 10
-	// down left is 6
-	// up right is 9
-
-	// up and down is 3
-
-	// left right is 12
-
-	inputmanager.readInput(inputs, shoot);
-}
 /* USER CODE END 4 */
+
+/* USER CODE BEGIN Header_InputRead */
+/**
+ * @brief  Function implementing the InputManager thread.
+ * @param  argument: Not used
+ * @retval None
+ */
+/* USER CODE END Header_InputRead */
+void InputRead(void const *argument) {
+	/* USER CODE BEGIN 5 */
+
+	/* Infinite loop */
+	for (;;) {
+		osDelay(500);
+		InputManager inputmanager;
+
+		// reads controller inputs
+		bool up = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6); // 1
+		bool down = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7); // 2
+		bool left = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6); // 4
+		bool right = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7); // 8
+		bool shoot = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16
+
+		// converts movement inputs to one number
+		uint8_t inputs = (up == 0) << 0 | (down == 0) << 1 | (left == 0) << 2
+				| (right == 0) << 3;
+
+		// up left is 5
+		// down right is 10
+		// down left is 6
+		// up right is 9
+
+		// up and down is 3
+
+		// left right is 12
+
+		inputmanager.readInput(inputs, shoot);
+
+	}
+	/* USER CODE END 5 */
+}
 
 /**
  * @brief  This function is executed in case of error occurrence.

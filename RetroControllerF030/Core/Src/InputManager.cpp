@@ -55,7 +55,7 @@ void InputManager::readInput(uint8_t controllerMovement, bool controllerShoot) {
 	}
 
 	// checks and sets shoot button
-	if(!controllerShoot) {
+	if(controllerShoot) {
 		inputShootResult = 1;
 	}
 
