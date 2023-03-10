@@ -17,10 +17,9 @@ public:
 	virtual ~InputManager();
 	uint8_t getCurrentMovementInput();
 	bool getCurrentShootInput();
-	void readInput(uint8_t inputMovement, bool inputShoot);
+	uint8_t readInput();
 private:
 	uint8_t inputMovementResult;
-	bool inputShootResult;
 };
 
 #endif /* INPUTMANAGER_H_ */
