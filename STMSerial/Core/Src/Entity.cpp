@@ -1,11 +1,10 @@
 #include "entity.h"
 #include <iostream>
 
-Entity::Entity(std::string name, uint8_t x, uint8_t y, uint8_t width,uint8_t height, uint8_t health, uint8_t speed,uint8_t strength) {
+Entity::Entity( uint8_t x, uint8_t y, uint8_t width,uint8_t height, uint8_t health, uint8_t speed,uint8_t strength) {
 	this->speed = speed;
 	this->health = health;
 	this->strength = strength;
-	this->name = name;
 	this->position.X = x;
 	this->position.Y = y;
 	this->width = width;
@@ -31,9 +30,7 @@ pointVector Entity::getHalfSize(){
 	halfsize.Y = height / 2;
 	return halfsize;
 }
-std::string Entity::getName() {
-	return name;
-}
+
 void Entity::moveX(int shift) {
 	this->position.X += (int)shift;
 }

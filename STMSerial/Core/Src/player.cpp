@@ -1,6 +1,6 @@
 #include "player.h"
 #include "boss.h"
-Player::Player(std::string name, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength) : Entity(name,x,y,width,height,health,speed,strength)
+Player::Player(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength) : Entity(x,y,width,height,health,speed,strength)
 {
 
 }

@@ -26,7 +26,6 @@ struct pointVector {
 class Entity
 {
 private:
-	std::string name;
 	uint8_t health = 1;
 	uint8_t strength = 0;
 	uint8_t speed = 0;
@@ -36,7 +35,7 @@ private:
 	uint8_t height = 16;
 public: 
 	void setTexture(uint8_t texture);
-	Entity(std::string name,uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
+	Entity(uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
 	pointVector getHalfSize();
 	void stepX(int);
 	void stepY(int);
@@ -44,7 +43,6 @@ public:
 	void moveY(int);
 	void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
-	std::string getName();
 	uint8_t getX();
 	uint8_t getY();
 	uint8_t getWidth();
