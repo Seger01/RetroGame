@@ -131,23 +131,29 @@
     <ClCompile Include="bullet.cpp" />
     <ClCompile Include="collider.cpp" />
     <ClCompile Include="collisionAABB.cpp" />
+    <ClCompile Include="Communication.cpp" />
     <ClCompile Include="enemy.cpp" />
     <ClCompile Include="entity.cpp" />
     <ClCompile Include="entityManager.cpp" />
     <ClCompile Include="item.cpp" />
+    <ClCompile Include="LevelManager.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="simulator.cpp" />
+    <ClCompile Include="Tile.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="boss.h" />
     <ClInclude Include="bullet.h" />
-    <ClInclude Include="collision.h" />
+    <ClInclude Include="Communication.h" />
     <ClInclude Include="enemy.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="entityManager.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="item.h" />
+    <ClInclude Include="LevelManager.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="simulator.h" />
+    <ClInclude Include="Tile.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

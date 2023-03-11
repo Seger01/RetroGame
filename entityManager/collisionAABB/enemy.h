@@ -4,18 +4,18 @@ class Enemy : public Entity
 {
 private:
 	bool elite = false;
-	int directionX = 0;
-	int directionY = 0;
-	int stepsRemaining;
+	uint8_t directionX = 0;
+	uint8_t directionY = 0;
+	uint8_t stepsRemaining = 0;
 
 public:
-	Enemy(std::string name, int x, int y, int width, int height, int health, int speed, int strength) : Entity(name, x, y, width, height, health, speed, strength) {};
-	void onCollide(Entity& object) override;
+	Enemy(std::string name, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength) : Entity(name, x, y, width, height, health, speed, strength) {};
+	void onCollide(Entity *object) override;
 	void onDeath() override;
-	int getRemainingSteps();
+	uint8_t getRemainingSteps();
 	pointVector getDirection();
 	void decrementRemainingSteps();
-	bool checkEntities(Entity& object) override;
+	bool checkEntities(Entity *object) override;
 
 };
 

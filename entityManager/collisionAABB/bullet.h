@@ -4,12 +4,12 @@ class Bullet :
     public Entity
 {
 private:
-    int travelDirection = 0;
+    uint8_t travelDirection = 0;
 public:
-    Bullet(std::string name, int x, int y, int width, int height, int health, int speed, int strength);
-    void onCollide(Entity& object) override;
+    Bullet(std::string name, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength);
+    void onCollide(Entity *object) override;
     void onCollideWall();
-    void setTravelDirection(int);
-    int getTravelDirection();
+    void setTravelDirection(uint8_t);
+    uint8_t getTravelDirection();
 };
 

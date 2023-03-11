@@ -7,55 +7,10 @@
 #include "entity.h"
 
 #include <vector>
-EntityManager::EntityManager(std::vector<Tile*>* collidableTiles) {
-	int tile_size = 16;
-	int map_width = 15 * tile_size;
-	int map_height = 16 * tile_size;
-
-	// Calculate top row plusses
-	int top_row_y = tile_size / 2;
-	int top_row_x_start = (map_width - 3 * tile_size) / 2;
-	for (int i = 0; i < 3; i++) {
-		int x = top_row_x_start + i * tile_size;
-		pointVector spawnpoint;
-		spawnpoint.X = x;
-		spawnpoint.Y = top_row_y;
-		spawnpoints.push_back(spawnpoint);
-	}
-
-	// Calculate bottom row plusses
-	int bottom_row_y = map_height - tile_size / 2;
-	int bottom_row_x_start = (map_width - 3 * tile_size) / 2;
-	for (int i = 0; i < 3; i++) {
-		int x = bottom_row_x_start + i * tile_size;
-		pointVector spawnpoint;
-		spawnpoint.X = x;
-		spawnpoint.Y = bottom_row_y;
-		spawnpoints.push_back(spawnpoint);
-	}
-
-	// Calculate left column plusses
-	int left_col_x = tile_size / 2;
-	int left_col_y_start = (map_height - 4 * tile_size) / 2;
-	for (int i = 0; i < 4; i++) {
-		int y = left_col_y_start + i * tile_size;
-		pointVector spawnpoint;
-		spawnpoint.X = left_col_x;
-		spawnpoint.Y = y;
-		spawnpoints.push_back(spawnpoint);
-	}
-
-	// Calculate right column plusses
-	int right_col_x = map_width - tile_size / 2;
-	int right_col_y_start = (map_height - 4 * tile_size) / 2;
-	for (int i = 0; i < 4; i++) {
-		int y = right_col_y_start + i * tile_size;
-		pointVector spawnpoint;
-		spawnpoint.X = right_col_x;
-		spawnpoint.Y = y;
-		spawnpoints.push_back(spawnpoint);
-	}
-	for (int i = 1; i < 50; i++) {
+EntityManager::EntityManager(std::vector<Tile*>* collidableTiles, std::vector<Tile*>* spawnpoints){
+	this->collidableTiles = collidableTiles;
+	this->spawnpoints = spawnpoints;
+	for (uint8_t i = 1; i < 50; i++) {
 		entities[i] = nullptr;
 	}
 
@@ -64,18 +19,20 @@ EntityManager::EntityManager(std::vector<Tile*>* collidableTiles) {
 	 entities[2] = new Enemy("mob2", 20, 20, 16, 16, 2, 2, 1);
 	 entities[3] = new Enemy("mob3", 100, 100, 16, 16, 2, 2, 1);
 	 */
-	this->collidableTiles = collidableTiles;
+
 
 }
 EntityManager::~EntityManager() {
-	for (int i = 0; i < 50; i++) {
+	for (uint8_t i = 0; i < 50; i++) {
 		delete entities[i];
 	}
+	delete spawnpoints;
+	delete collidableTiles;
 }
 Entity** EntityManager::getEntities() {
 	return entities;
 }
-void EntityManager::updateTiles(std::vector<Tile*> collidableTiles) {
+void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
 	this->collidableTiles = collidableTiles;
 }
 void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
@@ -125,7 +82,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
 			bulletStart.Y = 0;
 			break;
 		}
-		for (int i = 45; i < 50; i++) {
+		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
 
 				entities[i] = new Bullet("pew pew", bulletStart.X,
@@ -138,58 +95,61 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
 	}
 }
 void EntityManager::clear() {
-	for (int i = 1; i < 50; i++) {
+	for (uint8_t i = 1; i < 50; i++) {
 		delete entities[i];
 		entities[i] = nullptr;
 	}
 }
-void EntityManager::spawnEntities(int currentLevel, int spawnDifficulty,
-		int amountOfEnemies) {
-//	int openSpawns = 3;
-//	if (currentLevel > 15) {
-//		openSpawns = 14;
-//	}
-//	else if (currentLevel > 10) {
-//		openSpawns = 10;
-//	}
-//	else if (currentLevel > 5) {
-//		openSpawns = 7;
-//	}
+void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
+		uint8_t amountOfEnemies) {
+	std::vector<int> used_indices;
 	int spawned = 0;
-//	std::vector<int> used_indices;
-//	while (spawned < amountOfEnemies) {
-//		int random_index = rand() % openSpawns;
-//		if (std::find(used_indices.begin(), used_indices.end(), random_index) == used_indices.end()) {
-//			used_indices.push_back(random_index);
-//			pointVector p = spawnpoints[random_index];
-//			Enemy *e = new Enemy("mob",p.X,p.Y,16,16,1,1,1);
-//			for (int i = 2; i < 45; i++) {
-//				if (entities[i] == nullptr) {
-//					entities[i] = e;
-//					spawned++;
-//					break;
-//				}
-//
-//			}
-//
-//		}
-//	}
-
-	Enemy *e = new Enemy("mob",100,100,16,16,1,1,1);
-
-	for (int i = 2; i < 45; i++) {
-		if (entities[i] == nullptr) {
-			entities[i] = e;
-			spawned++;
-			break;
+	int num_spawnpoints = spawnpoints->size();
+	while (spawned < amountOfEnemies && used_indices.size() < num_spawnpoints) {
+		int random_index = rand() % num_spawnpoints;
+		bool index_used = false;
+		for (int i = 0; i < used_indices.size(); i++) {
+			if (used_indices[i] == random_index) {
+				index_used = true;
+				break;
+			}
 		}
-
+		if (!index_used) {
+			used_indices.push_back(random_index);
+			pointVector p;
+			p.X = spawnpoints->at(random_index)->getPosX();
+			p.Y = spawnpoints->at(random_index)->getPosY();
+			bool spawn_occupied = false;
+			for (Entity* e : entities) {
+				if (e != nullptr && e->getX() == p.X && e->getY() == p.Y) {
+					spawn_occupied = true;
+					break;
+				}
+			}
+			if (!spawn_occupied) {
+				Entity* e = new Enemy("mob", p.X, p.Y, 16, 16, 1, 1, 1);
+				for (uint8_t i = 1; i < 45; i++) {
+					if (entities[i] == nullptr) {
+						entities[i] = e;
+						spawned++;
+						break;
+					}
+				}
+			}
+		}
 	}
+
 }
-void EntityManager::moveEntities() {
+void EntityManager::updateEntities() {
 
 	pointVector playerPos = entities[0]->getPosition();
-	for (int i = 1; i < 50; i++) {
+	for (uint8_t i = 1; i < 50; i++) {
+		if (entities[i] != nullptr) {
+			if (entities[i]->getHealth() <= 0) {
+				delete entities[i];
+				entities[i] = nullptr;
+			}
+		}
 		int x = 0;
 		int y = 0;
 		if (dynamic_cast<Enemy*>(entities[i])) {
@@ -199,8 +159,9 @@ void EntityManager::moveEntities() {
 				enemyPtr->stepX(direction.X);
 				enemyPtr->stepY(direction.Y);
 				enemyPtr->decrementRemainingSteps();
+				break;
 			}
-			pointVector enemyPos = entities[i]->getPosition();
+			pointVector enemyPos = enemyPtr->getPosition();
 			if (playerPos.X < enemyPos.X) {
 				x = -1;
 			} else if (playerPos.X > enemyPos.X) {
@@ -214,7 +175,7 @@ void EntityManager::moveEntities() {
 		} else if (dynamic_cast<Bullet*>(entities[i])) {
 
 			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
-			int direction = bulletPtr->getTravelDirection();
+			uint8_t direction = bulletPtr->getTravelDirection();
 
 			switch (direction) {
 			case 0:
@@ -235,42 +196,43 @@ void EntityManager::moveEntities() {
 		moveEntity(i, x, y);
 	}
 }
-void EntityManager::moveEntity(int toBeMoved, int x, int y) {
+void EntityManager::moveEntity(uint8_t toBeMoved, int x, int y) {
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-	for (int j = 0; j < 50; j++) {
+	for (uint8_t j = 0; j < 50; j++) {
 		if (entities[toBeMoved]
 				== entities[j]|| entities[j] == NULL || entities[toBeMoved] == NULL) {
 			continue;
 		}
-		if (entities[toBeMoved]->checkEntities(*entities[j])) {
+		if (entities[toBeMoved]->checkEntities(entities[j])) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
 				bulletPtr->onCollideWall();
-				bulletPtr->onCollide(*entities[j]);
+				bulletPtr->onCollide(entities[j]);
 				entities[toBeMoved] = nullptr;
-				delete bulletPtr;
+				delete entities[toBeMoved];
 				break;
 			}
-			entities[toBeMoved]->onCollide(*entities[j]);
+			entities[toBeMoved]->onCollide(entities[j]);
 			std::cout << entities[toBeMoved]->getName() << " collides with "
 					<< entities[j]->getName() << std::endl;
 		}
 	}
-	for (int j = 0; j < collidableTiles.size(); j++) {
+	for (uint8_t j = 0; j < collidableTiles->size(); j++) {
 		if (entities[toBeMoved] == NULL) {
 			continue;
 		}
-		if (entities[toBeMoved]->checkTiles(*collidableTiles[j])) {
+		if (entities[toBeMoved]->checkTiles(collidableTiles->at(j))) {
+			std::cout << entities[toBeMoved]->getName() << " collides with wall" << std::endl;
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
+				
 				bulletPtr->onCollideWall();
-
+				delete entities[toBeMoved];
 				entities[toBeMoved] = nullptr;
-				delete bulletPtr;
+				
 			}
-			std::cout << entities[toBeMoved]->getName() << " collides with wall"
-					<< std::endl;
+			
 		}
 
 	}

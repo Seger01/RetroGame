@@ -1,22 +1,23 @@
 #include "player.h"
-Player::Player(std::string name, int x, int y, int width, int height, int health, int speed, int strength) : Entity(name,x,y,width,height,health,speed,strength)
+#include "boss.h"
+Player::Player(std::string name, uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength) : Entity(name,x,y,width,height,health,speed,strength)
 {
 
 }
-void Player::onCollide(Entity& object) {
-	if (dynamic_cast<Boss*>(&object) || dynamic_cast<Enemy*>(&object)) {
-		this->setHealth(this->getHealth() - object.getStrength());
+void Player::onCollide(Entity *object) {
+	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
+		this->setHealth(this->getHealth() - object->getStrength());
 		this->invincible = true;
 	}
-	else if (dynamic_cast<Item*>(&object)) {
+	else if (dynamic_cast<Item*>(object)) {
 		//power up
 		//powerUphandler.setPowerUp()
 	}
 }
-int Player::getDirection() {
+uint8_t Player::getDirection() {
 	return direction;
 }
-void Player::setDirection(int direction) {
+void Player::setDirection(uint8_t direction) {
 	this->direction = direction;
 	switch(direction) {
 	case 0:

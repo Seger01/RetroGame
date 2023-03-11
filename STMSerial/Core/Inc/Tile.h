@@ -9,7 +9,8 @@
 #define SRC_TILE_H_
 
 #include "main.h"
-#include "cmsis_os.h"
+#include <cstdint>
+//#include "cmsis_os.h"
 
 class Tile {
 public:

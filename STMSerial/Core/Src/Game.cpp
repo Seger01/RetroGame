@@ -23,8 +23,8 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 	communication = new Communication(hspi1);
 
 	levelManager.getCollidables(&collidableTiles);
-
-	entityManager = new EntityManager(&collidableTiles);
+	levelManager.getSpawnpoints(&spawnPoints);
+	entityManager = new EntityManager(&collidableTiles,&spawnPoints);
 }
 
 

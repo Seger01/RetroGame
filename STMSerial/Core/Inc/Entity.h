@@ -1,61 +1,62 @@
 #pragma once
 #include <string>
+#include "Tile.h"
 //class tile {
 //private:
-//	int posY = 0;
-//	int posX = 0;
-//	int width = 16;
-//	int height = 16;
+//	uint8_t posY = 0;
+//	uint8_t posX = 0;
+//	uint8_t width = 16;
+//	uint8_t height = 16;
 //public:
-//	tile(int x, int y) { this->posX = x; this->posY = y; };
-//	int getPosX() { return posX; };
-//	int getPosY() { return posY; };
-//	int getWidth() {
+//	tile(uint8_t x, uint8_t y) { this->posX = x; this->posY = y; };
+//	uint8_t getPosX() { return posX; };
+//	uint8_t getPosY() { return posY; };
+//	uint8_t getWidth() {
 //		return width;
 //	}
-//	int getHeight() {
+//	uint8_t getHeight() {
 //		return height;
 //	}
 //};
-//struct pointVector {
-//	int X;
-//	int Y;
-//
-//};
+struct pointVector {
+	uint8_t X;
+	uint8_t Y;
+
+};
 class Entity
 {
 private:
 	std::string name;
-	int health = 1;
-	int strength = 0;
-	int speed = 0;
-	int textureID = 0;
+	uint8_t health = 1;
+	uint8_t strength = 0;
+	uint8_t speed = 0;
+	uint8_t textureID = 0;
 	pointVector position;
-	int width = 16;
-	int height = 16;
+	uint8_t width = 16;
+	uint8_t height = 16;
 public: 
-	void setTexture(int texture);
-	Entity(std::string name,int x,int y,int width,int height,int health,int speed, int strength);
+	void setTexture(uint8_t texture);
+	Entity(std::string name,uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
 	pointVector getHalfSize();
 	void stepX(int);
 	void stepY(int);
 	void moveX(int);
 	void moveY(int);
-	void newLocation(int, int);
+	void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
 	std::string getName();
-	int getX();
-	int getY();
-	int getWidth();
-	int getHeight();
-	int getSpeed();
-	int getStrength();
-	void setHealth(int);
-	int getHealth();
+	uint8_t getX();
+	uint8_t getY();
+	uint8_t getWidth();
+	uint8_t getHeight();
+	uint8_t getSpeed();
+	uint8_t getStrength();
+	void setHealth(uint8_t);
+	uint8_t getHealth();
 	pointVector getPosition();
-	virtual bool checkEntities(Entity& object);
-	virtual bool checkTiles(tile& object);
-	virtual void onCollide(Entity& object);
+	virtual bool checkEntities(Entity *object);
+	virtual bool checkTiles(Tile *object);
+	virtual void onCollide(Entity *object);
 	virtual void onDeath();
 
 };

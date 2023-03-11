@@ -46,6 +46,7 @@ private:
 private:
 
 	std::vector<Tile*> collidableTiles;
+	std::vector<Tile*> spawnPoints;
 
 	SPI_HandleTypeDef *hspi1;
 };

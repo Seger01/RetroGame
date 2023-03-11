@@ -46,7 +46,7 @@ bool Tile::getIsSpawnpoint(){
 	return this->isSpawnpoint;
 }
 
-uint8_t Tile::getPosX(){
+uint8_t Tile::getPosX() {
 	return posX;
 }
 uint8_t Tile::getPosY(){

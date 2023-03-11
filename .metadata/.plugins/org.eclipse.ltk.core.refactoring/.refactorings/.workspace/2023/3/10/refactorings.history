@@ -1,0 +1,3 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">&#x0A;<refactoring comment="Delete resource &apos;STMSerial/Core/Src/collider.cpp&apos;" deleteContents="false" description="Delete resource &apos;STMSerial/Core/Src/collider.cpp&apos;" element1="/STMSerial/Core/Src/collider.cpp" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1678441462600"/>&#x0A;<refactoring comment="Delete resource &apos;STMSerial/Core/Inc/collision.h&apos;" deleteContents="false" description="Delete resource &apos;STMSerial/Core/Inc/collision.h&apos;" element1="/STMSerial/Core/Inc/collision.h" flags="7" id="org.eclipse.ltk.core.refactoring.delete.resources" resources="1" stamp="1678441476113"/>
+</session>
