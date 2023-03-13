@@ -56,6 +56,7 @@ public:
 	virtual bool checkTiles(Tile *object);
 	virtual void onCollide(Entity *object);
 	virtual void onDeath();
+	int getTexture();
 
 };
 

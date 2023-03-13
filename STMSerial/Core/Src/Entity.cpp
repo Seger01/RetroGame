@@ -30,7 +30,9 @@ pointVector Entity::getHalfSize(){
 	halfsize.Y = height / 2;
 	return halfsize;
 }
-
+int Entity::getTexture() {
+	return textureID;
+}
 void Entity::moveX(int shift) {
 	this->position.X += (int)shift;
 }

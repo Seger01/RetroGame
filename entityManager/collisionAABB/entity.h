@@ -36,6 +36,7 @@ private:
 	uint8_t height = 16;
 public: 
 	void setTexture(uint8_t texture);
+	int getTexture();
 	Entity(std::string name,uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
 	pointVector getHalfSize();
 	void stepX(int);

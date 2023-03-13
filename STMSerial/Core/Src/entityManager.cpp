@@ -14,7 +14,7 @@ EntityManager::EntityManager(std::vector<Tile*>* collidableTiles, std::vector<Ti
 		entities[i] = nullptr;
 	}
 
-	entities[0] = new Player( 60, 60, 16, 16, 20, 2, 1);
+	//entities[0] = new Player( 60, 60, 16, 16, 20, 2, 1);
 	/*entities[1] = new Enemy("mob1", 0, 0, 16, 16, 2, 2, 1);
 	 entities[2] = new Enemy("mob2", 20, 20, 16, 16, 2, 2, 1);
 	 entities[3] = new Enemy("mob3", 100, 100, 16, 16, 2, 2, 1);
@@ -99,6 +99,9 @@ void EntityManager::clear() {
 		delete entities[i];
 		entities[i] = nullptr;
 	}
+}
+void EntityManager::spawnPlayer(int x, int y, int speed, int health, int strength) {
+	entities[0] = new Player(x,y, 16, 16, health, speed, strength);
 }
 void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 		uint8_t amountOfEnemies) {
