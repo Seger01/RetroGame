@@ -1,13 +1,13 @@
 ----------------------------------------------------------------------------------
--- Company: -
--- Engineer: Martijn Kamphof
+-- Company:         -
+-- Engineer:        Martijn Kamphof
 -- 
--- Create Date: 07.03.2023 19:39:42
+-- Create Date:     07.03.2023 19:39:42
 -- Design Name: 
--- Module Name: EntityCOEAdressSelector - Behavioral
--- Project Name: Retro Game
--- Target Devices: Digilent Basys 3
--- Tool Versions: Vivado 2022.1
+-- Module Name:     EntityCOEAdressSelector - Behavioral
+-- Project Name:    Retro Game
+-- Target Devices:  Digilent Basys 3
+-- Tool Versions:   Vivado 2022.1
 -- Description: 
 -- 
 -- Dependencies: 
@@ -15,49 +15,89 @@
 -- Revision:
 -- Revision 0.01 - File Created
 -- Additional Comments:
--- All entities and tiles RGB outputs will be controlled by the CollorOutputSelector
 ----------------------------------------------------------------------------------
+--todo add all 48 functionality
+LIBRARY IEEE;
+USE IEEE.STD_LOGIC_1164.ALL;
+USE IEEE.NUMERIC_STD.ALL;
 
-library IEEE;
-use IEEE.STD_LOGIC_1164.ALL;
-use IEEE.NUMERIC_STD.ALL;
-
-entity EntityCOEAdressSelector is
-    GENERIC
+ENTITY EntityCOEAdressSelector IS
+	GENERIC
 	(
-		-- PIXEL COUNT
-		--OBJECT_PIXELS_HIGHT_AND_WITH   : INTEGER := 16
-		ENTITY_AMOUNT                : INTEGER := 50;
-		ENTITY_ROM_ADRESS_BIT_SIZE   : INTEGER := 7
+	    ENTITY_AMOUNT              : INTEGER := 48;
+		Entity_ROM_ADRESS_BIT_SIZE : INTEGER := 11;
+		INDEX_BIT_SIZE             : INTEGER := 3;
+		PALLET_BIT_SIZE            : INTEGER := 11;
+		RGB_BIT_AMOUNT             : INTEGER := 12
 	);
-	PORT
+	PORT (
+        -- inputs
+        reset, clk       : IN  STD_LOGIC;
+        -- VGA module connections
+        AdressIn         : IN unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE+1) - 1 DOWNTO 0); 
+        RGBOut           : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+	);
+END EntityCOEAdressSelector;
+
+ARCHITECTURE Behavioral OF EntityCOEAdressSelector IS
+	SIGNAL AdressOut : unsigned(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL IndexNr   : STD_LOGIC_VECTOR(INDEX_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
+
+	COMPONENT Entity_ROM IS
+		PORT (
+			clka  : IN  STD_LOGIC;
+			addra : IN  STD_LOGIC_VECTOR (Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			douta : OUT STD_LOGIC_VECTOR (2 DOWNTO 0)
+		);
+	END COMPONENT;
+	COMPONENT ColorPalletSelector IS
+		GENERIC
+		(
+			INDEX_BIT_SIZE  : INTEGER := INDEX_BIT_SIZE;
+			PALLET_BIT_SIZE : INTEGER := PALLET_BIT_SIZE;
+			RGB_BIT_AMOUNT  : INTEGER := RGB_BIT_AMOUNT
+		);
+		PORT (
+			-- inputs
+			reset, clk : IN  STD_LOGIC;
+			-- VGA module connections
+			IndexIn    : IN  unsigned(INDEX_BIT_SIZE - 1 DOWNTO 0);
+			PalletIn   : IN  unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
+			RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
+BEGIN
+	Entity_ROM0 : Entity_ROM PORT MAP(
+		clka  => clk,
+		-- Lowest position in RGBin vector is given the highest priorety.		
+		addra => STD_LOGIC_VECTOR(AdressOut),
+		douta => IndexNr
+	);
+	ColorPalletSelector0 : ColorPalletSelector GENERIC
+	MAP
 	(
-		-- inputs
-		reset, clk       : IN  STD_LOGIC;
-		-- VGA module connections
-		AdressIn         : IN unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE+1) - 1 DOWNTO 0);
-		AdressOut        : OUT unsigned(ENTITY_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0)
+        INDEX_BIT_SIZE  => INDEX_BIT_SIZE,
+        PALLET_BIT_SIZE => PALLET_BIT_SIZE,
+        RGB_BIT_AMOUNT  => RGB_BIT_AMOUNT
+	)
+	PORT MAP(
+		reset    => reset,
+		clk      => clk,
+		IndexIn  => unsigned (IndexNr),
+		PalletIn => PalletNr,
+		RGBOut   => RGBOut
 	);
-end EntityCOEAdressSelector;
 
-architecture Behavioral of EntityCOEAdressSelector is
-	SIGNAL TransparenAddress  : unsigned (ENTITY_ROM_ADRESS_BIT_SIZE DOWNTO 0) := (others => '1');    --todo: optimalize???
+	PROCESS (reset, clk)
+	BEGIN
+		IF (reset = '1') THEN
+			AdressOut <= (OTHERS => '0');
+			PalletNr  <= (OTHERS => '0');
 
-begin
-    TransparenAddress <= (others => '1');
-    
-    process(reset, clk)
-    begin
-        if (reset = '1') then
-            AdressOut <= (others => '0');
-        elsif (rising_edge (clk)) then
-            FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
-                -- check if AdressIn size ENTITY_ROM_ADRESS_BIT_SIZE+1  not is TransparenAddress.
-                if (AdressIn(count*(ENTITY_ROM_ADRESS_BIT_SIZE+1) + ENTITY_ROM_ADRESS_BIT_SIZE downto count*(ENTITY_ROM_ADRESS_BIT_SIZE+1)) /= TransparenAddress) then
-                    -- set AdressIn size ENTITY_ROM_ADRESS_BIT_SIZE adress
-                    AdressOut <= AdressIn(count*(ENTITY_ROM_ADRESS_BIT_SIZE+1) + ENTITY_ROM_ADRESS_BIT_SIZE-1 downto count*(ENTITY_ROM_ADRESS_BIT_SIZE+1));
-                end if;
-            END LOOP;
-        end if;
-    end process;
-end Behavioral;
+		ELSIF (rising_edge (clk)) THEN
+			AdressOut <= AdressIn(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			PalletNr  <= (OTHERS => '0'); --todo add
+		END IF;
+	END PROCESS;
+END Behavioral;

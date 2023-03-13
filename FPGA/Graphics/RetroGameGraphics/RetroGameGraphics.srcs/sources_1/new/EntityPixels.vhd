@@ -18,19 +18,17 @@
 -- All entities and tiles RGB outputs will be controlled by the CollorOutputSelector
 ----------------------------------------------------------------------------------
 
+
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-ENTITY EntityPixels IS
+entity EntityPixels is
 	GENERIC
 	(
 		-- VGA, start visible part of screen
 		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
 		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
-		-- total visible screen
-		SCREAN_WIDTH                   : INTEGER := 640;
-		SCREAN_HIGHT                   : INTEGER := 480;
 		-- ENTITY SIZE
 		ENTITY_X_BIT_SIZE              : INTEGER := 8;
 		ENTITY_Y_BIT_SIZE              : INTEGER := 8;
@@ -56,20 +54,21 @@ ENTITY EntityPixels IS
 		dataVector     : IN  unsigned((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
 		-- VGA module connections
 		Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
-		-- ROM block entity
 		entityAdress   : OUT unsigned(ENTITY_ROM_ADRESS_BIT_SIZE DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
-	);
-END EntityPixels;
+		);
+end EntityPixels;
 
-ARCHITECTURE Behavioral OF EntityPixels IS
+architecture Behavioral of EntityPixels is
 	SIGNAL XVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 	SIGNAL YVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
+
 BEGIN
 	-- convert Xcount and Ycount to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
 	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA
 	XVGA <= (((unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - PLAYFIELD_PIXELS_START_OFFSET;
 	YVGA <= ((unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
+
 
 	PROCESS (reset, clk)
 		VARIABLE vEntityXPosition : NATURAL RANGE 0 TO 255 := 0;

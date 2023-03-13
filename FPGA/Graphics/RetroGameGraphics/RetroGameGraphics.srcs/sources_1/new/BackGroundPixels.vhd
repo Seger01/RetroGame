@@ -44,7 +44,10 @@ ENTITY BackGroundPixels IS
 		OFFSET_CLK_TO_ROM              : INTEGER := 2;
 		-- vga
 		PIXEL_SCALING                  : INTEGER := 2;
-		BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := 7
+		BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := 7;
+		INDEX_BIT_SIZE                 : INTEGER := 3;
+		PALLET_BIT_SIZE                : INTEGER := 11;
+		RGB_BIT_AMOUNT                 : INTEGER := 12
 	);
 	PORT (
         debugIn          : IN  UNSIGNED(15 DOWNTO 0); -- Debug switches
@@ -55,8 +58,7 @@ ENTITY BackGroundPixels IS
 		Xcount, Ycount   : IN  UNSIGNED(9 DOWNTO 0);-- VGA current pixel number todo: add ofset
 		-- vector with map tile numbers		-- tile number starting top left going left to richt and down
 		tileNumberVector  : IN  UNSIGNED((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
-		-- ROM block entity
-        entityAdress   : OUT UNSIGNED(BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0) -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+		RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
 	);
 END BackGroundPixels;
 	
@@ -71,6 +73,22 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 			douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
 		);
 	END COMPONENT;
+	COMPONENT BackgroundCOEAdressSelector IS
+		GENERIC
+		(
+			BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := 11;
+			INDEX_BIT_SIZE             : INTEGER := 11;
+			PALLET_BIT_SIZE            : INTEGER := 11;
+			RGB_BIT_AMOUNT             : INTEGER := 12
+		);
+		PORT (
+			-- inputs
+			reset, clk : IN  STD_LOGIC;
+			-- VGA module connections
+			AdressIn   : IN  unsigned (BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+			RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
 	
 	SIGNAL XVGA : INTEGER range 0 to 1023 := 0;
 	SIGNAL YVGA : INTEGER range 0 to 511 := 0;
@@ -79,9 +97,25 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	SIGNAL tileRGB : UNSIGNED(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
 	SIGNAL tileAdress : UNSIGNED(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 	SIGNAL tileMapNumber : UNSIGNED(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
-	SIGNAL temp1 : INTEGER range -5000 to 500000 := 0; --todo: calc max
-	
+	SIGNAL temp1 : INTEGER range -5000 to 500000 := 0; --todo: calc max	
+    -- ROM block entity
+    SIGNAL entityAdress   : UNSIGNED(BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+    
 BEGIN    
+	BackgroundCOEAdressSelector0 : BackgroundCOEAdressSelector GENERIC
+	MAP(
+        BACKGROUND_ROM_ADRESS_BIT_SIZE => BACKGROUND_ROM_ADRESS_BIT_SIZE,
+        INDEX_BIT_SIZE             => INDEX_BIT_SIZE,
+        PALLET_BIT_SIZE            => PALLET_BIT_SIZE,
+        RGB_BIT_AMOUNT             => RGB_BIT_AMOUNT
+	)
+	PORT MAP(
+		reset    => reset,
+		clk      => clk,
+		AdressIn => entityAdress,
+		RGBOut   => RGBOut
+	);
+	
     -- convert Xcount and Yco`unt to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
 	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA

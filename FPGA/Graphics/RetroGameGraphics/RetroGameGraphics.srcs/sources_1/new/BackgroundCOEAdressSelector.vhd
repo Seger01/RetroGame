@@ -25,7 +25,10 @@ use IEEE.NUMERIC_STD.ALL;
 entity BackgroundCOEAdressSelector is
     GENERIC
 	(
-		BACKGROUND_ROM_ADRESS_BIT_SIZE   : INTEGER := 11
+		BACKGROUND_ROM_ADRESS_BIT_SIZE   : INTEGER := 11;
+		INDEX_BIT_SIZE             : INTEGER := 3;
+		PALLET_BIT_SIZE            : INTEGER := 11;
+		RGB_BIT_AMOUNT             : INTEGER := 12
 	);
 	PORT
 	(
@@ -33,20 +36,69 @@ entity BackgroundCOEAdressSelector is
 		reset, clk       : IN  STD_LOGIC;
 		-- VGA module connections
 		AdressIn         : IN unsigned(BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0);
-		AdressOut        : OUT unsigned(BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0)
+		RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
 	);
 end BackgroundCOEAdressSelector;
 
 architecture Behavioral of BackgroundCOEAdressSelector is
+    SIGNAL AdressOut : unsigned( Background_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL IndexNr   : STD_LOGIC_VECTOR(INDEX_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
 
-begin
-    process(reset, clk)
-    begin
-        if (reset = '1') then
-            AdressOut <= (others => '0');
-        elsif (rising_edge (clk)) then
-            AdressOut <= AdressIn(BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0);
-        end if;
-    end process;
-end Behavioral;
+	COMPONENT  Background_ROM IS
+		PORT (
+			clka  : IN  STD_LOGIC;
+			addra : IN  STD_LOGIC_VECTOR ( Background_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			douta : OUT STD_LOGIC_VECTOR (2 DOWNTO 0)
+		);
+	END COMPONENT;
+	COMPONENT ColorPalletSelector IS
+		GENERIC
+		(
+			INDEX_BIT_SIZE  : INTEGER := INDEX_BIT_SIZE;
+			PALLET_BIT_SIZE : INTEGER := PALLET_BIT_SIZE;
+			RGB_BIT_AMOUNT  : INTEGER := RGB_BIT_AMOUNT
+		);
+		PORT (
+			-- inputs
+			reset, clk : IN  STD_LOGIC;
+			-- VGA module connections
+			IndexIn    : IN  unsigned(INDEX_BIT_SIZE - 1 DOWNTO 0);
+			PalletIn   : IN  unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
+			RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
+BEGIN
+	 Background_ROM0 :  Background_ROM PORT MAP(
+		clka  => clk,
+		-- Lowest position in RGBin vector is given the highest priorety.		
+		addra => STD_LOGIC_VECTOR(AdressOut),
+		douta => IndexNr
+	);
+	ColorPalletSelector0 : ColorPalletSelector GENERIC
+	MAP
+	(
+        INDEX_BIT_SIZE  => INDEX_BIT_SIZE,
+        PALLET_BIT_SIZE => PALLET_BIT_SIZE,
+        RGB_BIT_AMOUNT  => RGB_BIT_AMOUNT
+	)
+	PORT MAP(
+		reset    => reset,
+		clk      => clk,
+		IndexIn  => unsigned (IndexNr),
+		PalletIn => PalletNr,
+		RGBOut   => RGBOut
+	);
 
+	PROCESS (reset, clk)
+	BEGIN
+		IF (reset = '1') THEN
+			AdressOut <= (OTHERS => '0');
+			PalletNr  <= (OTHERS => '0');
+
+		ELSIF (rising_edge (clk)) THEN
+			AdressOut <= AdressIn( Background_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			PalletNr  <= (OTHERS => '0'); --todo add
+		END IF;
+	END PROCESS;
+END Behavioral;

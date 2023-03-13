@@ -45,7 +45,10 @@ ENTITY BossPixels IS
 		-- vga
 		PIXEL_SCALING                  : INTEGER := 2;
 		-- EntityPixels
-		BOSS_ROM_ADRESS_BIT_SIZE       : INTEGER := 7
+		BOSS_ROM_ADRESS_BIT_SIZE       : INTEGER := 7;
+		INDEX_BIT_SIZE                 : INTEGER := 4;
+		PALLET_BIT_SIZE                : INTEGER := 11;
+		RGB_BIT_AMOUNT                 : INTEGER := 12
 	);
 	PORT (
 		debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
@@ -55,15 +58,33 @@ ENTITY BossPixels IS
 		-- x, y position, entity nuber
 		dataVector     : IN  unsigned((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
 		-- VGA module connections
-		Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
-		-- ROM block entity
-		entityAdress   : OUT unsigned(BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
-	);
+		Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset		
+		RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+    );
 END BossPixels;
 
 ARCHITECTURE Behavioral OF BossPixels IS
 	SIGNAL XVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
-	SIGNAL YVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
+	SIGNAL YVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset                     -- VGA current pixel number todo: add ofset
+	-- ROM block entity
+	SIGNAL entityAdress : unsigned(BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0); -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+
+	COMPONENT BossCOEAdressSelector IS
+		GENERIC
+		(
+			BOSS_ROM_ADRESS_BIT_SIZE   : INTEGER := 11;
+			INDEX_BIT_SIZE             : INTEGER := 11;
+			PALLET_BIT_SIZE            : INTEGER := 11;
+			RGB_BIT_AMOUNT             : INTEGER := 12
+		);
+		PORT (
+			-- inputs
+			reset, clk : IN  STD_LOGIC;
+			-- VGA module connections
+			AdressIn   : IN  unsigned (BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+            RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
 BEGIN
 	-- convert Xcount and Ycount to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
@@ -71,6 +92,19 @@ BEGIN
 	XVGA <= (((unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - PLAYFIELD_PIXELS_START_OFFSET;
 	YVGA <= ((unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 
+	
+	BossCOEAdressSelector0 : BossCOEAdressSelector GENERIC MAP(
+		BOSS_ROM_ADRESS_BIT_SIZE => BOSS_ROM_ADRESS_BIT_SIZE,
+        INDEX_BIT_SIZE             => INDEX_BIT_SIZE,
+        PALLET_BIT_SIZE            => PALLET_BIT_SIZE,
+        RGB_BIT_AMOUNT             => RGB_BIT_AMOUNT
+	)PORT MAP(
+		reset     => reset,
+		clk       => clk,
+		AdressIn  => entityAdress,
+		RGBOut   => RGBOut
+	);
+	
 	PROCESS (reset, clk)
 		VARIABLE vEntityXPosition : NATURAL RANGE 0 TO 255 := 0;
 		VARIABLE vEntityYPosition : NATURAL RANGE 0 TO 255 := 0;
