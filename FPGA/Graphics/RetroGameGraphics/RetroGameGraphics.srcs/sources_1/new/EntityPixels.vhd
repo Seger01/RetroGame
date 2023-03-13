@@ -49,7 +49,7 @@ ENTITY EntityPixels IS
 	);
 	PORT (
 		debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
-		debugOut       : OUT unsigned(14 DOWNTO 0); -- Debug Leds
+		debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
 		-- inputs
 		reset, clk     : IN  STD_LOGIC;
 		-- x, y position, entity nuber
@@ -57,7 +57,7 @@ ENTITY EntityPixels IS
 		-- VGA module connections
 		Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 		-- ROM block entity
-		entityAdress   : OUT unsigned(ENTITY_ROM_ADRESS_BIT_SIZE+1 DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+		entityAdress   : OUT unsigned(ENTITY_ROM_ADRESS_BIT_SIZE DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
 	);
 END EntityPixels;
 

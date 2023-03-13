@@ -1,0 +1,6 @@
+verilog xil_defaultlib  \
+"../../../../RetroGameGraphics.gen/sources_1/ip/BackgroundTiles/sim/BackgroundTiles.v" \
+
+verilog xil_defaultlib "glbl.v"
+
+nosort

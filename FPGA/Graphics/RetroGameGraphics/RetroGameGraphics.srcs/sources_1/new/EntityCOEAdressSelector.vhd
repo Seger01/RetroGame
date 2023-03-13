@@ -28,7 +28,6 @@ entity EntityCOEAdressSelector is
 		-- PIXEL COUNT
 		--OBJECT_PIXELS_HIGHT_AND_WITH   : INTEGER := 16
 		ENTITY_AMOUNT                : INTEGER := 50;
-		RGB_BIT_AMOUNT               : INTEGER := 12;
 		ENTITY_ROM_ADRESS_BIT_SIZE   : INTEGER := 7
 	);
 	PORT
@@ -36,25 +35,27 @@ entity EntityCOEAdressSelector is
 		-- inputs
 		reset, clk       : IN  STD_LOGIC;
 		-- VGA module connections
-		AdressIn         : IN unsigned(ENTITY_AMOUNT * RGB_BIT_AMOUNT - 1 DOWNTO 0);
-		AdressOut        : OUT unsigned(RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		AdressIn         : IN unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE+1) - 1 DOWNTO 0);
+		AdressOut        : OUT unsigned(ENTITY_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0)
 	);
 end EntityCOEAdressSelector;
 
 architecture Behavioral of EntityCOEAdressSelector is
-	SIGNAL TransparenAddress  : unsigned (ENTITY_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0) := (others => '1');    --todo: optimalize???
+	SIGNAL TransparenAddress  : unsigned (ENTITY_ROM_ADRESS_BIT_SIZE DOWNTO 0) := (others => '1');    --todo: optimalize???
 
 begin
     TransparenAddress <= (others => '1');
     
-    process(clk)
+    process(reset, clk)
     begin
         if (reset = '1') then
             AdressOut <= (others => '0');
         elsif (rising_edge (clk)) then
             FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
-                if (AdressIn(count*RGB_BIT_AMOUNT - 1 + RGB_BIT_AMOUNT downto count*RGB_BIT_AMOUNT) /= TransparenAddress) then
-                    AdressOut <= AdressIn(count*RGB_BIT_AMOUNT - 1 + RGB_BIT_AMOUNT downto count*RGB_BIT_AMOUNT);
+                -- check if AdressIn size ENTITY_ROM_ADRESS_BIT_SIZE+1  not is TransparenAddress.
+                if (AdressIn(count*(ENTITY_ROM_ADRESS_BIT_SIZE+1) + ENTITY_ROM_ADRESS_BIT_SIZE downto count*(ENTITY_ROM_ADRESS_BIT_SIZE+1)) /= TransparenAddress) then
+                    -- set AdressIn size ENTITY_ROM_ADRESS_BIT_SIZE adress
+                    AdressOut <= AdressIn(count*(ENTITY_ROM_ADRESS_BIT_SIZE+1) + ENTITY_ROM_ADRESS_BIT_SIZE-1 downto count*(ENTITY_ROM_ADRESS_BIT_SIZE+1));
                 end if;
             END LOOP;
         end if;

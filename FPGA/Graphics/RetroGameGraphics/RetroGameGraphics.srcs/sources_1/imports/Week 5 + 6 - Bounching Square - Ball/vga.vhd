@@ -21,12 +21,13 @@ ENTITY VGA IS
 	(
 		-- size of visible part screen
 		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
-		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31
+		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
+		RGB_BIT_AMOUNT   : INTEGER := 31
 	);
 	PORT (
 		reset, clk_25  : IN  STD_LOGIC;
-		RGBin          : IN  unsigned(3 DOWNTO 0);
-		RGBout         : OUT unsigned(3 DOWNTO 0);
+		RGBin          : IN  unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
+		RGBout         : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
 		Xcount, Ycount : OUT unsigned(9 DOWNTO 0);
 		hsync, vsync   : OUT STD_LOGIC
 	);

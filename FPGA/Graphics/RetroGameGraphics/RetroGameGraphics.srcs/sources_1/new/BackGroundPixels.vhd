@@ -25,16 +25,17 @@ use IEEE.NUMERIC_STD.ALL;
 
 ENTITY BackGroundPixels IS
 	GENERIC (
-		-- size of visible part screen
+		-- VGA, start visible part of screen
 		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
 		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
+		-- total visible screen
 		SCREAN_WIDTH                   : INTEGER := 640;
 		SCREAN_HIGHT                   : INTEGER := 480;
 		-- amount of tiles visible on screan
 		TILE_AMOUNT                    : INTEGER := (15 * 15);
 		TILE_AMOUNT_HIGHT              : INTEGER := 15;
 		TILE_AMOUNT_WITH               : INTEGER := 15;
-		TILE_SCREEN_PIXEL_START_OFFSET : INTEGER := 16 +16 +8;
+		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 +16 +8;
 		-- amount of bit to identify one tile
 		TILE_NUMBER_SIZE               : INTEGER := 6;
 		TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16;
@@ -42,20 +43,23 @@ ENTITY BackGroundPixels IS
 		OFFSET_CLK_TO_VGA              : INTEGER := 3; --todo: calc for this one (horizontal move background)
 		OFFSET_CLK_TO_ROM              : INTEGER := 2;
 		-- vga
-		PIXEL_SCALING                  : INTEGER := 2
+		PIXEL_SCALING                  : INTEGER := 2;
+		BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := 7
 	);
 	PORT (
-        debugIn          : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
-        debugOut         : OUT STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
+        debugIn          : IN  UNSIGNED(15 DOWNTO 0); -- Debug switches
+        debugOut         : OUT UNSIGNED(15 DOWNTO 0); -- Debug Leds
 		-- inputs
 		reset, clk    : IN  STD_LOGIC;
 		-- VGA module connections
-		Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
+		Xcount, Ycount   : IN  UNSIGNED(9 DOWNTO 0);-- VGA current pixel number todo: add ofset
 		-- vector with map tile numbers		-- tile number starting top left going left to richt and down
-		tileNumberVector  : IN  STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
-		Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+		tileNumberVector  : IN  UNSIGNED((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
+		-- ROM block entity
+        entityAdress   : OUT UNSIGNED(BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0) -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
 	);
 END BackGroundPixels;
+	
 ARCHITECTURE Behavioral OF BackGroundPixels IS
     -- Tile RGB data
     -- Bit 7 6 5 4 3 2 1 0
@@ -72,25 +76,16 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	SIGNAL YVGA : INTEGER range 0 to 511 := 0;
 	-- Tile
 	SIGNAL currentTileXYPosition : UNSIGNED(7 downto 0);
-	SIGNAL tileRGB : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
-	SIGNAL tileAdress : STD_LOGIC_VECTOR(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
-	SIGNAL tileMapNumber : STD_LOGIC_VECTOR(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
+	SIGNAL tileRGB : UNSIGNED(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
+	SIGNAL tileAdress : UNSIGNED(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
+	SIGNAL tileMapNumber : UNSIGNED(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
 	SIGNAL temp1 : INTEGER range -5000 to 500000 := 0; --todo: calc max
 	
-BEGIN
-	-- map ports
-	AllBackgroundTiles0 : AllBackgroundTiles
-	PORT MAP
-	(
-		clka  => clk,
-		addra => tileAdress,
-		douta => tileRGB
-	);
-    
+BEGIN    
     -- convert Xcount and Yco`unt to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
 	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA
-	XVGA <= ((to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - TILE_SCREEN_PIXEL_START_OFFSET;
+	XVGA <= ((to_integer(unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - PLAYFIELD_PIXELS_START_OFFSET;
 	YVGA <= (to_integer(unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 	
 	-- get current tile number to display on screan + offset
@@ -125,10 +120,8 @@ BEGIN
 		-- if reset
 		IF (reset = '1') THEN
 			-- default values
-			-- and set color to black
-			Rout <= (OTHERS => '0');
-			Gout <= (OTHERS => '0');
-			Bout <= (OTHERS => '0');
+			-- set back ground ROM address
+			entityAdress <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
 			temp := (OTHERS => '0');
 			debugOut <= (OTHERS => '0');-- used for debug
@@ -136,10 +129,8 @@ BEGIN
 			-- if clk rising_edge
 		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
-			-- set back ground collor
-			Rout <= (OTHERS => '0');
-			Gout <= (OTHERS => '0');
-			Bout <= (OTHERS => '0');
+			-- set back ground ROM address
+			entityAdress <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
 			debugOut <= (OTHERS => '0'); -- used for debug
 			
@@ -165,16 +156,7 @@ BEGIN
 			     temp := resize((unsigned(tileMapNumber) * TILE_PIXEL_HIGHT_AND_WITH*TILE_PIXEL_HIGHT_AND_WITH) + currentTileXYPosition, temp'length);	
 			end if;
 			
-			tileAdress <= STD_LOGIC_VECTOR(temp); --todo: offsett			
-			
-			-- if currend displayed pixel is in visible part of screen.
-			IF       (((XVGA >= 0)                                  AND (YVGA >= 0) 
-			     AND  ((XVGA + (TILE_SCREEN_PIXEL_START_OFFSET*2)) < (SCREAN_WIDTH /PIXEL_SCALING))   AND (YVGA < (SCREAN_HIGHT /PIXEL_SCALING)))) THEN -- //todo:add ofset and explane (TILE_SCREEN_PIXEL_START_OFFSET)
-				--display object whith this color todo background tiles are never transparrent 
-                Rout <=         tileRGB(7 downto 5) & tileRGB(7);
-                Gout <=         tileRGB(4 downto 2) & tileRGB(4);
-                Bout <= "0" &   tileRGB(1 downto 0) & tileRGB(1);   
-			END IF;
+			tileAdress <= temp; --todo: offsett
 		END IF;
 	END PROCESS;
 END Behavioral;

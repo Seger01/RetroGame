@@ -49,21 +49,39 @@ ENTITY PlayerPixels IS
 	);
 	PORT (
 		debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
-		debugOut       : OUT unsigned(14 DOWNTO 0); -- Debug Leds
+		debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
 		-- inputs
 		reset, clk     : IN  STD_LOGIC;
 		-- x, y position, entity nuber
 		dataVector     : IN  unsigned((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
 		-- VGA module connections
-		Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
-		-- ROM block entity
-		entityAdress   : OUT unsigned(PLAYER_ROM_ADRESS_BIT_SIZE+1 DOWNTO 0)  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+		Xcount, Ycount : IN  unsigned(9 DOWNTO 0) -- VGA current pixel number todo: add ofset
 	);
 END PlayerPixels;
 
+
+
 ARCHITECTURE Behavioral OF PlayerPixels IS
+	COMPONENT PlayerCOEAdressSelector IS
+		GENERIC
+		(
+			PLAYER_ROM_ADRESS_BIT_SIZE   : INTEGER := PLAYER_ROM_ADRESS_BIT_SIZE
+		);
+		PORT (
+			-- inputs
+			reset, clk : IN  STD_LOGIC;
+			-- VGA module connections
+			AdressIn   : IN  unsigned (PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+			AdressOut  : OUT unsigned (PLAYER_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0)
+		);
+	END COMPONENT;
 	SIGNAL XVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
 	SIGNAL YVGA : unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
+	
+	
+    -- ROM block entity
+    SIGNAL entityAdress   : unsigned(PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
+    
 BEGIN
 	-- convert Xcount and Ycount to X,Y values on visible part of screen
 	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
@@ -71,6 +89,17 @@ BEGIN
 	XVGA <= (((unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - PLAYFIELD_PIXELS_START_OFFSET;
 	YVGA <= ((unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
 
+
+	PlayerCOEAdressSelector0 : PlayerCOEAdressSelector GENERIC MAP(
+		PLAYER_ROM_ADRESS_BIT_SIZE => PLAYER_ROM_ADRESS_BIT_SIZE
+	)
+	PORT MAP(
+		reset     => reset,
+		clk       => clk,
+		AdressIn  => entityAdress,
+		AdressOut => Player_COE_Adress
+	);
+	
 	PROCESS (reset, clk)
 		VARIABLE vEntityXPosition : NATURAL RANGE 0 TO 255 := 0;
 		VARIABLE vEntityYPosition : NATURAL RANGE 0 TO 255 := 0;

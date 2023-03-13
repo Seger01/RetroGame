@@ -33,19 +33,19 @@ entity PlayerCOEAdressSelector is
 		reset, clk       : IN  STD_LOGIC;
 		-- VGA module connections
 		AdressIn         : IN unsigned(PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);
-		AdressOut        : OUT unsigned(PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0)
+		AdressOut        : OUT unsigned(PLAYER_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0)
 	);
 end PlayerCOEAdressSelector;
 
 architecture Behavioral of PlayerCOEAdressSelector is
 
 begin
-    process(clk)
+    process(reset, clk)
     begin
         if (reset = '1') then
             AdressOut <= (others => '0');
         elsif (rising_edge (clk)) then
-            AdressOut <= AdressIn;
+            AdressOut <= AdressIn(PLAYER_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0);
         end if;
     end process;
 end Behavioral;

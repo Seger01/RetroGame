@@ -33,19 +33,19 @@ entity BossCOEAdressSelector is
 		reset, clk       : IN  STD_LOGIC;
 		-- VGA module connections
 		AdressIn         : IN unsigned(BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0);
-		AdressOut        : OUT unsigned(BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0)
+		AdressOut        : OUT unsigned(BOSS_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0)
 	);
 end BossCOEAdressSelector;
 
 architecture Behavioral of BossCOEAdressSelector is
 
 begin
-    process(clk)
+    process(reset, clk)
     begin
         if (reset = '1') then
             AdressOut <= (others => '0');
         elsif (rising_edge (clk)) then
-            AdressOut <= AdressIn;
+            AdressOut <= AdressIn(BOSS_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0);
         end if;
     end process;
 end Behavioral;
