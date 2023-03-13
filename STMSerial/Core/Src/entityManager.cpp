@@ -7,19 +7,18 @@
 #include "entity.h"
 
 #include <vector>
-EntityManager::EntityManager(std::vector<Tile*>* collidableTiles, std::vector<Tile*>* spawnpoints){
+EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
 	this->collidableTiles = collidableTiles;
 	this->spawnpoints = spawnpoints;
 	for (uint8_t i = 1; i < 50; i++) {
 		entities[i] = nullptr;
 	}
 
-	entities[0] = new Player( 60, 60, 16, 16, 20, 2, 1);
+	entities[0] = new Player(60, 60, 16, 16, 20, 2, 1);
 	/*entities[1] = new Enemy("mob1", 0, 0, 16, 16, 2, 2, 1);
 	 entities[2] = new Enemy("mob2", 20, 20, 16, 16, 2, 2, 1);
 	 entities[3] = new Enemy("mob3", 100, 100, 16, 16, 2, 2, 1);
 	 */
-
 
 }
 EntityManager::~EntityManager() {
@@ -35,8 +34,7 @@ Entity** EntityManager::getEntities() {
 void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
 	this->collidableTiles = collidableTiles;
 }
-void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
-		bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
+void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
 	int x = 0;
 	int y = 0;
 	Player *playerPtr = dynamic_cast<Player*>(entities[0]);
@@ -85,8 +83,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
 		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
 
-				entities[i] = new Bullet(bulletStart.X,
-						bulletStart.Y, 4, 4, 1, 5, playerPtr->getStrength());
+				entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 4, 4, 1, 5, playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());
 				break;
@@ -100,8 +97,7 @@ void EntityManager::clear() {
 		entities[i] = nullptr;
 	}
 }
-void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
-		uint8_t amountOfEnemies) {
+void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies) {
 	std::vector<int> used_indices;
 	int spawned = 0;
 	int num_spawnpoints = spawnpoints->size();
@@ -120,14 +116,14 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 			p.X = spawnpoints->at(random_index)->getPosX();
 			p.Y = spawnpoints->at(random_index)->getPosY();
 			bool spawn_occupied = false;
-			for (Entity* e : entities) {
+			for (Entity *e : entities) {
 				if (e != nullptr && e->getX() == p.X && e->getY() == p.Y) {
 					spawn_occupied = true;
 					break;
 				}
 			}
 			if (!spawn_occupied) {
-				Entity* e = new Enemy(p.X, p.Y, 16, 16, 1, 1, 1);
+				Entity *e = new Enemy(p.X, p.Y, 16, 16, 1, 1, 1);
 				for (uint8_t i = 1; i < 45; i++) {
 					if (entities[i] == nullptr) {
 						entities[i] = e;
@@ -200,8 +196,7 @@ void EntityManager::moveEntity(uint8_t toBeMoved, int x, int y) {
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
 	for (uint8_t j = 0; j < 50; j++) {
-		if (entities[toBeMoved]
-				== entities[j]|| entities[j] == NULL || entities[toBeMoved] == NULL) {
+		if (entities[toBeMoved] == entities[j] || entities[j] == NULL || entities[toBeMoved] == NULL) {
 			continue;
 		}
 		if (entities[toBeMoved]->checkEntities(entities[j])) {
@@ -223,13 +218,13 @@ void EntityManager::moveEntity(uint8_t toBeMoved, int x, int y) {
 		if (entities[toBeMoved]->checkTiles(collidableTiles->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-				
+
 				bulletPtr->onCollideWall();
 				delete entities[toBeMoved];
 				entities[toBeMoved] = nullptr;
-				
+
 			}
-			
+
 		}
 
 	}

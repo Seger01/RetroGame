@@ -15,4 +15,6 @@
 
 #define maxAmountOfEntities 50
 
+#define timeBetweenEnemySpawns 5000
+
 #endif /* INC_CONFIG_H_ */

@@ -8,10 +8,8 @@
 #ifndef SRC_GAME_H_
 #define SRC_GAME_H_
 
-
 #include "main.h"
 #include "cmsis_os.h"
-
 
 extern "C" {
 #include "FreeRTOS.h"
@@ -21,8 +19,14 @@ extern "C" {
 #include "Entity.h"
 #include "LevelManager.h"
 #include "Communication.h"
+#include "InputManager.h"
+
 
 #include "entitymanager.h"
+
+enum GameState {
+	Reset, Startup, SwitchingLevels, PlayingLevel, MainMenu
+};
 
 class Game {
 public:
@@ -30,20 +34,22 @@ public:
 	Game(SPI_HandleTypeDef *hspi1);
 	virtual ~Game();
 
-
 	void run();
 
 private:
-	Entity *entities[50];
-
 	LevelManager levelManager;
 
-	Communication* communication;
+	InputManager inputManager;
 
-	EntityManager* entityManager;
+	Communication *communication;
+
+	EntityManager *entityManager;
+
 
 
 private:
+
+	GameState currentState = Startup;
 
 	std::vector<Tile*> collidableTiles;
 	std::vector<Tile*> spawnPoints;

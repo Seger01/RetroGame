@@ -23,7 +23,7 @@ LevelManager::~LevelManager() {
 }
 
 uint8_t* LevelManager::getMap(){
-	if(xTaskGetTickCount() % (timeBetweenLevelAnimationsMs * 2) >= timeBetweenLevelAnimationsMs){
+	if (xTaskGetTickCount() % (timeBetweenLevelAnimationsMs * 2) >= timeBetweenLevelAnimationsMs){
 		return levels[(currentMapNumber * 2) + 1][0];
 	} else {
 		return levels[(currentMapNumber * 2) + 0][0];
