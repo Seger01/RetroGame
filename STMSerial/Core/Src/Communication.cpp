@@ -46,7 +46,7 @@ void Communication::sendEntities(Entity **entities) {
 	 continue;
 	 buffer[(j * 3) + 0 + 1] = entities[j]->getStart().X;
 	 buffer[(j * 3) + 1 + 1] = entities[j]->getStart().Y;
-	 buffer[(j * 3) + 2 + 1] = entities[j]->();
+	 buffer[(j * 3) + 2 + 1] = entities[j]->getTexture();
 	 }
 	HAL_SPI_Transmit(hspi1, (uint8_t*) buffer, 226, 100);
 }

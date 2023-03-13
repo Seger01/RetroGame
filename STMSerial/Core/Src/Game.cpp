@@ -26,6 +26,8 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 	levelManager.getCollidables(&collidableTiles);
 	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
+
+	entityManager->spawnPlayer(60, 100, 2, 20, 10);
 }
 
 void Game::run() {
@@ -49,22 +51,22 @@ void Game::run() {
 
 		static long long spawnTimer = 0;
 
-
 		inputs = inputManager.readInput();
 
-		entityManager->playerAction((HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
-				(inputs & (1 << 4)) >> 4);
+//		entityManager->playerAction((inputs & (1 << 0)) >> 0 , (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
+//						(inputs & (1 << 4)) >> 4);
+		entityManager->playerAction(0, 0, !(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), 0, 0);
 
-		if (spawnTimer < xTaskGetTickCount()) {
-			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
-			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-			entityManager->spawnEntities(0, 0, 5);
-			remainingEnemies -= 5;
-			if (remainingEnemies < 0){
-				remainingEnemies = 0;
-
-			}
-		}
+//		if (spawnTimer < xTaskGetTickCount()) {
+//			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
+//			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
+//			entityManager->spawnEntities(0, 0, 5);
+//			remainingEnemies -= 5;
+//			if (remainingEnemies < 0) {
+//				remainingEnemies = 0;
+//
+//			}
+//		}
 
 		break;
 

@@ -40,7 +40,9 @@ void Entity::moveX(int shift) {
 void Entity::moveY(int shift) {
 	this->position.Y += (int)shift;
 }
-
+int Entity::getTexture() {
+	return textureID;
+}
 
 uint8_t Entity::getWidth() {
 	return width;

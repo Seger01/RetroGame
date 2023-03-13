@@ -22,6 +22,9 @@ EntityManager::EntityManager(std::vector<Tile*>* collidableTiles, std::vector<Ti
 
 
 }
+void EntityManager::spawnPlayer(int x, int y, int speed, int health, int strength) {
+	entities[0] = new Player("player1", x,y, 16, 16, health, speed, strength);
+}
 EntityManager::~EntityManager() {
 	for (uint8_t i = 0; i < 50; i++) {
 		delete entities[i];

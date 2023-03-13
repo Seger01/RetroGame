@@ -22,7 +22,6 @@ void Simulator::setup() {
 }
 
 void Simulator::loop() {
-  
     char input = '~';
     bool left = false;
     bool right = false;

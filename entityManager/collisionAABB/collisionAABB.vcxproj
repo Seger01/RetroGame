@@ -129,7 +129,6 @@
   <ItemGroup>
     <ClCompile Include="boss.cpp" />
     <ClCompile Include="bullet.cpp" />
-    <ClCompile Include="collider.cpp" />
     <ClCompile Include="collisionAABB.cpp" />
     <ClCompile Include="Communication.cpp" />
     <ClCompile Include="enemy.cpp" />
