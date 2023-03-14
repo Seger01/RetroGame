@@ -14,8 +14,8 @@ Entity::Entity(std::string name, uint8_t x, uint8_t y, uint8_t width,uint8_t hei
 pointVector Entity::getStart() {
 	pointVector start;
 	pointVector half = getHalfSize();
-	start.X = this->position.X + half.X;
-	start.Y = this->position.Y + half.Y;
+	start.X = this->position.X - half.X;
+	start.Y = this->position.Y - half.Y;
 	return start;
 }
 void Entity::setHealth(uint8_t health) {

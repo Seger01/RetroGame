@@ -1,5 +1,7 @@
+#include <cstdlib>
 #include "enemy.h"
 #include "player.h"
+
 uint8_t Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }

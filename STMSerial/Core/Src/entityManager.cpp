@@ -1,6 +1,5 @@
 #include "entityManager.h"
-
-#include <iostream>
+#include <cstdlib>
 #include "enemy.h"
 #include "player.h"
 #include "bullet.h"
@@ -19,8 +18,6 @@ EntityManager::EntityManager(std::vector<Tile*>* collidableTiles, std::vector<Ti
 	 entities[2] = new Enemy("mob2", 20, 20, 16, 16, 2, 2, 1);
 	 entities[3] = new Enemy("mob3", 100, 100, 16, 16, 2, 2, 1);
 	 */
-
-
 }
 EntityManager::~EntityManager() {
 	for (uint8_t i = 0; i < 50; i++) {

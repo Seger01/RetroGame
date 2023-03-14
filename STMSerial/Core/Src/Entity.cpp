@@ -1,5 +1,5 @@
 #include "entity.h"
-#include <iostream>
+#include <cstdlib>
 
 Entity::Entity( uint8_t x, uint8_t y, uint8_t width,uint8_t height, uint8_t health, uint8_t speed,uint8_t strength) {
 	this->speed = speed;
@@ -103,7 +103,6 @@ bool Entity::checkTiles(Tile *object) {
 
 	if (intersectX < 0 && intersectY < 0) {
 		if (intersectX > intersectY) {
-			std::cout << "intersect X: " << intersectX << std::endl;
 			if (deltaX > 0) {
 				moveX(intersectX);
 			}
@@ -112,7 +111,6 @@ bool Entity::checkTiles(Tile *object) {
 			}
 		}
 		else {
-			std::cout << "intersect Y: " << intersectY << std::endl;
 			if (deltaY > 0) {
 				moveY(intersectY);
 			}
@@ -138,7 +136,6 @@ bool Entity::checkEntities(Entity *object) {
 	int8_t intersectY = abs(deltaY) - (otherHalfsize.Y + thisHalfsize.Y);
 	if (intersectX < 0 && intersectY < 0) {
 		if (intersectX > intersectY) {
-			std::cout << "intersect X: " << intersectX << std::endl;
 			if (deltaX > 0) {
 				moveX(intersectX);
 			}
@@ -147,7 +144,6 @@ bool Entity::checkEntities(Entity *object) {
 			}
 		}
 		else {
-			std::cout << "intersect Y: " << intersectY << std::endl;
 			if (deltaY > 0) {
 				moveY(intersectY);
 			}
