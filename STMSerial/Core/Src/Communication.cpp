@@ -36,12 +36,15 @@ void Communication::sendMap(uint8_t *map) {
 }
 
 void Communication::sendEntities(Entity **entities) {
-	static uint8_t buffer[226] = { 0 };
+	uint8_t buffer[226] = { 0 };
 
 
 	for (int j = 0; j < maxAmountOfEntities; j++) {
-	 if (entities[j] == nullptr)
-	 continue;
+	 if (entities[j] == nullptr){
+		 buffer[(j * 3) + 2 + 1] = 15;
+		 continue;
+	 }
+
 	 buffer[(j * 3) + 0 + 1] = entities[j]->getStart().X;
 	 buffer[(j * 3) + 1 + 1] = entities[j]->getStart().Y;
 	 buffer[(j * 3) + 2 + 1] = entities[j]->getTexture();
