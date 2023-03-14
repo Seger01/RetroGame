@@ -23,7 +23,6 @@ Communication::Communication(SPI_HandleTypeDef *hspi1) {
 }
 
 void Communication::sendMap(uint8_t *map) {
-
 	uint8_t buffer[226] = { 0 };
 	buffer[0] = 0xFF;
 
@@ -34,27 +33,20 @@ void Communication::sendMap(uint8_t *map) {
 	}
 
 	HAL_SPI_Transmit(hspi1, (uint8_t*) buffer, 226, 100);
-
 }
 
 void Communication::sendEntities(Entity **entities) {
 	static uint8_t buffer[226] = { 0 };
 
-	buffer[1] = 100;
-	buffer[2] = 100;
-	buffer[3] = 3;
 
-	buffer[4] = 200;
-	buffer[5] = 200;
-	buffer[6] = 2;
-
-	/*for (int j = 0; j < maxAmountOfEntities; j++) {
-	 if (&entities[j] == nullptr)
+	for (int j = 0; j < maxAmountOfEntities; j++) {
+	 if (entities[j] == nullptr)
 	 continue;
-	 buffer[(j * 3) + 0 + 1] = entities[j]->getXPos();
-	 buffer[(j * 3) + 1 + 1] = entities[j]->getYPos();
-	 buffer[(j * 3) + 2 + 1] = entities[j]->getSpriteId();
-	 }*/
+	 buffer[(j * 3) + 0 + 1] = entities[j]->getStart().X;
+	 buffer[(j * 3) + 1 + 1] = entities[j]->getStart().Y;
+	 buffer[(j * 3) + 2 + 1] = entities[j]->getTexture();
+	 }
+
 	HAL_SPI_Transmit(hspi1, (uint8_t*) buffer, 226, 100);
 }
 
