@@ -36,6 +36,7 @@ private:
 public: 
 	void setTexture(uint8_t texture);
 	Entity(uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
+	Entity();
 	pointVector getHalfSize();
 	void stepX(int);
 	void stepY(int);

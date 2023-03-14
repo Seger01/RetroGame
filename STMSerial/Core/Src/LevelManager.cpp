@@ -42,19 +42,19 @@ void LevelManager::getCollidables(std::vector<Tile*> *tileVector) {
 	for (int i = 0; i < mapSizeTilesX; i++) {
 		for (int j = 0; j < mapSizeTilesY; j++) {
 			if (levels[currentMapNumber * 2][i][j] >= 15) {
-				tileVector->push_back(new Tile(i * 16, j * 16, levels[currentMapNumber * 2][i][j], true, false));
+				tileVector->push_back(new Tile((i * 16) + 8, (j * 16) + 8, levels[currentMapNumber * 2][i][j], true, false));
 			}
 		}
 	}
 }
 
-void LevelManager::getSpawnpoints(std::vector<Tile*> *spawnpointVector) {
+void LevelManager::getSpawnpoints(std::vector<Tile*>* spawnpointVector) {
 	spawnpointVector->resize(0);
 
 	for (int i = 0; i < mapSizeTilesX; i++) {
 		for (int j = 0; j < mapSizeTilesY; j++) {
-			if (levels[currentMapNumber * 2][i][j] < 6) {
-				spawnpointVector->push_back(new Tile(i * 16, j * 16, levels[currentMapNumber * 2][i][j], false, true));
+			if (levels[currentMapNumber][i][j] <= 6 || levels[currentMapNumber][i][j] == 12) {
+				spawnpointVector->push_back(new Tile((i * 16) + 8, (j * 16) + 8, levels[currentMapNumber * 2][i][j], false, true));
 			}
 		}
 	}

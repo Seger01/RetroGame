@@ -121,6 +121,7 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 			p.X = spawnpoints->at(random_index)->getPosX();
 			p.Y = spawnpoints->at(random_index)->getPosY();
 			bool spawn_occupied = false;
+
 			for (Entity *e : entities) {
 				if (e != nullptr && e->getX() == p.X && e->getY() == p.Y) {
 					spawn_occupied = true;

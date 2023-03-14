@@ -367,6 +367,7 @@ void startSend(void *argument) {
 	Game game(&hspi1);
 
 	for (;;) {
+		osDelay(10);
 		game.run();
 	}
 	/* USER CODE END 5 */
