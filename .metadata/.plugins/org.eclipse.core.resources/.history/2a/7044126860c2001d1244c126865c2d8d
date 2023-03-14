@@ -15,7 +15,7 @@ void Enemy::onCollide(Entity *object) {
 			// Generate a random direction
 			directionX = rand() % 3 - 1; // Random integer between -1 and 1
 			directionY = rand() % 3 - 1; // Random integer between -1 and 1
-			stepsRemaining = 10; // Move in this direction for 2 steps
+			stepsRemaining = 5; // Move in this direction for 2 steps
 		}
 	}
 }
