@@ -27,24 +27,24 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
 
-
-
 	entityManager->spawnPlayer(112, 100, 3, 20, 10);
 
-entityManager->spawnEntities(1, 1, 2);
+	entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 }
 
 void Game::run() {
-	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
+	static int currentLevel = 0;
+	static long long lastShot = 0;
+	static long long lastLevelSwitch = 0;
 
-	levelManager.setLevel(1);
+	bool playerShoot = false;
 
 	static int remainingEnemies = 0;
 
-	Entity** entities;
+	Entity **entities;
 
-	Entity* entitiesArray[50];
+	Entity *entitiesArray[50];
 
 	uint8_t inputs = 0;
 
@@ -66,8 +66,22 @@ void Game::run() {
 
 		inputs = inputManager.readInput();
 
-		entityManager->playerAction((inputs & (1 << 0)) >> 0 , (inputs & (1 << 1)) >> 1 , (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
-						(inputs & (1 << 4)) >> 4);
+		if ((inputs & (1 << 4)) >> 4) {
+			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
+				playerShoot = true;
+				lastShot = xTaskGetTickCount();
+			}
+		}
+
+		if ((inputs & (1 << 5)) >> 5) {
+			if (xTaskGetTickCount() >= lastLevelSwitch + timeBetweenShots) {
+				currentLevel = !currentLevel;
+				lastLevelSwitch = xTaskGetTickCount();
+			}
+		}
+
+		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
+				playerShoot);
 		//entityManager->playerAction(0, 0, !(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), 0, 0);
 
 //		entities = entityManager->getEntities();
@@ -99,5 +113,9 @@ void Game::run() {
 
 		break;
 	}
+
+	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
+
+	levelManager.setLevel(currentLevel);
 
 }

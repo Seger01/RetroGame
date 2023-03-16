@@ -17,4 +17,6 @@
 
 #define timeBetweenEnemySpawns 10000
 
+#define timeBetweenShots 500
+
 #endif /* INC_CONFIG_H_ */
