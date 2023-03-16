@@ -169,7 +169,8 @@ void EntityManager::updateEntities() {
 				x = -1;
 			} else if (playerPos.X > enemyPos.X) {
 				x = 1;
-			} else if (playerPos.Y < enemyPos.Y) {
+			} 
+			if (playerPos.Y < enemyPos.Y) {
 				y = -1;
 			} else if (playerPos.Y > enemyPos.Y) {
 				y = 1;

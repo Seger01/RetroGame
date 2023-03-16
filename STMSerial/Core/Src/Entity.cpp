@@ -71,20 +71,35 @@ uint8_t Entity::getStrength() {
 	return strength;
 }
 void Entity::stepX(int direction) {
-	if (direction == 1) {
-		this->position.X += (int)speed;
-	}
-	else if(direction == -1) {
-		this->position.X -= (int)speed;
-	}
+	if (direction == 1 && (this->position.X + this->speed < 240)) {
+			this->position.X += (int)speed;
+		}
+		else if (direction == 1 && (this->position.X + this->speed >= 240))
+		{
+			this->position.X = 0;
+		}
+		else if (direction == -1 && (this->position.X - this->speed > 0)) {
+			this->position.X -= (int)speed;
+		}
+		else if (direction == -1 && (this->position.X - this->speed <= 0)) {
+			this->position.X = 240;
+		}
 }
 void Entity::stepY(int direction) {
-	if (direction == 1) {
-		this->position.Y += (int)speed;
-	}
-	else if (direction == -1) {
-		this->position.Y -= (int)speed;
-	}
+	switch (direction) {
+		case 1:
+			this->position.X += this->speed;
+			if (this->position.X > 240) {
+				this->position.X = 0;
+			}
+			break;
+		case -1:
+			this->position.X -= this->speed;
+			if (this->position.X > 240) {
+				position.X = 240;
+			}
+			break;
+		}
 }
 void Entity::setTexture(uint8_t texture) {
 	textureID = texture;

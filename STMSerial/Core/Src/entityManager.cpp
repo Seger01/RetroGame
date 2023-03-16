@@ -82,6 +82,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 
 				entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 4, 4, 1, 5, playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
+				bulletPtr->setTexture(7);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());
 				break;
 			}

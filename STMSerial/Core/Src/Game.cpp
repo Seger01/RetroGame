@@ -27,12 +27,19 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
 
-	//entityManager->spawnEntities(1, 1, 5);
 
-	entityManager->spawnPlayer(112, 100, 2, 20, 10);
+
+	entityManager->spawnPlayer(112, 100, 3, 20, 10);
+
+entityManager->spawnEntities(1, 1, 2);
+	entityManager->getEntities()[0]->setTexture(2);
 }
 
 void Game::run() {
+	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
+
+	levelManager.setLevel(1);
+
 	static int remainingEnemies = 0;
 
 	Entity** entities;
@@ -59,17 +66,17 @@ void Game::run() {
 
 		inputs = inputManager.readInput();
 
-//		entityManager->playerAction((inputs & (1 << 0)) >> 0 , (HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
-//						(inputs & (1 << 4)) >> 4);
-		entityManager->playerAction(0, 0, !(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), 0, 0);
+		entityManager->playerAction((inputs & (1 << 0)) >> 0 , (inputs & (1 << 1)) >> 1 , (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
+						(inputs & (1 << 4)) >> 4);
+		//entityManager->playerAction(0, 0, !(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), 0, 0);
 
-		entities = entityManager->getEntities();
-
-		for (int i = 0; i < 50; i++){
-			//if(entities[i] == nullptr) continue;
-			entitiesArray[i] = entities[i];
-		}
-
+//		entities = entityManager->getEntities();
+//
+//		for (int i = 0; i < 50; i++){
+//			//if(entities[i] == nullptr) continue;
+//			entitiesArray[i] = entities[i];
+//		}
+//
 		entityManager->updateEntities();
 
 		if (spawnTimer < xTaskGetTickCount()) {
@@ -93,5 +100,4 @@ void Game::run() {
 		break;
 	}
 
-	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
 }

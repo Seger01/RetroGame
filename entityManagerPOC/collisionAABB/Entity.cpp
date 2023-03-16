@@ -70,19 +70,36 @@ uint8_t Entity::getStrength() {
 	return strength;
 }
 void Entity::stepX(int direction) {
-	if (direction == 1) {
-		this->position.X += (int)speed;
-	}
-	else if(direction == -1) {
-		this->position.X -= (int)speed;
+	
+	switch (direction) {
+	case 1:
+		this->position.X += this->speed;
+		if (this->position.X > 240) {
+			this->position.X = 0;
+		}
+		break;
+	case -1:
+		this->position.X -= this->speed;
+		if (this->position.X > 240) {
+			position.X = 240;
+		}
+		break;
 	}
 }
 void Entity::stepY(int direction) {
-	if (direction == 1) {
-		this->position.Y += (int)speed;
-	}
-	else if (direction == -1) {
-		this->position.Y -= (int)speed;
+	switch (direction) {
+	case 1:
+		this->position.Y += this->speed;
+		if (this->position.Y > 240) {
+			this->position.Y = 0;
+		}
+		break;
+	case -1:
+		this->position.Y -= this->speed;
+		if (this->position.Y > 240) {
+			position.Y = 240;
+		}
+		break;
 	}
 }
 void Entity::setTexture(uint8_t texture) {

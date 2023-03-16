@@ -7,9 +7,9 @@ void Simulator::setup() {
 	//tiles.push_back(wall1);
 	//tiles.push_back(wall2);
     lm = new LevelManager();
-    lm->setLevel(1);
+    lm->setLevel(3);
     lm->getSpawnpoints(&spawns);
-    lm->getCollidables(&tiles);
+   // lm->getCollidables(&tiles);
 	em = new EntityManager(&tiles,&spawns);
     //spawn player
     //blocked spawns

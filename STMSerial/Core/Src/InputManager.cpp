@@ -19,10 +19,10 @@ uint8_t InputManager::readInput() {
 
 	bool up = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5); // 1
 	bool down = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7); // 2
-	bool left = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6); // 4
-	bool right = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6); // 8
-	bool shoot = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7); // 16
-	bool shoot2 = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16
+	bool left = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6); // 8
+	bool right = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6); // 4
+	bool shoot = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16
+	bool shoot2 = HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_7); // 16
 
 	uint8_t inputs = (up == 1) << 0 | (down == 1) << 1 | (left == 1) << 2 | (right == 1) << 3;
 	// switch case to check movement inputs from 0 to 9
