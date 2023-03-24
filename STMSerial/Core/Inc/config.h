@@ -17,7 +17,7 @@
 
 #define timeBetweenEnemySpawns 10000
 
-#define timeBetweenShots 1000
+#define timeBetweenShots 200
 
 #define timeForLevelSwitch 10000.0
 
