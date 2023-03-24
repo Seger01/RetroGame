@@ -9,12 +9,12 @@ void Enemy::onCollide(Entity *object) {
 
 	}
 	else if (dynamic_cast<Enemy*>(object)) {
-		if (stepsRemaining <= 0) { // Need to generate a new random direction
+		/*if (stepsRemaining <= 0) { // Need to generate a new random direction
 			// Generate a random direction
 			directionX = rand() % 3 - 1; // Random integer between -1 and 1
 			directionY = rand() % 3 - 1; // Random integer between -1 and 1
 			stepsRemaining = 2; // Move in this direction for 2 steps
-		}
+		}*/
 	}
 }
 void Enemy::onDeath() {
