@@ -48,7 +48,7 @@ UART_HandleTypeDef huart2;
 osThreadId_t SerialSendHandle;
 const osThreadAttr_t SerialSend_attributes = {
   .name = "SerialSend",
-  .stack_size = 526 * 4,
+  .stack_size = 768 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
@@ -215,7 +215,7 @@ static void MX_SPI1_Init(void)
   hspi1.Init.CLKPolarity = SPI_POLARITY_LOW;
   hspi1.Init.CLKPhase = SPI_PHASE_1EDGE;
   hspi1.Init.NSS = SPI_NSS_SOFT;
-  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_256;
+  hspi1.Init.BaudRatePrescaler = SPI_BAUDRATEPRESCALER_4;
   hspi1.Init.FirstBit = SPI_FIRSTBIT_LSB;
   hspi1.Init.TIMode = SPI_TIMODE_DISABLE;
   hspi1.Init.CRCCalculation = SPI_CRCCALCULATION_DISABLE;
@@ -283,10 +283,10 @@ static void MX_GPIO_Init(void)
   __HAL_RCC_GPIOB_CLK_ENABLE();
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(GPIOA, LD2_Pin|FPGAreset_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(serialData_GPIO_Port, serialData_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin Output Level */
-  HAL_GPIO_WritePin(serialData_GPIO_Port, serialData_Pin, GPIO_PIN_RESET);
+  HAL_GPIO_WritePin(FPGAreset_GPIO_Port, FPGAreset_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pin : B1_Pin */
   GPIO_InitStruct.Pin = B1_Pin;
@@ -294,11 +294,10 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_PULLUP;
   HAL_GPIO_Init(B1_GPIO_Port, &GPIO_InitStruct);
 
-  /*Configure GPIO pins : LD2_Pin FPGAreset_Pin */
-  GPIO_InitStruct.Pin = LD2_Pin|FPGAreset_Pin;
-  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
-  GPIO_InitStruct.Pull = GPIO_NOPULL;
-  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  /*Configure GPIO pins : JoyStickUp_Pin JoyStickRight_Pin JoyStickDown_Pin ButtonShoot2_Pin */
+  GPIO_InitStruct.Pin = JoyStickUp_Pin|JoyStickRight_Pin|JoyStickDown_Pin|ButtonShoot2_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
   HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
 
   /*Configure GPIO pin : serialData_Pin */
@@ -307,6 +306,25 @@ static void MX_GPIO_Init(void)
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_HIGH;
   HAL_GPIO_Init(serialData_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : ButtonShoot_Pin */
+  GPIO_InitStruct.Pin = ButtonShoot_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(ButtonShoot_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : FPGAreset_Pin */
+  GPIO_InitStruct.Pin = FPGAreset_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(FPGAreset_GPIO_Port, &GPIO_InitStruct);
+
+  /*Configure GPIO pin : JoyStickLeft_Pin */
+  GPIO_InitStruct.Pin = JoyStickLeft_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
+  GPIO_InitStruct.Pull = GPIO_PULLDOWN;
+  HAL_GPIO_Init(JoyStickLeft_GPIO_Port, &GPIO_InitStruct);
 
 }
 

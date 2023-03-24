@@ -63,16 +63,26 @@ void Error_Handler(void);
 #define USART_TX_GPIO_Port GPIOA
 #define USART_RX_Pin GPIO_PIN_3
 #define USART_RX_GPIO_Port GPIOA
-#define LD2_Pin GPIO_PIN_5
-#define LD2_GPIO_Port GPIOA
+#define JoyStickUp_Pin GPIO_PIN_5
+#define JoyStickUp_GPIO_Port GPIOA
+#define JoyStickRight_Pin GPIO_PIN_6
+#define JoyStickRight_GPIO_Port GPIOA
+#define JoyStickDown_Pin GPIO_PIN_7
+#define JoyStickDown_GPIO_Port GPIOA
 #define serialData_Pin GPIO_PIN_10
 #define serialData_GPIO_Port GPIOB
+#define ButtonShoot_Pin GPIO_PIN_7
+#define ButtonShoot_GPIO_Port GPIOC
 #define FPGAreset_Pin GPIO_PIN_8
 #define FPGAreset_GPIO_Port GPIOA
+#define ButtonShoot2_Pin GPIO_PIN_9
+#define ButtonShoot2_GPIO_Port GPIOA
 #define TMS_Pin GPIO_PIN_13
 #define TMS_GPIO_Port GPIOA
 #define TCK_Pin GPIO_PIN_14
 #define TCK_GPIO_Port GPIOA
+#define JoyStickLeft_Pin GPIO_PIN_6
+#define JoyStickLeft_GPIO_Port GPIOB
 
 /* USER CODE BEGIN Private defines */
 
