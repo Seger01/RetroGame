@@ -17,6 +17,8 @@
 
 #define timeBetweenEnemySpawns 10000
 
-#define timeBetweenShots 500
+#define timeBetweenShots 1000
+
+#define timeForLevelSwitch 10000.0
 
 #endif /* INC_CONFIG_H_ */

@@ -17,8 +17,8 @@ InputManager::~InputManager() {
 
 uint8_t InputManager::readInput() {
 
-	bool up = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5); // 1
-	bool down = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7); // 2
+	bool up = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_7); // 2
+	bool down =  HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_5); // 1
 	bool left = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_6); // 8
 	bool right = HAL_GPIO_ReadPin(GPIOB, GPIO_PIN_6); // 4
 	bool shoot = HAL_GPIO_ReadPin(GPIOA, GPIO_PIN_9); // 16

@@ -43,6 +43,7 @@ public:
 	uint8_t* getMap();
 
 	void setLevel(uint8_t level);
+	void switchLevel(uint8_t level);
 
 	void getCollidables(std::vector<Tile*>* tileVector);
 
@@ -134,7 +135,12 @@ private:
 
 	bool frameSelect = false;
 
+	unsigned long long lastLevelSwitch = 0;
+
+	uint8_t templevel[15][15] = {0};
+
 	uint8_t currentMapNumber = 0;
+	uint8_t lastMapNumber = 0;
 
 	//Tile currentLevel[224];
 };

@@ -128,7 +128,7 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 				}
 			}
 			if (!spawn_occupied) {
-				Entity *e = new Enemy(p.X, p.Y, 16, 16, 1, 1, 1);
+				Entity *e = new Enemy(p.X, p.Y, 16, 16, 2, 1, 1);
 				for (uint8_t i = 1; i < 45; i++) {
 					if (entities[i] == nullptr) {
 						entities[i] = e;

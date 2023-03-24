@@ -48,7 +48,7 @@ UART_HandleTypeDef huart2;
 osThreadId_t SerialSendHandle;
 const osThreadAttr_t SerialSend_attributes = {
   .name = "SerialSend",
-  .stack_size = 526 * 4,
+  .stack_size = 768 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */

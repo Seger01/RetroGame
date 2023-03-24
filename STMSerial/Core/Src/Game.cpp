@@ -9,6 +9,7 @@
 
 #include "Game.h"
 
+uint32_t FlashAddr = 0x0803F800;
 Game::Game() {
 	// TODO Auto-generated constructor stub
 
@@ -27,18 +28,29 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
 
-	entityManager->spawnPlayer(112, 100, 3, 20, 10);
+}
 
-	entityManager->spawnEntities(1, 1, 2);
+void Game::setup() {
+	entityManager->spawnPlayer(112, 100, 3, 20, 1);
+
+	//entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
+
+	HAL_FLASH_Unlock();
+
+	currentLevel = *(__IO uint8_t*) FlashAddr;
+
+	HAL_FLASH_Lock();
+
+	levelManager.setLevel(currentLevel);
 }
 
 void Game::run() {
-	static int currentLevel = 0;
 	static long long lastShot = 0;
 	static long long lastLevelSwitch = 0;
 
 	bool playerShoot = false;
+	static bool entityUpdate = false;
 
 	static int remainingEnemies = 0;
 
@@ -77,11 +89,29 @@ void Game::run() {
 			if (xTaskGetTickCount() >= lastLevelSwitch + timeBetweenShots) {
 				currentLevel = !currentLevel;
 				lastLevelSwitch = xTaskGetTickCount();
+
+				HAL_FLASH_Unlock();
+
+				FLASH_EraseInitTypeDef config;
+
+				config.PageAddress = FlashAddr;
+				config.NbPages = 1;
+				config.TypeErase = 0x00U;
+
+				uint32_t errorStatus;
+
+				HAL_FLASHEx_Erase(&config, &errorStatus);
+
+				HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, FlashAddr, currentLevel);
+
+				HAL_FLASH_Lock();
+
 			}
 		}
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
 				playerShoot);
+
 		//entityManager->playerAction(0, 0, !(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), 0, 0);
 
 //		entities = entityManager->getEntities();
@@ -91,12 +121,17 @@ void Game::run() {
 //			entitiesArray[i] = entities[i];
 //		}
 //
-		entityManager->updateEntities();
+		if (entityUpdate) {
+			entityManager->updateEntities();
+			entityUpdate = !entityUpdate;
+		} else {
+			entityUpdate = !entityUpdate;
+		}
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-			entityManager->spawnEntities(1, 1, 2);
+			//entityManager->spawnEntities(1, 1, 2);
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;
@@ -116,6 +151,6 @@ void Game::run() {
 
 	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
 
-	levelManager.setLevel(currentLevel);
+	levelManager.switchLevel(currentLevel);
 
 }

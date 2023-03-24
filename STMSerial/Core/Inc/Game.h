@@ -34,6 +34,8 @@ public:
 	Game(SPI_HandleTypeDef *hspi1);
 	virtual ~Game();
 
+	void setup();
+
 	void run();
 
 private:
@@ -55,6 +57,10 @@ private:
 	std::vector<Tile*> spawnPoints;
 
 	SPI_HandleTypeDef *hspi1;
+
+
+	int currentLevel = 0;
+
 };
 
 #endif /* SRC_GAME_H_ */
