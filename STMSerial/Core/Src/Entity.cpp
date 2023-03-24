@@ -71,35 +71,29 @@ uint8_t Entity::getStrength() {
 	return strength;
 }
 void Entity::stepX(int direction) {
-	if (direction == 1 && (this->position.X + this->speed < 240)) {
-			this->position.X += (int)speed;
-		}
-		else if (direction == 1 && (this->position.X + this->speed >= 240))
-		{
-			this->position.X = 0;
-		}
-		else if (direction == -1 && (this->position.X - this->speed > 0)) {
-			this->position.X -= (int)speed;
-		}
-		else if (direction == -1 && (this->position.X - this->speed <= 0)) {
-			this->position.X = 240;
+	int X = this->getStart().X;
+		if (direction == 1 && (X + this->speed < 226)) {
+			this->position.X += (int) speed;
+		} else if (direction == 1 && (X + this->speed >= 226)) {
+			this->position.X = 8;
+		} else if (direction == -1 && (X -  this->speed <= -1)) {
+			this->position.X = 232;
+		} else if (direction == -1 && (X - this->speed > -1)) {
+			this->position.X -= (int) speed;
 		}
 }
 void Entity::stepY(int direction) {
-	switch (direction) {
-		case 1:
-			this->position.X += this->speed;
-			if (this->position.X > 240) {
-				this->position.X = 0;
-			}
-			break;
-		case -1:
-			this->position.X -= this->speed;
-			if (this->position.X > 240) {
-				position.X = 240;
-			}
-			break;
-		}
+	int Y = this->getStart().Y;
+	if (direction == 1 && (Y + this->speed < 224)) {
+		this->position.Y += (int) speed;
+	} else if (direction == 1 && (Y + this->speed >= 224)) {
+		this->position.Y = 8;
+	} else if (direction == -1 && (Y -  this->speed <= -1)) {
+		this->position.Y = 230;
+	} else if (direction == -1 && (Y - this->speed > -1)) {
+		this->position.Y -= (int) speed;
+	}
+
 }
 void Entity::setTexture(uint8_t texture) {
 	textureID = texture;

@@ -31,7 +31,7 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 }
 
 void Game::setup() {
-	entityManager->spawnPlayer(112, 100, 3, 20, 1);
+	entityManager->spawnPlayer(112, 100, 1, 20, 1);
 
 	//entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);

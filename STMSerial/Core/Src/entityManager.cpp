@@ -32,6 +32,7 @@ void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
 	this->collidableTiles = collidableTiles;
 }
 void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
+
 	int x = 0;
 	int y = 0;
 	Player *playerPtr = dynamic_cast<Player*>(entities[0]);
@@ -173,7 +174,7 @@ void EntityManager::updateEntities() {
 			} else if (playerPos.Y > enemyPos.Y) {
 				y = 1;
 			}
-
+			moveEntity(i, x, y);
 		} else if (dynamic_cast<Bullet*>(entities[i])) {
 
 			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
@@ -193,9 +194,9 @@ void EntityManager::updateEntities() {
 				x = -1;
 				break;
 			}
-
+			moveEntity(i, x, y);
 		}
-		moveEntity(i, x, y);
+
 	}
 }
 void EntityManager::moveEntity(uint8_t toBeMoved, int x, int y) {

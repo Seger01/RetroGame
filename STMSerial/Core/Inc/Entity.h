@@ -18,8 +18,8 @@
 //	}
 //};
 struct pointVector {
-	uint8_t X;
-	uint8_t Y;
+	int X;
+	int Y;
 
 };
 class Entity
