@@ -41,6 +41,7 @@ END EntityCOEAdressSelector;
 
 ARCHITECTURE Behavioral OF EntityCOEAdressSelector IS
 	SIGNAL AdressOut : unsigned(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL AdressTransparent : unsigned(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
 	SIGNAL IndexNr   : STD_LOGIC_VECTOR(INDEX_BIT_SIZE - 1 DOWNTO 0);
 	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
 
@@ -88,6 +89,8 @@ BEGIN
 		PalletIn => PalletNr,
 		RGBOut   => RGBOut
 	);
+	
+	AdressTransparent <= (OTHERS => '1');
 
 	PROCESS (reset, clk)
 	BEGIN
@@ -96,8 +99,17 @@ BEGIN
 			PalletNr  <= (OTHERS => '0');
 
 		ELSIF (rising_edge (clk)) THEN
-			AdressOut <= AdressIn(ENTITY_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			AdressOut <= (OTHERS => '0');
 			PalletNr  <= (OTHERS => '0'); --todo add
+			
+            -- 1 upto and including (ENTITY_AMOUNT)
+            FOR count IN 1 TO ENTITY_AMOUNT LOOP
+                -- if address is not transparrent pixel (1111111111)
+                if (AdressIn((count * ENTITY_ROM_ADRESS_BIT_SIZE) - 1 DOWNTO ((count -1) * ENTITY_ROM_ADRESS_BIT_SIZE)) /= AdressTransparent) then
+                    AdressOut <= AdressIn((count * ENTITY_ROM_ADRESS_BIT_SIZE) - 1 DOWNTO ((count -1) * ENTITY_ROM_ADRESS_BIT_SIZE));
+                    exit;
+                end if;
+	        END loop;
 		END IF;
 	END PROCESS;
 END Behavioral;

@@ -39,7 +39,7 @@ ENTITY Top IS
 		ENTITY_NUMMER_BIT_SIZE         : INTEGER := 8;
 		-- PIXEL COUNT
 		ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := 16;
-		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 8;
+		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 16;
 		-- Offsets
 		OFFSET_CLK_TO_VGA              : INTEGER := 3;
 		-- ROM
@@ -66,9 +66,9 @@ ENTITY Top IS
 		-- 
 		ENTITY_AMOUNT                  : INTEGER := 50;	
         -- amount of tiles visible on screan
-        TILE_AMOUNT                    : INTEGER := (15 * 15);
+        TILE_AMOUNT                    : INTEGER := (20 * 15);
         TILE_AMOUNT_HIGHT              : INTEGER := 15;
-        TILE_AMOUNT_WITH               : INTEGER := 15;            
+        TILE_AMOUNT_WITH               : INTEGER := 20;            
         -- amount of bit to identify one tile
         TILE_NUMBER_SIZE               : INTEGER := 6;
         TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16		
@@ -486,7 +486,7 @@ BEGIN
 --			ENTITY_X_BIT_SIZE           =>ENTITY_X_BIT_SIZE,
 --			ENTITY_Y_BIT_SIZE             => ENTITY_Y_BIT_SIZE,
 --			ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
-			PLAYFIELD_PIXELS_START_OFFSET  => PLAYFIELD_PIXELS_START_OFFSET,
+			PLAYFIELD_PIXELS_START_OFFSET  => 0,
             -- amount of bit to identify one tile
             TILE_NUMBER_SIZE               => TILE_NUMBER_SIZE,
             TILE_PIXEL_HIGHT_AND_WITH     => TILE_PIXEL_HIGHT_AND_WITH,
@@ -511,7 +511,6 @@ BEGIN
 		Ycount       => Ycount,
 		RGBOut       => Background_COE_Color
 	);
-	--todo: generate 
 	Entitys0 : Entitys  GENERIC MAP(
 				-- VGA, start visible part of screen
 		HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
@@ -561,7 +560,7 @@ BEGIN
 		ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
 		-- PIXEL COUNT
 		ENTITY_PIXELS_HIGHT_AND_WITH   => ENTITY_PIXELS_HIGHT_AND_WITH,
-		PLAYFIELD_PIXELS_START_OFFSET  => PLAYFIELD_PIXELS_START_OFFSET,
+		PLAYFIELD_PIXELS_START_OFFSET  => 0,
 		-- Offsets
 		OFFSET_CLK_TO_VGA              => OFFSET_CLK_TO_VGA,
 		-- ROM
@@ -599,6 +598,7 @@ BEGIN
             -- loop for
             EntityData <= (OTHERS => '0');
             
+            -- 0 upto and including (ENTITY_AMOUNT - 1)
             FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
                 -- vector entity 0 => 49 by count    *     total entity size
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
@@ -622,27 +622,19 @@ BEGIN
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
                 elsif (tileCount > TILE_AMOUNT - 1 - 20 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
+                    
+                    -- inner 15 *15 view
+                elsif (((tileCount - 2) mod 20) = 0 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(9, 6));
+                elsif (((tileCount - 17) mod 20) = 0 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(9, 6));
+                    
                 else
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(0, 6));                              
                 end if;
                 
             END LOOP;
         END IF;
-	END PROCESS;
-	--	process(clk_100MHz)
-	--    begin
-	--    if (rising_edge (clk_100MHz)) then
-	--        sDCounter <= sDCounter + 1;
-	--        sDebug <= sDebug;
-	--        if (sDCounter > 5000) then
-	--            sDCounter <= 0;
-	--            sDebug <= std_logic_vector(unsigned (sDebug) + 1);
-	--            if (unsigned(sDebug) > 30) then
-	--                sDebug <= (others => '0');
-	--            end if;
-	--        end if;
-	--    end if;
-	--    end process;
-	
+	END PROCESS;	
 	
 END Behavioral;

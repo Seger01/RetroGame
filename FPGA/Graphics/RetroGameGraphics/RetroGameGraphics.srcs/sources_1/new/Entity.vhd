@@ -66,16 +66,10 @@ ENTITY Entitys IS
 END Entitys;
 
 ARCHITECTURE Behavioral OF Entitys IS
-	SIGNAL XVGA          : unsigned(9 DOWNTO 0);                                                                                             -- VGA current pixel number todo: add ofset
-	SIGNAL YVGA          : unsigned(9 DOWNTO 0);                                                                                             -- VGA current pixel number todo: add ofset
-
 	-- ROM block entity
 	--	SIGNAL sEntityAdress   : unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE) - 1 DOWNTO 0);  -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
 	SIGNAL sEntityAdress : unsigned(((ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE + 1)) - 1) DOWNTO ((1 - 1) * ENTITY_ROM_ADRESS_BIT_SIZE)); -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
-	--SIGNAL sDebugOut       : unsigned(15 DOWNTO 0); -- Debug Leds
 
-	-- todo generate
-	--todo generate al 48
 	COMPONENT EntityPixels IS
 		GENERIC
 		(
@@ -128,13 +122,7 @@ ARCHITECTURE Behavioral OF Entitys IS
 		);
 	END COMPONENT;
 BEGIN
-	-- convert Xcount and Ycount to X,Y values on visible part of screen
-	-- move XVGA and YVGA PIXEL_SCALING as slow to increase every pixel by PIXEL_SCALING size, so /PIXEL_SCALING
-	-- add OFFSET_CLK_TO_VGA to compencate for clock signal timing difrence to VGA
-	XVGA <= (((unsigned(Xcount)) - HORIZONTAL_COUNT_VISIBLE_START + OFFSET_CLK_TO_VGA) /PIXEL_SCALING) - PLAYFIELD_PIXELS_START_OFFSET;
-	YVGA <= ((unsigned(Ycount)) - VERTICAL_COUNT_VISIBLE_START) /PIXEL_SCALING;
-
-	--todo generate al 48
+	-- generate entities for ENTITY_AMOUNT amount
 	GenerateEntity : FOR entityNr IN 1 TO ENTITY_AMOUNT GENERATE
 		EntityPixels0 : EntityPixels GENERIC
 		MAP(
@@ -175,56 +163,4 @@ BEGIN
     );
 
 	debugOut <= (OTHERS => '0');
-
-	--	PROCESS (reset, clk)
-	--		VARIABLE vEntityXPosition : NATURAL RANGE 0 TO 255 := 0;
-	--		VARIABLE vEntityYPosition : NATURAL RANGE 0 TO 255 := 0;
-	--		VARIABLE vTemp            : INTEGER                := 0; --todo: calc
-	--	BEGIN
-	--		-- if reset
-	--		IF (reset = '1') THEN
-	--			entityAdress <= (OTHERS => '0');
-	--			debugOut     <= (OTHERS => '0');
-
-	--			-- if clk rising_edge
-	--		ELSIF rising_edge(clk) THEN
-	--			-- default values for outputs, so output state is always defined
-	--			-- set address to all 1 so that it can be filterd by next component as an tranparent pixel
-	--			entityAdress <= (OTHERS => '1');
-	--			debugOut     <= (OTHERS => '0');
-
-	--			-- read x position
-	--			vEntityXPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE - 1 DOWNTO 0)));
-	--			-- read y position                           x entity size + y size   - 1           downto   Y entity size only
-	--			vEntityYPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1 DOWNTO ENTITY_X_BIT_SIZE)));
-
-	--			---=! if entity pixel is going to be on screen. compared to be next vga location + offset !=---
-	--			-- top left pixel of entity, X
-	--			--      current vga x pixel with total offset to vga entity   +   offset to read rom   >=     current x position entity 
-	--			IF (((XVGA + OFFSET_CLK_TO_ROM) >= vEntityXPosition)
-	--				-- top left pixel of entity, Y
-	--				-- current vga y (does not increment fast enough to add offset)                >=      current y position entity
-	--				AND (YVGA >= vEntityYPosition)
-	--				-- botom left pixel of entity, X
-	--				-- to be next vga location      < x position + entity with and hight to check if total exends beond
-	--				AND ((XVGA + OFFSET_CLK_TO_ROM) < (vEntityXPosition + ENTITY_PIXELS_HIGHT_AND_WITH))
-	--				-- botom right pixel of entity, Y
-	--				-- to be next vga location < y position + size entity
-	--				AND (YVGA < (vEntityYPosition + ENTITY_PIXELS_HIGHT_AND_WITH)))
-	--				THEN
-	--				-- get entitie number to read out of ROM
-	--				vTemp := to_integer(dataVector(ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE));
-	--				-- calculate offset of entities by multiply by size of an entity
-	--				vTemp := vTemp * (ENTITY_PIXELS_HIGHT_AND_WITH * ENTITY_PIXELS_HIGHT_AND_WITH);
-	--				-- add y position of entity. Y position relative to start position of entity on screen;
-	--				vTemp := vTemp + ((TO_INTEGER (YVGA) - vEntityYPosition) * ENTITY_PIXELS_HIGHT_AND_WITH);
-	--				-- add X value. X position relative to start position of entity on screen;
-	--				vTemp := vTemp + TO_INTEGER (XVGA) - vEntityXPosition;
-	--				-- add offset to read from rom
-	--				vTemp := vTemp + OFFSET_CLK_TO_ROM;
-	--				-- get RGB values form address
-	--				entityAdress <= (to_unsigned (vTemp, entityAdress'length));
-	--			END IF;
-	--		END IF;
-	--	END PROCESS;
 END Behavioral;

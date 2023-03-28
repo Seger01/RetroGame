@@ -94,7 +94,6 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	SIGNAL YVGA : INTEGER range 0 to 511 := 0;
 	-- Tile
 	SIGNAL currentTileXYPosition : UNSIGNED(7 downto 0);
-	SIGNAL tileRGB : UNSIGNED(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
 	SIGNAL tileAdress : UNSIGNED(BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 	SIGNAL tileMapNumber : UNSIGNED(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
 	SIGNAL temp1 : INTEGER range -5000 to 500000 := 0; --todo: calc max	
