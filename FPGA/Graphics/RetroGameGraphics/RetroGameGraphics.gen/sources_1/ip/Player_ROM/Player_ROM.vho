@@ -54,7 +54,7 @@ COMPONENT Player_ROM
   PORT (
     clka : IN STD_LOGIC;
     addra : IN STD_LOGIC_VECTOR(11 DOWNTO 0);
-    douta : OUT STD_LOGIC_VECTOR(2 DOWNTO 0) 
+    douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0) 
   );
 END COMPONENT;
 -- COMP_TAG_END ------ End COMPONENT Declaration ------------

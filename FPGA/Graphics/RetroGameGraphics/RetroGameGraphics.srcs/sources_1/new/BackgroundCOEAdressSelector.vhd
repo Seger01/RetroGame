@@ -25,7 +25,7 @@ use IEEE.NUMERIC_STD.ALL;
 entity BackgroundCOEAdressSelector is
     GENERIC
 	(
-		BACKGROUND_ROM_ADRESS_BIT_SIZE   : INTEGER := 11;
+		BACKGROUND_ROM_ADRESS_BIT_SIZE   : INTEGER := 14;
 		INDEX_BIT_SIZE             : INTEGER := 3;
 		PALLET_BIT_SIZE            : INTEGER := 11;
 		RGB_BIT_AMOUNT             : INTEGER := 12
@@ -35,7 +35,7 @@ entity BackgroundCOEAdressSelector is
 		-- inputs
 		reset, clk       : IN  STD_LOGIC;
 		-- VGA module connections
-		AdressIn         : IN unsigned(BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+		AdressIn         : IN unsigned(BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0);
 		RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
 	);
 end BackgroundCOEAdressSelector;
@@ -49,7 +49,7 @@ architecture Behavioral of BackgroundCOEAdressSelector is
 		PORT (
 			clka  : IN  STD_LOGIC;
 			addra : IN  STD_LOGIC_VECTOR ( Background_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
-			douta : OUT STD_LOGIC_VECTOR (2 DOWNTO 0)
+			douta : OUT STD_LOGIC_VECTOR (INDEX_BIT_SIZE-1 DOWNTO 0)
 		);
 	END COMPONENT;
 	COMPONENT ColorPalletSelector IS

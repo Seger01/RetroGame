@@ -33,8 +33,8 @@ ENTITY EntityCOEAdressSelector IS
 	PORT (
         -- inputs
         reset, clk       : IN  STD_LOGIC;
-        -- VGA module connections
-        AdressIn         : IN unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE+1) - 1 DOWNTO 0); 
+        --AdressIn         : IN unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE) - 1 DOWNTO 0); 
+        AdressIn         : IN unsigned(((ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE + 1)) - 1) DOWNTO ((1-1) * ENTITY_ROM_ADRESS_BIT_SIZE)); 
         RGBOut           : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
 	);
 END EntityCOEAdressSelector;
@@ -48,7 +48,7 @@ ARCHITECTURE Behavioral OF EntityCOEAdressSelector IS
 		PORT (
 			clka  : IN  STD_LOGIC;
 			addra : IN  STD_LOGIC_VECTOR (Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
-			douta : OUT STD_LOGIC_VECTOR (2 DOWNTO 0)
+			douta : OUT STD_LOGIC_VECTOR (INDEX_BIT_SIZE-1 DOWNTO 0)
 		);
 	END COMPONENT;
 	COMPONENT ColorPalletSelector IS
@@ -96,7 +96,7 @@ BEGIN
 			PalletNr  <= (OTHERS => '0');
 
 		ELSIF (rising_edge (clk)) THEN
-			AdressOut <= AdressIn(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			AdressOut <= AdressIn(ENTITY_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
 			PalletNr  <= (OTHERS => '0'); --todo add
 		END IF;
 	END PROCESS;

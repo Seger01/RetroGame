@@ -47,7 +47,6 @@ entity EntityPixels is
 	);
 	PORT (
 		debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
-		debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
 		-- inputs
 		reset, clk     : IN  STD_LOGIC;
 		-- x, y position, entity nuber
@@ -78,14 +77,12 @@ BEGIN
 		-- if reset
 		IF (reset = '1') THEN
 			entityAdress <= (OTHERS => '0');
-			debugOut     <= (OTHERS => '0');
 
 			-- if clk rising_edge
 		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
 			-- set address to all 1 so that it can be filterd by next component as an tranparent pixel
 			entityAdress <= (OTHERS => '1');
-			debugOut     <= (OTHERS => '0');
 
 			-- read x position
 			vEntityXPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE - 1 DOWNTO 0)));

@@ -38,4 +38,12 @@ END ColorPalletSelector;
 ARCHITECTURE Behavioral OF ColorPalletSelector IS
 
 BEGIN
+    process (reset, clk)
+    begin
+        if (reset = '1') then
+            RGBOut <= (others => '0');
+        elsif (rising_edge (clk)) then
+            RGBOut <= IndexIn(7 downto 5) & IndexIn(7) & IndexIn(4 downto 2) & IndexIn(4) & "0" & IndexIn(1 downto 0) & IndexIn(1);
+        end if;
+    end process;
 END Behavioral;

@@ -85,7 +85,7 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 			-- inputs
 			reset, clk : IN  STD_LOGIC;
 			-- VGA module connections
-			AdressIn   : IN  unsigned (BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+			AdressIn   : IN  unsigned (BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0);
 			RGBOut     : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
 		);
 	END COMPONENT;
@@ -95,12 +95,10 @@ ARCHITECTURE Behavioral OF BackGroundPixels IS
 	-- Tile
 	SIGNAL currentTileXYPosition : UNSIGNED(7 downto 0);
 	SIGNAL tileRGB : UNSIGNED(7 DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile
-	SIGNAL tileAdress : UNSIGNED(13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
+	SIGNAL tileAdress : UNSIGNED(BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 	SIGNAL tileMapNumber : UNSIGNED(TILE_NUMBER_SIZE - 1 DOWNTO 0) := (OTHERS => '0'); -- tile to read from COE 1 number for every tile	
 	SIGNAL temp1 : INTEGER range -5000 to 500000 := 0; --todo: calc max	
-    -- ROM block entity
-    SIGNAL entityAdress   : UNSIGNED(BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0) := (OTHERS => '0'); -- RGB value for tile -- (OTHERS => '1') is transparrent pixel
-    
+
 BEGIN    
 	BackgroundCOEAdressSelector0 : BackgroundCOEAdressSelector GENERIC
 	MAP(
@@ -112,7 +110,7 @@ BEGIN
 	PORT MAP(
 		reset    => reset,
 		clk      => clk,
-		AdressIn => entityAdress,
+		AdressIn => tileAdress,
 		RGBOut   => RGBOut
 	);
 	
@@ -155,7 +153,6 @@ BEGIN
 		IF (reset = '1') THEN
 			-- default values
 			-- set back ground ROM address
-			entityAdress <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
 			temp := (OTHERS => '0');
 			debugOut <= (OTHERS => '0');-- used for debug
@@ -164,7 +161,6 @@ BEGIN
 		ELSIF rising_edge(clk) THEN
 			-- default values for outputs, so output state is always defined
 			-- set back ground ROM address
-			entityAdress <= (OTHERS => '0');
 			tileAdress <= (OTHERS => '0');
 			debugOut <= (OTHERS => '0'); -- used for debug
 			

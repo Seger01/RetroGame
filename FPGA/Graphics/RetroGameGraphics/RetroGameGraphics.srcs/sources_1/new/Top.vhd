@@ -27,7 +27,7 @@ ENTITY Top IS
 		-- ColorOutputSelector
 		RGB_INPUT_AMOUNT               : INTEGER := 5;
 		RGB_BIT_AMOUNT           	   : INTEGER := 12;
-		RGB_TRANSPARENT_VALUE          : INTEGER := 16#FFF#;
+		RGB_TRANSPARENT_VALUE          : INTEGER := 16#000#;
 		-- VGA, size of visible part screen
 		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
 		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
@@ -48,20 +48,21 @@ ENTITY Top IS
 		PIXEL_SCALING                  : INTEGER := 2;
 		-- EntityPixels
 		PLAYER_ROM_ADRESS_BIT_SIZE     : INTEGER := 12;
-        PLAYER_INDEX_BIT_SIZE          : INTEGER := 3;
+        PLAYER_INDEX_BIT_SIZE          : INTEGER := 8;
         PLAYER_PALLET_BIT_SIZE         : INTEGER := 11;
 		BOSS_ROM_ADRESS_BIT_SIZE       : INTEGER := 12;
         BOSS_INDEX_BIT_SIZE             : INTEGER := 8;
         BOSS_PALLET_BIT_SIZE            : INTEGER := 11;
 		BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := 14; -- TODO: ADD TO REST
-        BACKGROUND_INDEX_BIT_SIZE          : INTEGER := 3;
+        BACKGROUND_INDEX_BIT_SIZE          : INTEGER := 8;
         BACKGROUND_PALLET_BIT_SIZE         : INTEGER := 11;
-		ENTITY_ROM_ADRESS_BIT_SIZE     : INTEGER := 23; --todo: 23??? kloptniet
-        ENTITY_INDEX_BIT_SIZE          : INTEGER := 3;
+		ENTITY_ROM_ADRESS_BIT_SIZE     : INTEGER := 12;
+        ENTITY_INDEX_BIT_SIZE          : INTEGER := 8;
         ENTITY_PALLET_BIT_SIZE         : INTEGER := 11;
 		HUD_ROM_ADRESS_BIT_SIZE        : INTEGER := 12;
-        HUD_INDEX_BIT_SIZE              : INTEGER := 3;
+        HUD_INDEX_BIT_SIZE              : INTEGER := 8;
         HUD_PALLET_BIT_SIZE             : INTEGER := 11;
+        HUD_VECTOR_BIT_SIZE             : INTEGER := 24;
 		-- 
 		ENTITY_AMOUNT                  : INTEGER := 50;	
         -- amount of tiles visible on screan
@@ -216,10 +217,10 @@ ARCHITECTURE Behavioral OF Top IS
             TILE_AMOUNT                    : INTEGER := TILE_AMOUNT;
             TILE_AMOUNT_HIGHT              : INTEGER := TILE_AMOUNT_HIGHT;
             TILE_AMOUNT_WITH               : INTEGER := TILE_AMOUNT_WITH;            
-			-- ENTITY SIZE
-			ENTITY_X_BIT_SIZE              : INTEGER := ENTITY_X_BIT_SIZE;
-			ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
-			ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE;
+--			-- ENTITY SIZE
+--			ENTITY_X_BIT_SIZE              : INTEGER := ENTITY_X_BIT_SIZE;
+--			ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
+--			ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE;
 			PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := PLAYFIELD_PIXELS_START_OFFSET;
             -- amount of bit to identify one tile
             TILE_NUMBER_SIZE               : INTEGER := TILE_NUMBER_SIZE;
@@ -342,7 +343,6 @@ ARCHITECTURE Behavioral OF Top IS
 	SIGNAL Boss_Select_Adress    : unsigned (BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0);
 	SIGNAL Background_Select_Adress    : unsigned (BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0);
 	-- todo: vector for Entity
-	SIGNAL Entity_Select_Adress   : unsigned(ENTITY_AMOUNT * (ENTITY_ROM_ADRESS_BIT_SIZE+1) - 1 DOWNTO 0);
 	SIGNAL HUD_Select_Adress     : unsigned (HUD_ROM_ADRESS_BIT_SIZE DOWNTO 0);
 	
 	-- COE Output
@@ -360,7 +360,7 @@ ARCHITECTURE Behavioral OF Top IS
 	-- VGA
 	SIGNAL Xcount, Ycount        : unsigned(9 DOWNTO 0); -- VGA current pixel number
 	-- Communication
-	SIGNAL EntityData            : unsigned((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+	SIGNAL EntityData            : unsigned( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 
     -- background
     -- vector with map tile numbers		-- tile number starting top left going left to richt and down
@@ -430,7 +430,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => EntityData(((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0),
+		dataVector   => EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Player_COE_Color
@@ -465,7 +465,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => EntityData((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)),
+		dataVector   => EntityData(((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Boss_COE_Color
@@ -482,10 +482,10 @@ BEGIN
             TILE_AMOUNT                   =>TILE_AMOUNT,
             TILE_AMOUNT_HIGHT            => TILE_AMOUNT_HIGHT,
             TILE_AMOUNT_WITH             => TILE_AMOUNT_WITH,       
-			-- ENTITY SIZE
-			ENTITY_X_BIT_SIZE           =>ENTITY_X_BIT_SIZE,
-			ENTITY_Y_BIT_SIZE             => ENTITY_Y_BIT_SIZE,
-			ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
+--			-- ENTITY SIZE
+--			ENTITY_X_BIT_SIZE           =>ENTITY_X_BIT_SIZE,
+--			ENTITY_Y_BIT_SIZE             => ENTITY_Y_BIT_SIZE,
+--			ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
 			PLAYFIELD_PIXELS_START_OFFSET  => PLAYFIELD_PIXELS_START_OFFSET,
             -- amount of bit to identify one tile
             TILE_NUMBER_SIZE               => TILE_NUMBER_SIZE,
@@ -543,7 +543,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => EntityData,
+		dataVector   => EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Entity_COE_Color
@@ -578,7 +578,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => EntityData(23 downto 0),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 + 24 bits for HUD DOWNTO ....,
+		dataVector   => EntityData(( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 + 24 bits for HUD DOWNTO ....,
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => HUD_COE_Color
@@ -614,13 +614,13 @@ BEGIN
             
             
             FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
-                if (tileCount < 15 and debugIn(5) = '1') then
+                if (tileCount < 20 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
-                elsif (((tileCount+1) mod 15) = 0 and debugIn(5) = '1') then
+                elsif (((tileCount+1) mod 20) = 0 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
-                elsif ((tileCount mod 15) = 0 and debugIn(5) = '1') then
+                elsif ((tileCount mod 20) = 0 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
-                elsif (tileCount > TILE_AMOUNT - 1 - 15 and debugIn(5) = '1') then
+                elsif (tileCount > TILE_AMOUNT - 1 - 20 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
                 else
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(0, 6));                              

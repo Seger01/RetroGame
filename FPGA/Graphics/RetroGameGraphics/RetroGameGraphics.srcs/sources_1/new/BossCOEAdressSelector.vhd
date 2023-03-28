@@ -49,7 +49,7 @@ architecture Behavioral of BossCOEAdressSelector is
 		PORT (
 			clka  : IN  STD_LOGIC;
 			addra : IN  STD_LOGIC_VECTOR (BOSS_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
-			douta : OUT STD_LOGIC_VECTOR (INDEX_BIT_SIZE - 1 DOWNTO 0)
+			douta : OUT STD_LOGIC_VECTOR (INDEX_BIT_SIZE-1 DOWNTO 0)
 		);
 	END COMPONENT;
     COMPONENT ColorPalletSelector IS
