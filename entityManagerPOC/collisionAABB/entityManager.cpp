@@ -62,7 +62,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
 		pointVector playerPosition = entities[0]->getPosition();
 		pointVector playerHalf = entities[0]->getHalfSize();
 		pointVector bulletStart;
-
+		/*
 		switch (playerPtr->getDirection()) {
 		case 0:
 			bulletStart.X = playerPosition.X;
@@ -84,7 +84,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown,
 			bulletStart.X = 0;
 			bulletStart.Y = 0;
 			break;
-		}
+		}*/
 		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
 

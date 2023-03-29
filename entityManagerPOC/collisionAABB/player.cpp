@@ -14,26 +14,15 @@ void Player::onCollide(Entity *object) {
 		//powerUphandler.setPowerUp()
 	}
 }
-uint8_t Player::getDirection() {
+pointVector Player::getDirection() {
 	return direction;
 }
-void Player::setDirection(uint8_t direction) {
-	this->direction = direction;
-	switch(direction) {
-	case 0:
-		textureID = 1;
-		break;
-	case 1:
-		textureID = 2;
-		break;
-	case 2:
-		textureID = 3;
-		break;
-	case 3:
-		textureID = 4;
-		break;
-
-	}
+void Player::setDirection(uint32_t x, uint32_t y) {
+	pointVector newDirection;
+	newDirection.X = x;
+	newDirection.Y = y;
+	this->direction = newDirection;
+	
 }	
 void Player::onDeath(){
 	

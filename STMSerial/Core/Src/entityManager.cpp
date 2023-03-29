@@ -37,46 +37,27 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 	Player *playerPtr = dynamic_cast<Player*>(entities[0]);
 	if (movePlayerUp) {
 		y = 1;
-		playerPtr->setDirection(2);
 	} else if (movePlayerDown) {
 		y = -1;
-		playerPtr->setDirection(0);
+
 	}
 	if (movePlayerRight) {
 		x = 1;
-		playerPtr->setDirection(1);
+
 	} else if (movePlayerLeft) {
 		x = -1;
-		playerPtr->setDirection(3);
+
 	}
+	pointVector direction = {x,y};
+	playerPtr->setDirection(direction);
 	moveEntity(0, x, y);
 	if (playerShoot) {
 		pointVector playerPosition = entities[0]->getPosition();
 		pointVector playerHalf = entities[0]->getHalfSize();
 		pointVector bulletStart;
-
-		switch (playerPtr->getDirection()) {
-		case 0:
-			bulletStart.X = playerPosition.X;
-			bulletStart.Y = playerPosition.Y - playerHalf.Y - 5;
-			break;
-		case 1:
-			bulletStart.X = playerPosition.X + playerHalf.X + 5;
-			bulletStart.Y = playerPosition.Y;
-			break;
-		case 2:
-			bulletStart.X = playerPosition.X;
-			bulletStart.Y = playerPosition.Y + playerHalf.Y + 5;
-			break;
-		case 3:
-			bulletStart.X = playerPosition.X - playerHalf.X - 5;
-			bulletStart.Y = playerPosition.Y;
-			break;
-		default:
-			bulletStart.X = 0;
-			bulletStart.Y = 0;
-			break;
-		}
+		pointVector playerDirection = playerPtr->getDirection();
+		bulletStart.X = (playerPosition.X * 5);
+		bulletStart.Y = (playerPosition.Y * 5);
 		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
 
@@ -177,22 +158,10 @@ void EntityManager::updateEntities() {
 		} else if (dynamic_cast<Bullet*>(entities[i])) {
 
 			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
-			uint8_t direction = bulletPtr->getTravelDirection();
+			pointVector direction = bulletPtr->getTravelDirection();
 
-			switch (direction) {
-			case 0:
-				y = -1;
-				break;
-			case 1:
-				x = 1;
-				break;
-			case 2:
-				y = 1;
-				break;
-			case 3:
-				x = -1;
-				break;
-			}
+			x = direction.X;
+			y = direction.Y;
 
 		}
 		moveEntity(i, x, y);

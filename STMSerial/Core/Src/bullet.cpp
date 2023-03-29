@@ -16,9 +16,9 @@ void Bullet::onCollide(Entity *object) {
 }
 void Bullet::onCollideWall() {
 }
-void Bullet::setTravelDirection(uint8_t direction) {
+void Bullet::setTravelDirection(pointVector direction) {
 	this->travelDirection = direction;
 }
-uint8_t Bullet::getTravelDirection() {
+pointVector Bullet::getTravelDirection() {
 	return travelDirection;
 }
