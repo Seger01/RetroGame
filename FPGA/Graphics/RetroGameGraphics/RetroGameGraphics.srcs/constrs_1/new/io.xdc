@@ -1,11 +1,16 @@
-set_property IOSTANDARD LVCMOS33 [get_ports RGBout]
-
-set_property IOSTANDARD LVCMOS33 [get_ports reset]
+#System                                                       
+set_property IOSTANDARD LVCMOS33 [get_ports reset]     
 set_property IOSTANDARD LVCMOS33 [get_ports clk_100MHz]
-
+#VGA
 set_property IOSTANDARD LVCMOS33 [get_ports hsync]
 set_property IOSTANDARD LVCMOS33 [get_ports vsync]
-
+set_property IOSTANDARD LVCMOS33 [get_ports RGBout]
+#System
+set_property PACKAGE_PIN U17 [get_ports reset]
+set_property PACKAGE_PIN W5 [get_ports clk_100MHz]
+#VGA
+set_property PACKAGE_PIN P19 [get_ports hsync]
+set_property PACKAGE_PIN R19 [get_ports vsync]
 set_property PACKAGE_PIN G19 [get_ports RGBout[8]]
 set_property PACKAGE_PIN H19 [get_ports RGBout[9]]
 set_property PACKAGE_PIN J19 [get_ports RGBout[10]]
@@ -19,17 +24,10 @@ set_property PACKAGE_PIN L18 [get_ports RGBout[1]]
 set_property PACKAGE_PIN K18 [get_ports RGBout[2]]
 set_property PACKAGE_PIN J18 [get_ports RGBout[3]]
 
-set_property PACKAGE_PIN U17 [get_ports reset]
-set_property PACKAGE_PIN W5 [get_ports clk_100MHz]
-
-set_property PACKAGE_PIN P19 [get_ports hsync]
-set_property PACKAGE_PIN R19 [get_ports vsync]
-
 #debug
 set_property IOSTANDARD LVCMOS33 [get_ports debugIn]
 set_property IOSTANDARD LVCMOS33 [get_ports debugOut]
-
-#debug
+#debug in
 set_property PACKAGE_PIN V17 [get_ports debugIn[0]]
 set_property PACKAGE_PIN V16 [get_ports debugIn[1]]
 set_property PACKAGE_PIN W16 [get_ports debugIn[2]]
@@ -46,7 +44,7 @@ set_property PACKAGE_PIN W2 [get_ports debugIn[12]]
 set_property PACKAGE_PIN U1 [get_ports debugIn[13]]
 set_property PACKAGE_PIN T1 [get_ports debugIn[14]]
 set_property PACKAGE_PIN R2 [get_ports debugIn[15]]
-
+#debug out
 set_property PACKAGE_PIN U16 [get_ports debugOut[0]]
 set_property PACKAGE_PIN E19 [get_ports debugOut[1]]
 set_property PACKAGE_PIN U19 [get_ports debugOut[2]]

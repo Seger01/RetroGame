@@ -65,6 +65,13 @@ BEGIN
 			-- if in visible vieuw section of screen
 			IF (hcount >= HORIZONTAL_COUNT_VISIBLE_START) AND (hcount < 784) AND (vcount >= VERTICAL_COUNT_VISIBLE_START) AND (vcount < 511) THEN
 				RGBout <= RGBin;
+--				-- for debug
+--				IF (hcount = HORIZONTAL_COUNT_VISIBLE_START) AND (vcount >= VERTICAL_COUNT_VISIBLE_START + 100) AND (vcount < 511 - 100) THEN
+--                    RGBout <= "100010001000";                    
+--                END IF; 
+--				IF (hcount = 783) AND (vcount >= VERTICAL_COUNT_VISIBLE_START + 100) AND (vcount < 511 - 100) THEN
+--                    RGBout <= "100010001000";                    
+--                END IF; 
 			END IF;
 
 			-- sync puls for horizontal 

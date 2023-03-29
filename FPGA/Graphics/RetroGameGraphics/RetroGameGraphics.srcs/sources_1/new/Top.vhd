@@ -41,7 +41,7 @@ ENTITY Top IS
 		ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := 16;
 		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 16;
 		-- Offsets
-		OFFSET_CLK_TO_VGA              : INTEGER := 3;
+		OFFSET_CLK_TO_VGA              : INTEGER := 6;
 		-- ROM
 		OFFSET_CLK_TO_ROM              : INTEGER := 2;
 		-- vga
@@ -142,7 +142,7 @@ ARCHITECTURE Behavioral OF Top IS
             ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := 16;
             PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 8;
             -- Offsets
-            OFFSET_CLK_TO_VGA              : INTEGER := 3;
+            OFFSET_CLK_TO_VGA              : INTEGER := 5;
             -- ROM
             OFFSET_CLK_TO_ROM              : INTEGER := 2;
             -- vga
@@ -604,14 +604,31 @@ BEGIN
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 IF (debugIn(2) = '1') THEN
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00001110" & (to_unsigned (count * 16, 8)) & (to_unsigned (count*3, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000011" & (to_unsigned (count * 16, 8)) & (to_unsigned (count*3, 8));
                 ELSIF (debugIn(3) = '1') THEN
                     EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000001" & (to_unsigned (count * 16, 8)) & (to_unsigned (count*2, 8));
                 ELSE
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned (count, 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned (count, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned ((count mod 9), 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned (count, 8));
                 END IF;
             END LOOP;
             
+            
+            
+            IF (debugIn(3) = '1') THEN
+                vEntityVectorOffset := 2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (2 * 16, 8)) & (to_unsigned (2*3, 8));
+                
+                IF (debugIn(2) = '1') THEN                
+                    vEntityVectorOffset := 0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                    vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (1 * 16, 8)) & (to_unsigned (1*3, 8));
+            
+                    vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                    vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (1 * 16, 8)) & (to_unsigned (1*3, 8));
+                end if;
+            end if;
             
             FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
                 if (tileCount < 20 and debugIn(5) = '1') then
@@ -624,7 +641,7 @@ BEGIN
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
                     
                     -- inner 15 *15 view
-                elsif (((tileCount - 2) mod 20) = 0 and debugIn(5) = '1') then
+                elsif (((tileCount - 3) mod 20) = 0 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(9, 6));
                 elsif (((tileCount - 17) mod 20) = 0 and debugIn(5) = '1') then
                     tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(9, 6));

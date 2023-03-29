@@ -1,2 +1,0 @@
-AllEntitys.v,verilog,xil_defaultlib,../../../../RetroGameGraphics.gen/sources_1/ip/AllEntitys/sim/AllEntitys.v,
-glbl.v,Verilog,xil_defaultlib,glbl.v

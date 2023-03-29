@@ -41,7 +41,7 @@ END EntityCOEAdressSelector;
 
 ARCHITECTURE Behavioral OF EntityCOEAdressSelector IS
 	SIGNAL AdressOut : unsigned(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
-	SIGNAL AdressTransparent : unsigned(Entity_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL AdressTransparent : unsigned(Entity_ROM_ADRESS_BIT_SIZE DOWNTO 0);
 	SIGNAL IndexNr   : STD_LOGIC_VECTOR(INDEX_BIT_SIZE - 1 DOWNTO 0);
 	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
 
@@ -93,6 +93,7 @@ BEGIN
 	AdressTransparent <= (OTHERS => '1');
 
 	PROCESS (reset, clk)
+		VARIABLE vTemp            : INTEGER                := 0; --todo: calc
 	BEGIN
 		IF (reset = '1') THEN
 			AdressOut <= (OTHERS => '0');
@@ -105,8 +106,22 @@ BEGIN
             -- 1 upto and including (ENTITY_AMOUNT)
             FOR count IN 1 TO ENTITY_AMOUNT LOOP
                 -- if address is not transparrent pixel (1111111111)
-                if (AdressIn((count * ENTITY_ROM_ADRESS_BIT_SIZE) - 1 DOWNTO ((count -1) * ENTITY_ROM_ADRESS_BIT_SIZE)) /= AdressTransparent) then
-                    AdressOut <= AdressIn((count * ENTITY_ROM_ADRESS_BIT_SIZE) - 1 DOWNTO ((count -1) * ENTITY_ROM_ADRESS_BIT_SIZE));
+                if (AdressIn((count * (ENTITY_ROM_ADRESS_BIT_SIZE + 1)) - 1 DOWNTO ((count -1) * (ENTITY_ROM_ADRESS_BIT_SIZE + 1))) /= AdressTransparent) then
+                    -- select bottom half of addres becouse 1111111 is to indicate transparent pixel
+                    vTemp := to_integer(AdressIn((count * (ENTITY_ROM_ADRESS_BIT_SIZE + 1)) - 2 DOWNTO ((count -1) * (ENTITY_ROM_ADRESS_BIT_SIZE + 1))));
+                    
+--                    -- convert 16*16 to 1*16 for 4*4 bullit
+--                    -- if start bulled address
+--                    if (vTemp >= 2048) then
+--                        -- if visible part bullit
+--                        if ((vTemp mod 16) < 4) then
+--                            vTemp := (vTemp - 2048);
+--                            -- get target x position 
+--                            vTemp := (vTemp mod 4) + ((vTemp / 16)*4);                            
+--                        end if;
+--                    end if;
+                    
+                    AdressOut <= (to_unsigned (vTemp, AdressOut'length));
                     exit;
                 end if;
 	        END loop;

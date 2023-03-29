@@ -123,38 +123,38 @@ BEGIN
 			entityAdress <= (OTHERS => '1');
 			debugOut     <= (OTHERS => '0');
 
-			-- read x position
-			vEntityXPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE - 1 DOWNTO 0)));
-			-- read y position                           x entity size + y size   - 1           downto   Y entity size only
-			vEntityYPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1 DOWNTO ENTITY_X_BIT_SIZE)));
+--			-- read x position
+--			vEntityXPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE - 1 DOWNTO 0)));
+--			-- read y position                           x entity size + y size   - 1           downto   Y entity size only
+--			vEntityYPosition := to_integer ((dataVector(ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE - 1 DOWNTO ENTITY_X_BIT_SIZE)));
 
-			---=! if entity pixel is going to be on screen. compared to be next vga location + offset !=---
-			-- top left pixel of entity, X
-			--      current vga x pixel with total offset to vga entity   +   offset to read rom   >=     current x position entity 
-			IF (((XVGA + OFFSET_CLK_TO_ROM) >= vEntityXPosition)
-				-- top left pixel of entity, Y
-				-- current vga y (does not increment fast enough to add offset)                >=      current y position entity
-				AND (YVGA >= vEntityYPosition)
-				-- botom left pixel of entity, X
-				-- to be next vga location      < x position + entity with and hight to check if total exends beond
-				AND ((XVGA + OFFSET_CLK_TO_ROM) < (vEntityXPosition + ENTITY_PIXELS_HIGHT_AND_WITH))
-				-- botom right pixel of entity, Y
-				-- to be next vga location < y position + size entity
-				AND (YVGA < (vEntityYPosition + ENTITY_PIXELS_HIGHT_AND_WITH)))
-				THEN
-				-- get entitie number to read out of ROM
-				vTemp := to_integer(dataVector(ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE));
-				-- calculate offset of entities by multiply by size of an entity
-				vTemp := vTemp * (ENTITY_PIXELS_HIGHT_AND_WITH * ENTITY_PIXELS_HIGHT_AND_WITH);
-				-- add y position of entity. Y position relative to start position of entity on screen;
-				vTemp := vTemp + ((TO_INTEGER (YVGA) - vEntityYPosition) * ENTITY_PIXELS_HIGHT_AND_WITH);
-				-- add X value. X position relative to start position of entity on screen;
-				vTemp := vTemp + TO_INTEGER (XVGA) - vEntityXPosition;
-				-- add offset to read from rom
-				vTemp := vTemp + OFFSET_CLK_TO_ROM;
-				-- get RGB values form address
-				entityAdress <= (to_unsigned (vTemp, entityAdress'length));
-			END IF;
+--			---=! if entity pixel is going to be on screen. compared to be next vga location + offset !=---
+--			-- top left pixel of entity, X
+--			--      current vga x pixel with total offset to vga entity   +   offset to read rom   >=     current x position entity 
+--			IF (((XVGA + OFFSET_CLK_TO_ROM) >= vEntityXPosition)
+--				-- top left pixel of entity, Y
+--				-- current vga y (does not increment fast enough to add offset)                >=      current y position entity
+--				AND (YVGA >= vEntityYPosition)
+--				-- botom left pixel of entity, X
+--				-- to be next vga location      < x position + entity with and hight to check if total exends beond
+--				AND ((XVGA + OFFSET_CLK_TO_ROM) < (vEntityXPosition + ENTITY_PIXELS_HIGHT_AND_WITH))
+--				-- botom right pixel of entity, Y
+--				-- to be next vga location < y position + size entity
+--				AND (YVGA < (vEntityYPosition + ENTITY_PIXELS_HIGHT_AND_WITH)))
+--				THEN
+--				-- get entitie number to read out of ROM
+--				vTemp := to_integer(dataVector(ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE - 1 DOWNTO ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE));
+--				-- calculate offset of entities by multiply by size of an entity
+--				vTemp := vTemp * (ENTITY_PIXELS_HIGHT_AND_WITH * ENTITY_PIXELS_HIGHT_AND_WITH);
+--				-- add y position of entity. Y position relative to start position of entity on screen;
+--				vTemp := vTemp + ((TO_INTEGER (YVGA) - vEntityYPosition) * ENTITY_PIXELS_HIGHT_AND_WITH);
+--				-- add X value. X position relative to start position of entity on screen;
+--				vTemp := vTemp + TO_INTEGER (XVGA) - vEntityXPosition;
+--				-- add offset to read from rom
+--				vTemp := vTemp + OFFSET_CLK_TO_ROM;
+--				-- get RGB values form address
+--				entityAdress <= (to_unsigned (vTemp, entityAdress'length));
+--			END IF;
 		END IF;
 	END PROCESS;
 END Behavioral;
