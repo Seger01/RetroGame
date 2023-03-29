@@ -598,8 +598,8 @@ BEGIN
             -- loop for
             EntityData <= (OTHERS => '0');
             
-            -- 0 upto and including (ENTITY_AMOUNT - 1)
-            FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
+            -- 0 upto and including (ENTITY_AMOUNT - 1 + player + boss)
+            FOR count IN 0 TO ENTITY_AMOUNT - 1 + 2 LOOP
                 -- vector entity 0 => 49 by count    *     total entity size
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
@@ -617,7 +617,7 @@ BEGIN
             IF (debugIn(3) = '1') THEN
                 vEntityVectorOffset := 2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (200, 8)) & (to_unsigned (2*3, 8));
+                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (150, 8)) & (to_unsigned (400, 8));
             
                 vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
@@ -626,11 +626,11 @@ BEGIN
                 IF (debugIn(2) = '1') THEN                
                     vEntityVectorOffset := 0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (200, 8)) & (to_unsigned (200, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (200, 8)) & (to_unsigned (400, 8));
             
                     vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (250, 8)) & (to_unsigned (250, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (250, 8)) & (to_unsigned (450, 8));
                 end if;
             end if;
             
