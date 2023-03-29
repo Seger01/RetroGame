@@ -582,8 +582,9 @@ BEGIN
 		Ycount       => Ycount,
 		RGBOut       => HUD_COE_Color
 	);
-
-    COE_RGB <= resize(Player_COE_Color &  unsigned (Boss_COE_Color & Background_COE_Color & Entity_COE_Color & HUD_COE_Color), COE_RGB'length);   
+    
+    -- lowest level left highest level right
+    COE_RGB <= Background_COE_Color & Entity_COE_Color & Boss_COE_Color & Player_COE_Color & HUD_COE_Color;   
     
     
     PROCESS (clk_25)
@@ -598,8 +599,8 @@ BEGIN
             -- loop for
             EntityData <= (OTHERS => '0');
             
-            -- 0 upto and including (ENTITY_AMOUNT - 1 + player + boss)
-            FOR count IN 0 TO ENTITY_AMOUNT - 1 + 2 LOOP
+            -- 0 upto and including (ENTITY_AMOUNT - 1)
+            FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
                 -- vector entity 0 => 49 by count    *     total entity size
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
@@ -608,31 +609,9 @@ BEGIN
                 ELSIF (debugIn(3) = '1') THEN
                     EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000001" & (to_unsigned (count * 16, 8)) & (to_unsigned (count*2, 8));
                 ELSE
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned ((count mod 9), 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned (count, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned ((count mod 9), 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned (count + 1, 8));
                 END IF;
             END LOOP;
-            
-            
-            
-            IF (debugIn(3) = '1') THEN
-                vEntityVectorOffset := 2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (150, 8)) & (to_unsigned (400, 8));
-            
-                vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (0, 8)) & (to_unsigned (0, 8));
-                
-                IF (debugIn(2) = '1') THEN                
-                    vEntityVectorOffset := 0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (200, 8)) & (to_unsigned (400, 8));
-            
-                    vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (250, 8)) & (to_unsigned (450, 8));
-                end if;
-            end if;
             
             FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
                 if (tileCount < 20 and debugIn(5) = '1') then

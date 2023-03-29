@@ -39,7 +39,9 @@ END PlayerCOEAdressSelector;
 ARCHITECTURE Behavioral OF PlayerCOEAdressSelector IS
 	SIGNAL AdressOut : unsigned(PLAYER_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
 	SIGNAL IndexNr   : STD_LOGIC_VECTOR(INDEX_BIT_SIZE - 1 DOWNTO 0);
-	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
+	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);	
+	-- transparrent indexnr
+	SIGNAL AdressTransparent   : unsigned(PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);
 
 	COMPONENT Player_ROM IS
 		PORT (
@@ -84,7 +86,9 @@ BEGIN
 		IndexIn  => unsigned (IndexNr),
 		PalletIn => PalletNr,
 		RGBOut   => RGBOut
-	);
+	);	
+	
+	AdressTransparent <= (OTHERS => '1');
 
 	PROCESS (reset, clk)
 	BEGIN
@@ -93,8 +97,14 @@ BEGIN
 			PalletNr  <= (OTHERS => '0');
 
 		ELSIF (rising_edge (clk)) THEN
-			AdressOut <= AdressIn(PLAYER_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			AdressOut <= (OTHERS => '0');
 			PalletNr  <= (OTHERS => '0'); --todo add
+		    
+            -- if address is not transparrent pixel (1111111111)
+            if (AdressIn(PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0) /= AdressTransparent) then
+                -- select bottom half of addres becouse 1111111 is to indicate transparent pixel
+                AdressOut <= AdressIn(PLAYER_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+            end if;
 		END IF;
 	END PROCESS;
 END Behavioral;

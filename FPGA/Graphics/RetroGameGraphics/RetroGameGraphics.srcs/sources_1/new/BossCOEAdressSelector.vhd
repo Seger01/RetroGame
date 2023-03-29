@@ -44,6 +44,8 @@ architecture Behavioral of BossCOEAdressSelector is
 	SIGNAL AdressOut : unsigned(BOSS_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
 	SIGNAL IndexNr   : STD_LOGIC_VECTOR(INDEX_BIT_SIZE - 1 DOWNTO 0);
 	SIGNAL PalletNr  : unsigned(PALLET_BIT_SIZE - 1 DOWNTO 0);
+	-- transparrent indexnr
+	SIGNAL AdressTransparent   : unsigned(BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0);
 
 	COMPONENT Boss_ROM IS
 		PORT (
@@ -90,6 +92,8 @@ Boss_ROM0 : Boss_ROM PORT MAP(
 		PalletIn => PalletNr,
 		RGBOut   => RGBOut
 	);
+	
+	AdressTransparent <= (OTHERS => '1');
 
 	PROCESS (reset, clk)
 	BEGIN
@@ -98,8 +102,14 @@ Boss_ROM0 : Boss_ROM PORT MAP(
 			PalletNr  <= (OTHERS => '0');
 
 		ELSIF (rising_edge (clk)) THEN
-			AdressOut <= AdressIn(BOSS_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+			AdressOut <= (OTHERS => '0');
 			PalletNr  <= (OTHERS => '0'); --todo add
+		    
+            -- if address is not transparrent pixel (1111111111)
+            if (AdressIn(BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0) /= AdressTransparent) then
+                -- select bottom half of addres becouse 1111111 is to indicate transparent pixel
+                AdressOut <= AdressIn(BOSS_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
+            end if;
 		END IF;
 	END PROCESS;
 END Behavioral;
