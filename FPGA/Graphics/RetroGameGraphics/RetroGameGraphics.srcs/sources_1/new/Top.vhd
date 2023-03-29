@@ -617,16 +617,20 @@ BEGIN
             IF (debugIn(3) = '1') THEN
                 vEntityVectorOffset := 2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (2 * 16, 8)) & (to_unsigned (2*3, 8));
+                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (200, 8)) & (to_unsigned (2*3, 8));
+            
+                vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (0, 8)) & (to_unsigned (0, 8));
                 
                 IF (debugIn(2) = '1') THEN                
                     vEntityVectorOffset := 0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (1 * 16, 8)) & (to_unsigned (1*3, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (200, 8)) & (to_unsigned (200, 8));
             
                     vEntityVectorOffset := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                     vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (1 * 16, 8)) & (to_unsigned (1*3, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000101" & (to_unsigned (250, 8)) & (to_unsigned (250, 8));
                 end if;
             end if;
             

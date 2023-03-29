@@ -119,6 +119,23 @@ BEGIN
                     -- get RGB values form address
                     entityAdress <= (to_unsigned (vTemp, entityAdress'length));
                 END IF;
+                
+                -- convert 16*16 to 1*16 for 4*4 bullit
+                -- if start bulled address
+                if (vTemp >= 2048) then
+                    -- get bullet 16*16
+                    vTemp := (vTemp - 2048);
+                    -- if visible part bullit
+                    if ((vTemp mod 16) < 4 and (vTemp/16) < 4 ) then
+                        -- get target x position 
+                        vTemp := (vTemp mod 4) + ((vTemp / 16)*4);   
+                        
+                        entityAdress <= (to_unsigned (vTemp + 2048, entityAdress'length));   
+                    else
+                        --set addres to transparent
+                        entityAdress <= (others => '1');              
+                    end if;
+                end if;
             END IF;
 		end if;
 	END PROCESS;
