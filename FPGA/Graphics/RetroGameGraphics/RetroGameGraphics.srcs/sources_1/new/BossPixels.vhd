@@ -149,10 +149,10 @@ BEGIN
                     vTemp := vTemp * (ENTITY_PIXELS_HIGHT_AND_WITH * ENTITY_PIXELS_HIGHT_AND_WITH);
                     -- add y position of entity. Y position relative to start position of entity on screen;
                     vTemp := vTemp + ((TO_INTEGER (YVGA) - vEntityYPosition) * ENTITY_PIXELS_HIGHT_AND_WITH);
+--                    -- add offset to read from rom
+--                    vTemp := vTemp + OFFSET_CLK_TO_ROM;
                     -- add X value. X position relative to start position of entity on screen;
-                    vTemp := vTemp + TO_INTEGER (XVGA) - vEntityXPosition;
-                    -- add offset to read from rom
-                    vTemp := vTemp + OFFSET_CLK_TO_ROM;
+                    vTemp := vTemp + TO_INTEGER (XVGA + OFFSET_CLK_TO_ROM) - vEntityXPosition;
                     -- get RGB values form address
                     entityAdress <= (to_unsigned (vTemp, entityAdress'length));
                 END IF;

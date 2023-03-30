@@ -39,7 +39,7 @@ ENTITY Top IS
 		ENTITY_NUMMER_BIT_SIZE         : INTEGER := 8;
 		-- PIXEL COUNT
 		ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := 16;
-		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 16;
+		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 16 + 2;
 		-- Offsets
 		OFFSET_CLK_TO_VGA              : INTEGER := 6;
 		-- ROM
@@ -605,11 +605,11 @@ BEGIN
                 vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
                 IF (debugIn(2) = '1') THEN
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000011" & (to_unsigned (count * 16, 8)) & (to_unsigned (count*3, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000011" & (to_unsigned (count * 16, 8)) & (to_unsigned ((count / 16)*16, 8));
                 ELSIF (debugIn(3) = '1') THEN
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000001" & (to_unsigned (count * 16, 8)) & (to_unsigned (count*2, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000001" & (to_unsigned (count * 16, 8)) & (to_unsigned ((count / 16)*16, 8));
                 ELSE
-                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned ((count mod 9), 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned (count + 1, 8));
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned (((count + 1) mod 9), 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned ((count / 16)*16, 8));
                 END IF;
             END LOOP;
             

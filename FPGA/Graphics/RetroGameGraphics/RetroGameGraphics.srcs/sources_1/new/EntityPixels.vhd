@@ -83,6 +83,9 @@ BEGIN
 			-- default values for outputs, so output state is always defined
 			-- set address to all 1 so that it can be filterd by next component as an tranparent pixel
 			entityAdress <= (OTHERS => '1');
+			vEntityXPosition := 0;
+			vEntityYPosition := 0;
+			vTemp := 0;
 			
 			-- if all data not == 0 then do normal opertion otherwise let entityAdress stand on transparrent
 			if (dataVector((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0) /= 0) then
@@ -112,10 +115,10 @@ BEGIN
                     vTemp := vTemp * (ENTITY_PIXELS_HIGHT_AND_WITH * ENTITY_PIXELS_HIGHT_AND_WITH);
                     -- add y position of entity. Y position relative to start position of entity on screen;
                     vTemp := vTemp + ((TO_INTEGER (YVGA) - vEntityYPosition) * ENTITY_PIXELS_HIGHT_AND_WITH);
+--                    -- add offset to read from rom
+--                    vTemp := vTemp + OFFSET_CLK_TO_ROM;
                     -- add X value. X position relative to start position of entity on screen;
-                    vTemp := vTemp + TO_INTEGER (XVGA) - vEntityXPosition;
-                    -- add offset to read from rom
-                    vTemp := vTemp + OFFSET_CLK_TO_ROM;
+                    vTemp := vTemp + TO_INTEGER (XVGA + OFFSET_CLK_TO_ROM) - vEntityXPosition;
                     -- get RGB values form address
                     entityAdress <= (to_unsigned (vTemp, entityAdress'length));
                 END IF;
