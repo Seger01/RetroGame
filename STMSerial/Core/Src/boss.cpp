@@ -1,5 +1,5 @@
 #include "boss.h"
-void Boss::onCollide(Entity *object){
+void Boss::onCollide(CollidableObject *object){
 
 
 }

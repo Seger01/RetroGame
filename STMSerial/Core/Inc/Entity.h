@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "CollidableObject.h"
 //class tile {
 //private:
 //	uint8_t posY = 0;
@@ -17,12 +18,7 @@
 //		return height;
 //	}
 //};
-struct pointVector {
-	uint8_t X = 0;
-	uint8_t Y = 0;
-
-};
-class Entity
+class Entity : public CollidableObject
 {
 private:
 	uint8_t health = 1;
@@ -37,15 +33,16 @@ public:
 	Entity();
 	virtual ~Entity() {};
 	Entity(uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
-	pointVector getHalfSize();
+	pointVector getHalfSize() override;
+	bool isCollidable() override;
 	void stepX(int);
 	void stepY(int);
 	void moveX(int);
 	void moveY(int);
 	void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
-	uint8_t getX();
-	uint8_t getY();
+	uint8_t getPosX() override;
+	uint8_t getPosY() override;
 	uint8_t getWidth();
 	uint8_t getHeight();
 	uint8_t getSpeed();
@@ -53,9 +50,9 @@ public:
 	void setHealth(uint8_t);
 	uint8_t getHealth();
 	pointVector getPosition();
-	virtual bool checkEntities(Entity *object);
+	virtual bool checkEntities(CollidableObject *object);
 	virtual bool checkTiles(Tile *object);
-	virtual void onCollide(Entity *object);
+	virtual void onCollide(CollidableObject*object);
 	virtual void onDeath();
 	int getTexture();
 

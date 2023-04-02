@@ -16,22 +16,27 @@ Tile::~Tile() {
 	// TODO Auto-generated destructor stub
 	// do nothing
 }
-
+bool Tile::isCollidable() {
+	return isCollidable_;
+}
 Tile::Tile(uint8_t posX, uint8_t posY, uint8_t tileType, bool isCollidable, bool isSpawnpoint) {
 	this->posX = posX;
 	this->posY = posY;
 
 	this->tileType = tileType;
 
-	this->isCollidable = isCollidable;
+	this->isCollidable_ = isCollidable;
 	this->isSpawnpoint = isSpawnpoint;
 }
-
+pointVector Tile::getHalfSize() {
+	pointVector half = { 8,8 };
+	return half;
+};
 void Tile::setTileType(uint8_t type) {
 	this->tileType = type;
 }
 void Tile::setIsCollidable(bool isCollidable) {
-	this->isCollidable = isCollidable;
+	this->isCollidable_ = isCollidable;
 }
 
 uint8_t Tile::getTileType(){
@@ -39,7 +44,7 @@ uint8_t Tile::getTileType(){
 }
 
 bool Tile::getIsCollidable(){
-	return this->isCollidable;
+	return this->isCollidable_;
 }
 
 bool Tile::getIsSpawnpoint(){

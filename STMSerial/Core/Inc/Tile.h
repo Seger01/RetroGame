@@ -8,26 +8,24 @@
 #ifndef SRC_TILE_H_
 #define SRC_TILE_H_
 
-#include "main.h"
 #include <cstdint>
+#include "CollidableObject.h"
 //#include "cmsis_os.h"
 
-class Tile {
+class Tile : public CollidableObject {
 public:
 	Tile();
 	Tile(uint8_t posX, uint8_t posY, uint8_t tileType, bool isCollidable, bool isSpawnpoint);
 	virtual ~Tile();
-
 	void setTileType(uint8_t type);
 	void setIsCollidable (bool isCollidable);
-
+	bool isCollidable() override;
+	uint8_t getPosX() override;
+	uint8_t getPosY() override;
+	pointVector getHalfSize() override;
 	uint8_t getTileType();
 	bool getIsCollidable();
 	bool getIsSpawnpoint();
-
-	uint8_t getPosX();
-	uint8_t getPosY();
-
 
 private:
 	uint8_t posX = 0;
@@ -35,7 +33,7 @@ private:
 
 	uint8_t tileType = 0;
 
-	bool isCollidable = false;
+	bool isCollidable_ = false;
 	bool isSpawnpoint = false;
 };
 

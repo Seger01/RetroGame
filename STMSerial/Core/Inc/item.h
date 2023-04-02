@@ -7,6 +7,6 @@ private:
     int itemType;
 public:
 
-    void onCollide(Entity *object) override;
+    void onCollide(CollidableObject *object) override;
 };
 

@@ -1,4 +1,4 @@
 #include "item.h"
-void Item::onCollide(Entity *object) {
+void Item::onCollide(CollidableObject *object) {
 
 }

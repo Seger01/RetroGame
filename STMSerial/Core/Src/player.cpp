@@ -4,9 +4,10 @@ Player::Player(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t heal
 {
 
 }
-void Player::onCollide(Entity *object) {
+void Player::onCollide(CollidableObject *object) {
+	Entity* entityptr = dynamic_cast<Enemy*>(object);
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
-		this->setHealth(this->getHealth() - object->getStrength());
+		this->setHealth(this->getHealth() - entityptr->getStrength());
 		this->invincible = true;
 	}
 	else if (dynamic_cast<Item*>(object)) {

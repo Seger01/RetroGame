@@ -5,9 +5,10 @@
 uint8_t Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }
-void Enemy::onCollide(Entity *object) {
-	if (dynamic_cast<Player*>(object)) {
-		object->setHealth(object->getHealth() - this->getStrength());
+void Enemy::onCollide(CollidableObject *object) {
+	Entity* entityptr = dynamic_cast<Player*>(object);
+	if (dynamic_cast<Player*>(entityptr)) {
+		entityptr->setHealth(entityptr->getHealth() - this->getStrength());
 
 	}
 	else if (dynamic_cast<Enemy*>(object)) {
@@ -31,11 +32,13 @@ pointVector Enemy::getDirection() {
 void Enemy::decrementRemainingSteps() {
 	stepsRemaining--;
 }
-bool Enemy::checkEntities(Entity *object) {
+bool Enemy::checkEntities(CollidableObject *object) {
 	if (dynamic_cast<Item*>(object)) {
 		return false;
 	}
-	pointVector otherPosition = object->getPosition();
+	pointVector otherPosition;
+	otherPosition.X = object->getPosX();
+	otherPosition.Y = object->getPosY();
 	pointVector otherHalfsize = object->getHalfSize();
 	pointVector thisPosition = this->getPosition();
 	pointVector thisHalfsize = this->getHalfSize();
