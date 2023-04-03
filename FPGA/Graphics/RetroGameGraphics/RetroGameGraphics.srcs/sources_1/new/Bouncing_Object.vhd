@@ -384,28 +384,13 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 
 	-- VGA
 	SIGNAL Xcount, Ycount        : unsigned(9 DOWNTO 0); -- VGA current pixel number
-	-- Communication
+	-- Communication                                   HUD bits        +       entity + player + boss
 	SIGNAL EntityData            : STD_LOGIC_VECTOR( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 
     -- background
     -- vector with map tile numbers		-- tile number starting top left going left to richt and down
     SIGNAL tileVector  : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
     
-    
---    SIGNAL XpicelVGA, YpicelVGA : STD_LOGIC_VECTOR(9 DOWNTO 0);
---    SIGNAL VGAcolorR, VGAcolorG, VGAcolorB : STD_LOGIC_VECTOR(3 DOWNTO 0);
---    -- sprite
---    SIGNAL sDebug : STD_LOGIC_VECTOR(5 DOWNTO 0);
---    SIGNAL sDCounter : INTEGER RANGE 0 TO 64;
---    SIGNAL sTest : STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
---    SIGNAL sTestData : STD_LOGIC_VECTOR(((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
---    SIGNAL iTestCounter : INTEGER RANGE 0 TO 100000002;
-
---    SIGNAL BackgroundColorR : STD_LOGIC_VECTOR(3 DOWNTO 0);
---    SIGNAL BackgroundColorG : STD_LOGIC_VECTOR(3 DOWNTO 0);
---    SIGNAL BackgroundColorB : STD_LOGIC_VECTOR(3 DOWNTO 0);
-
---    SIGNAL sDebugTileNumberVector : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
 
 --    signal syncClk : std_logic;
 --    signal syncData : std_logic;

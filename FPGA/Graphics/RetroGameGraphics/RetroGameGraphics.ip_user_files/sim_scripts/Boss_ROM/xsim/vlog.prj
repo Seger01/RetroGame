@@ -1,6 +1,0 @@
-verilog xil_defaultlib  \
-"../../../../../../../../../workspace/VIVADO/RetroGameGraphics/RetroGameGraphics/RetroGameGraphics.gen/sources_1/ip/Boss_ROM/sim/Boss_ROM.v" \
-
-verilog xil_defaultlib "glbl.v"
-
-nosort
