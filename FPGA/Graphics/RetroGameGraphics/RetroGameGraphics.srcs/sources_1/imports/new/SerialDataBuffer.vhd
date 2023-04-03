@@ -38,10 +38,6 @@ entity SerialDataBuffer is
 		hudData    : out STD_LOGIC_VECTOR (24 - 1 downto 0));
 end SerialDataBuffer;
 architecture Behavioral of SerialDataBuffer is
-	signal tileDataBuffer     : STD_LOGIC_VECTOR(2400 - 1 downto 0);
-	signal entityDataBuffer   : STD_LOGIC_VECTOR (1200 - 1 downto 0);
-	signal soundDataBuffer    : STD_LOGIC_VECTOR(8 - 1 downto 0);
-	signal hudDataBuffer      : STD_LOGIC_VECTOR (24 - 1 downto 0);
 begin
 	process (clk100Mhz, sysReset)
 	begin
@@ -50,31 +46,19 @@ begin
 			entityData         <= (others => '0');
 			soundData          <= (others => '0');
 			hudData            <= (others => '1');
-			tileDataBuffer     <= (others => '0');
-			entityDataBuffer   <= (others => '0');
-			soundDataBuffer    <= (others => '0');
-			hudDataBuffer      <= (others => '1');
 		elsif (rising_edge(clk100Mhz)) then
 			-- store tile data and entity data
-			tileData         <= tileDataBuffer;
-			tileDataBuffer   <= tileDataBuffer;
-			entityData       <= entityDataBuffer;
-			entityDataBuffer <= entityDataBuffer;
-			soundData        <= soundDataBuffer;
-			soundDataBuffer  <= soundDataBuffer;
-			hudData          <= hudDataBuffer;
-			hudDataBuffer    <= hudDataBuffer;
+			tileData           <= (others => '0');
+			entityData         <= (others => '0');
+			soundData          <= (others => '0');
+			hudData            <= (others => '1');
 			if (serialData(7 downto 0) = x"FF") then
 				-- read tiles
-				tileDataBuffer <= serialData(2408 - 1 downto 8);
 				tileData       <= serialData(2408 - 1 downto 8);
 				-- read entity
 				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
-				entityDataBuffer <= serialData(2400+ 1208 - 1 downto 2400+ 8);
 				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
-				soundDataBuffer  <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
 				hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
-				hudDataBuffer    <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
 			end if;
 		else
 		end if;
