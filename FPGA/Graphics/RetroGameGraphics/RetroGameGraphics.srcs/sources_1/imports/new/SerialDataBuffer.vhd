@@ -31,7 +31,7 @@ entity SerialDataBuffer is
 	(
 		clk100Mhz  : in  STD_LOGIC;
 		sysReset   : in  STD_LOGIC;
-		serialData : in  STD_LOGIC_VECTOR (1240+ 2408 - 1 downto 0);
+		serialData : in  STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
 		tileData   : out STD_LOGIC_VECTOR (2400 - 1 downto 0);
 		entityData : out STD_LOGIC_VECTOR (1200 - 1 downto 0);
 		soundData  : out STD_LOGIC_VECTOR (8 - 1 downto 0);
