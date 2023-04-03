@@ -396,10 +396,10 @@ void startSend(void *argument) {
 
 	for (;;) {
 		static long long lastFrameUpdate = 0;
-		if (xTaskGetTickCount() >= lastFrameUpdate + 33) {
+		//if (xTaskGetTickCount() >= lastFrameUpdate + 33) {
 			lastFrameUpdate = xTaskGetTickCount();
 			game.run();
-		}
+		//}
 
 	}
 	/* USER CODE END 5 */

@@ -45,6 +45,7 @@ void Game::setup() {
 }
 
 void Game::run() {
+
 	static long long lastShot = 0;
 	static long long lastLevelSwitch = 0;
 
@@ -92,8 +93,7 @@ void Game::run() {
 			}
 		}
 
-		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
-				playerShoot);
+		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
 
 		if (entityUpdate) {
 			entityManager->updateEntities();
