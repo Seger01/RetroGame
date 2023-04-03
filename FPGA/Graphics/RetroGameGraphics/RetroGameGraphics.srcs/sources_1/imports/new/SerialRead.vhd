@@ -51,7 +51,7 @@ ARCHITECTURE Behavioral OF SerialRead IS
     end component SerialReader;
 
     signal received_data : STD_LOGIC_VECTOR (2408 -1 downto 0) := (others => '0');
-    signal bit_counter : unsigned(10 downto 0);
+    signal bit_counter : unsigned(11 downto 0);
 
     signal readDataFlag : STD_LOGIC := '0';
 
