@@ -1,0 +1,6 @@
+verilog xil_defaultlib  \
+"../../../../RetroGameGraphics.gen/sources_1/ip/Background_ROM_1/sim/Background_ROM.v" \
+
+verilog xil_defaultlib "glbl.v"
+
+nosort

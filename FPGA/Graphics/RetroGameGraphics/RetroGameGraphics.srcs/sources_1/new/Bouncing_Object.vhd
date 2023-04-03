@@ -1,36 +1,85 @@
+----------------------------------------------------------------------------------
+-- Company:         -
+-- Engineer:        Martijn Kamphof
+-- 
+-- Create Date:     07.03.2023 10:19:45
+-- Design Name: 
+-- Module Name:     Top - Behavioral
+-- Project Name:    Retro Game
+-- Target Devices:  Digilent Basys 3
+-- Tool Versions:   Vivado 2022.1
+-- Description: 
+-- 
+-- Dependencies: 
+-- 
+-- Revision:
+-- Revision 0.01:    File Created
+-- Additional Comments:
+----------------------------------------------------------------------------------
 
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 USE IEEE.NUMERIC_STD.ALL;
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
+
 ENTITY Bouncing_Object IS
     GENERIC
 (
+		-- ColorOutputSelector
+		RGB_INPUT_AMOUNT               : INTEGER := 5;
+		RGB_BIT_AMOUNT           	   : INTEGER := 12;
+		RGB_TRANSPARENT_VALUE          : INTEGER := 16#000#;
+		-- VGA, size of visible part screen
+		HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
+		VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
+		SCREAN_WIDTH                   : INTEGER := 640;
+		SCREAN_HIGHT                   : INTEGER := 480;
+		-- ENTITY SIZE
+		ENTITY_X_BIT_SIZE              : INTEGER := 8;
+		ENTITY_Y_BIT_SIZE              : INTEGER := 8;
+		ENTITY_NUMMER_BIT_SIZE         : INTEGER := 8;
+		-- PIXEL COUNT
+		ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := 16;
+		PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 16 + 2;
+		-- Offsets
+		OFFSET_CLK_TO_VGA              : INTEGER := 6;
+		-- ROM
+		OFFSET_CLK_TO_ROM              : INTEGER := 2;
+		-- vga
+		PIXEL_SCALING                  : INTEGER := 2;
+		-- EntityPixels
+		PLAYER_ROM_ADRESS_BIT_SIZE     : INTEGER := 12;
+        PLAYER_INDEX_BIT_SIZE          : INTEGER := 8;
+        PLAYER_PALLET_BIT_SIZE         : INTEGER := 11;
+		BOSS_ROM_ADRESS_BIT_SIZE       : INTEGER := 12;
+        BOSS_INDEX_BIT_SIZE             : INTEGER := 8;
+        BOSS_PALLET_BIT_SIZE            : INTEGER := 11;
+		BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := 14; -- TODO: ADD TO REST
+        BACKGROUND_INDEX_BIT_SIZE          : INTEGER := 8;
+        BACKGROUND_PALLET_BIT_SIZE         : INTEGER := 11;
+		ENTITY_ROM_ADRESS_BIT_SIZE     : INTEGER := 12;
+        ENTITY_INDEX_BIT_SIZE          : INTEGER := 8;
+        ENTITY_PALLET_BIT_SIZE         : INTEGER := 11;
+		HUD_ROM_ADRESS_BIT_SIZE        : INTEGER := 12;
+        HUD_INDEX_BIT_SIZE              : INTEGER := 8;
+        HUD_PALLET_BIT_SIZE             : INTEGER := 11;
+        HUD_VECTOR_BIT_SIZE             : INTEGER := 24;
+		-- 
+		ENTITY_AMOUNT                  : INTEGER := 48;	
         -- amount of tiles visible on screan
-        ENTITY_AMOUNT          : INTEGER := 50;
-        ENTITY_X_BIT_SIZE      : INTEGER := 8;
-        ENTITY_Y_BIT_SIZE      : INTEGER := 8;
-        ENTITY_NUMMER_BIT_SIZE : INTEGER := 8;
-        -- amount of tiles visible on screan
-        TILE_AMOUNT                    : INTEGER := (15 * 15);
+        TILE_AMOUNT                    : INTEGER := (20 * 15);
         TILE_AMOUNT_HIGHT              : INTEGER := 15;
-        TILE_AMOUNT_WITH               : INTEGER := 15;
+        TILE_AMOUNT_WITH               : INTEGER := 20;            
         -- amount of bit to identify one tile
-        TILE_NUMBER_SIZE               : INTEGER := 8
+        TILE_NUMBER_SIZE               : INTEGER := 8;
+        TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16
     );
     PORT
 (
-        debugIn          : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
-        debugOut         : OUT STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
+		debugIn       : IN  unsigned(15 DOWNTO 0); -- Debug switches
+		debugOut      : OUT unsigned(15 DOWNTO 0); -- Debug Leds
         reset            : IN  STD_LOGIC;
         clk_100MHz       : IN  STD_LOGIC;
-        red, green, blue : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-        locked           : OUT STD_LOGIC;
+		RGBout           : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
         hsync, vsync     : OUT STD_LOGIC;
 
         serialClkIn : in STD_LOGIC;
@@ -38,64 +87,250 @@ ENTITY Bouncing_Object IS
     );
 END Bouncing_Object;
 ARCHITECTURE Behavioral OF Bouncing_Object IS
-    COMPONENT VGA IS
-        PORT
-(
-            reset, clk25              : IN  STD_LOGIC;
-            inRed, inGreen, inBlue    : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
-            outRed, outGreen, outBlue : OUT STD_LOGIC_VECTOR(3 DOWNTO 0);
-            Xcount, Ycount            : OUT STD_LOGIC_VECTOR(9 DOWNTO 0);
-            hsync, vsync              : OUT STD_LOGIC
+    COMPONENT prescaler is
+      Port ( 
+        clk_25MHz : out STD_LOGIC;
+        reset : in STD_LOGIC;
+        locked : out STD_LOGIC;
+        clk_100MHz : in STD_LOGIC
+      );    
+    end COMPONENT;
+	COMPONENT ColorOutputSelector IS
+		GENERIC
+		(
+			--
+			RGB_INPUT_AMOUNT      : INTEGER := RGB_INPUT_AMOUNT;
+			RGB_BIT_AMOUNT  	  : INTEGER := RGB_BIT_AMOUNT;
+			RGB_TRANSPARENT_VALUE : INTEGER := RGB_TRANSPARENT_VALUE
+		);
+		PORT
+		(
+			-- inputs
+			clk    : IN  STD_LOGIC;
+			-- Lowest position in RGBin vector is given the highest priorety.
+            RGBin  : IN  unsigned(RGB_BIT_AMOUNT * RGB_INPUT_AMOUNT - 1 DOWNTO 0); 
+			RGBout : OUT unsigned(RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
+	COMPONENT VGA IS
+		GENERIC
+		(
+			-- size of visible part screen
+			HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144; --todo:add to global and map generic
+			VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
+            RGB_BIT_AMOUNT   : INTEGER := 31
         );
-    END COMPONENT;
-    COMPONENT prescaler IS
-        PORT
-(
-            clk_25MHz  : OUT STD_LOGIC;
-            reset      : IN  STD_LOGIC;
-            locked     : OUT STD_LOGIC;
-            clk_100MHz : IN  STD_LOGIC
-        );
-    END COMPONENT;
-    COMPONENT BackGroundPixels IS
         PORT (
-            debugIn          : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
-            debugOut         : OUT STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
-            -- inputs
-            reset, clk       : IN  STD_LOGIC;
-            -- VGA module connections
-            Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
-            -- vector with map tile numbers		-- tile number starting top left going left to richt and down
-            tileNumberVector : IN  STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
-            Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+            reset, clk_25  : IN  STD_LOGIC;
+            RGBin          : IN  unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
+            RGBout         : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
+            Xcount, Ycount : OUT unsigned(9 DOWNTO 0);
+            hsync, vsync   : OUT STD_LOGIC
         );
-    END COMPONENT;
-    COMPONENT EntityPixels IS
-        GENERIC
-(
+	END COMPONENT;
+	COMPONENT PlayerPixels IS
+		GENERIC
+        (
+            -- VGA, start visible part of screen
+            HORIZONTAL_COUNT_VISIBLE_START : INTEGER := 144;
+            VERTICAL_COUNT_VISIBLE_START   : INTEGER := 31;
+            -- total visible screen
+            SCREAN_WIDTH                   : INTEGER := 640;
+            SCREAN_HIGHT                   : INTEGER := 480;
+            -- ENTITY SIZE
+            ENTITY_X_BIT_SIZE              : INTEGER := 8;
+            ENTITY_Y_BIT_SIZE              : INTEGER := 8;
+            ENTITY_NUMMER_BIT_SIZE         : INTEGER := 8;
+            -- PIXEL COUNT
+            ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := 16;
+            PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := 16 + 16 + 8;
+            -- Offsets
+            OFFSET_CLK_TO_VGA              : INTEGER := 5;
+            -- ROM
+            OFFSET_CLK_TO_ROM              : INTEGER := 2;
+            -- vga
+            PIXEL_SCALING                  : INTEGER := 2;
+            -- EntityPixels
+            PLAYER_ROM_ADRESS_BIT_SIZE     : INTEGER := 7;
+            INDEX_BIT_SIZE                 : INTEGER := 11;
+            PALLET_BIT_SIZE                : INTEGER := 11;
+            RGB_BIT_AMOUNT                 : INTEGER := 12
+        );
+        PORT (
+            debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
+            debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
+            -- inputs
+            reset, clk     : IN  STD_LOGIC;
+            -- x, y position, entity nuber
+            dataVector     : IN  unsigned((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
+            -- VGA module connections
+            Xcount, Ycount : IN  unsigned(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
+            RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+        );
+	END COMPONENT;
+	COMPONENT BossPixels IS
+		GENERIC
+		(
+			-- size of visible part screen
+			HORIZONTAL_COUNT_VISIBLE_START : INTEGER := HORIZONTAL_COUNT_VISIBLE_START;
+			VERTICAL_COUNT_VISIBLE_START   : INTEGER := VERTICAL_COUNT_VISIBLE_START;
+			SCREAN_WIDTH                   : INTEGER := SCREAN_WIDTH;
+			SCREAN_HIGHT                   : INTEGER := SCREAN_HIGHT;
+			-- ENTITY SIZE
+			ENTITY_X_BIT_SIZE              : INTEGER := ENTITY_X_BIT_SIZE;
+			ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
+			ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE;
+			-- PIXEL COUNT
+			ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := ENTITY_PIXELS_HIGHT_AND_WITH;
+			PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := PLAYFIELD_PIXELS_START_OFFSET;
+			-- Offsets
+			OFFSET_CLK_TO_VGA              : INTEGER := OFFSET_CLK_TO_VGA;
+			-- ROM
+			OFFSET_CLK_TO_ROM              : INTEGER := OFFSET_CLK_TO_ROM;
+			-- vga
+			PIXEL_SCALING                  : INTEGER := PIXEL_SCALING;
+			-- EntityPixels
+			BOSS_ROM_ADRESS_BIT_SIZE       : INTEGER := BOSS_ROM_ADRESS_BIT_SIZE;
+            INDEX_BIT_SIZE                 : INTEGER := 3;
+            PALLET_BIT_SIZE                : INTEGER := 11;
+            RGB_BIT_AMOUNT                 : INTEGER := 12
+		);
+		PORT (
+			debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
+			debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
+			-- inputs
+			reset, clk     : IN  STD_LOGIC;
+			-- x, y position, entity nuber
+			dataVector     : IN  unsigned((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
+			-- VGA module connections
+			Xcount, Ycount : IN  unsigned(9 DOWNTO 0);                           -- VGA current pixel number todo: add ofset
+            RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
+	COMPONENT BackgroundPixels IS
+		GENERIC
+		(
+			-- size of visible part screen
+			HORIZONTAL_COUNT_VISIBLE_START : INTEGER := HORIZONTAL_COUNT_VISIBLE_START;
+			VERTICAL_COUNT_VISIBLE_START   : INTEGER := VERTICAL_COUNT_VISIBLE_START;
+			-- total visible screen
+			SCREAN_WIDTH                   : INTEGER := SCREAN_WIDTH;
+			SCREAN_HIGHT                   : INTEGER := SCREAN_HIGHT;
             -- amount of tiles visible on screan
-            ENTITY_AMOUNT          : INTEGER := ENTITY_AMOUNT;
-            ENTITY_X_BIT_SIZE      : INTEGER := ENTITY_X_BIT_SIZE;
-            ENTITY_Y_BIT_SIZE      : INTEGER := ENTITY_Y_BIT_SIZE;
-            ENTITY_NUMMER_BIT_SIZE : INTEGER := ENTITY_NUMMER_BIT_SIZE
-        );
-        PORT
-(
-            debugIn          : IN  STD_LOGIC_VECTOR(15 DOWNTO 0); -- Debug switches
-            debugOut         : OUT STD_LOGIC_VECTOR(14 DOWNTO 0); -- Debug Leds
-            -- inputs
-            reset, clk       : IN  STD_LOGIC;
-            -- sprite RGB data
-            -- Bit 7 6 5 4 3 2 1 0
-            -- Data R R R G G G B B
-            -- vector with all entity data
-            dataVector       : IN  STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
-            Rin, Gin, Bin    : IN  STD_LOGIC_VECTOR(3 DOWNTO 0);
-            -- VGA module connections
-            Xcount, Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0); -- VGA current pixel number todo: add ofset
-            Rout, Gout, Bout : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
-        );
-    END COMPONENT;
+            TILE_AMOUNT                    : INTEGER := TILE_AMOUNT;
+            TILE_AMOUNT_HIGHT              : INTEGER := TILE_AMOUNT_HIGHT;
+            TILE_AMOUNT_WITH               : INTEGER := TILE_AMOUNT_WITH;            
+--			-- ENTITY SIZE
+--			ENTITY_X_BIT_SIZE              : INTEGER := ENTITY_X_BIT_SIZE;
+--			ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
+--			ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE;
+			PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := PLAYFIELD_PIXELS_START_OFFSET;
+            -- amount of bit to identify one tile
+            TILE_NUMBER_SIZE               : INTEGER := TILE_NUMBER_SIZE;
+            TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := TILE_PIXEL_HIGHT_AND_WITH;
+			-- Offsets
+			OFFSET_CLK_TO_VGA              : INTEGER := OFFSET_CLK_TO_VGA;
+			-- ROM
+			OFFSET_CLK_TO_ROM              : INTEGER := OFFSET_CLK_TO_ROM;
+			-- vga
+			PIXEL_SCALING                  : INTEGER := PIXEL_SCALING;
+			-- EntityPixels
+			BACKGROUND_ROM_ADRESS_BIT_SIZE : INTEGER := BACKGROUND_ROM_ADRESS_BIT_SIZE;
+            INDEX_BIT_SIZE                 : INTEGER := 3;
+            PALLET_BIT_SIZE                : INTEGER := 11;
+            RGB_BIT_AMOUNT                 : INTEGER := 12
+	);
+	PORT (
+        debugIn          : IN  UNSIGNED(15 DOWNTO 0); -- Debug switches
+        debugOut         : OUT UNSIGNED(15 DOWNTO 0); -- Debug Leds
+		-- inputs
+		reset, clk    : IN  STD_LOGIC;
+		-- VGA module connections
+		Xcount, Ycount   : IN  UNSIGNED(9 DOWNTO 0);-- VGA current pixel number todo: add ofset
+		-- vector with map tile numbers		-- tile number starting top left going left to richt and down
+		tileNumberVector  : IN UNSIGNED((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
+        RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+	);
+	END COMPONENT;
+	COMPONENT Entitys IS
+		GENERIC
+		(
+			-- size of visible part screen
+			HORIZONTAL_COUNT_VISIBLE_START : INTEGER := HORIZONTAL_COUNT_VISIBLE_START;
+			VERTICAL_COUNT_VISIBLE_START   : INTEGER := VERTICAL_COUNT_VISIBLE_START;
+			SCREAN_WIDTH                   : INTEGER := SCREAN_WIDTH;
+			SCREAN_HIGHT                   : INTEGER := SCREAN_HIGHT;
+			-- ENTITY SIZE
+			ENTITY_X_BIT_SIZE              : INTEGER := ENTITY_X_BIT_SIZE;
+			ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
+			ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE;
+			-- PIXEL COUNT
+			ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := ENTITY_PIXELS_HIGHT_AND_WITH;
+			PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := PLAYFIELD_PIXELS_START_OFFSET;
+			-- Offsets
+			OFFSET_CLK_TO_VGA              : INTEGER := OFFSET_CLK_TO_VGA;
+			-- ROM
+			OFFSET_CLK_TO_ROM              : INTEGER := OFFSET_CLK_TO_ROM;
+			-- vga
+			PIXEL_SCALING                  : INTEGER := PIXEL_SCALING;
+			-- EntityPixels
+			ENTITY_ROM_ADRESS_BIT_SIZE     : INTEGER := ENTITY_ROM_ADRESS_BIT_SIZE;
+            ENTITY_AMOUNT                  : INTEGER := ENTITY_AMOUNT;
+            INDEX_BIT_SIZE                 : INTEGER := 3;
+            PALLET_BIT_SIZE                : INTEGER := 11;
+            RGB_BIT_AMOUNT                 : INTEGER := 12
+		);
+		PORT (
+			debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
+			debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
+			-- inputs
+			reset, clk     : IN  STD_LOGIC;
+			-- x, y position, entity nuber
+		    dataVector     : IN  unsigned(ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
+			-- VGA module connections
+			Xcount, Ycount : IN  unsigned(9 DOWNTO 0);                           -- VGA current pixel number todo: add ofset
+            RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
+	COMPONENT HUDPixels IS
+		GENERIC
+		(
+			-- size of visible part screen
+			HORIZONTAL_COUNT_VISIBLE_START : INTEGER := HORIZONTAL_COUNT_VISIBLE_START;
+			VERTICAL_COUNT_VISIBLE_START   : INTEGER := VERTICAL_COUNT_VISIBLE_START;
+			SCREAN_WIDTH                   : INTEGER := SCREAN_WIDTH;
+			SCREAN_HIGHT                   : INTEGER := SCREAN_HIGHT;
+			-- ENTITY SIZE
+			ENTITY_X_BIT_SIZE              : INTEGER := ENTITY_X_BIT_SIZE;
+			ENTITY_Y_BIT_SIZE              : INTEGER := ENTITY_Y_BIT_SIZE;
+			ENTITY_NUMMER_BIT_SIZE         : INTEGER := ENTITY_NUMMER_BIT_SIZE;
+			-- PIXEL COUNT
+			ENTITY_PIXELS_HIGHT_AND_WITH   : INTEGER := ENTITY_PIXELS_HIGHT_AND_WITH;
+			PLAYFIELD_PIXELS_START_OFFSET  : INTEGER := PLAYFIELD_PIXELS_START_OFFSET;
+			-- Offsets
+			OFFSET_CLK_TO_VGA              : INTEGER := OFFSET_CLK_TO_VGA;
+			-- ROM
+			OFFSET_CLK_TO_ROM              : INTEGER := OFFSET_CLK_TO_ROM;
+			-- vga
+			PIXEL_SCALING                  : INTEGER := PIXEL_SCALING;
+			-- EntityPixels
+			HUD_ROM_ADRESS_BIT_SIZE        : INTEGER := HUD_ROM_ADRESS_BIT_SIZE;
+            INDEX_BIT_SIZE                 : INTEGER := 3;
+            PALLET_BIT_SIZE                : INTEGER := 11;
+            RGB_BIT_AMOUNT                 : INTEGER := 12
+		);
+		PORT (
+			debugIn        : IN  unsigned(15 DOWNTO 0); -- Debug switches
+			debugOut       : OUT unsigned(15 DOWNTO 0); -- Debug Leds
+			-- inputs
+			reset, clk     : IN  STD_LOGIC;
+			-- x, y position, entity nuber
+			dataVector     : IN  unsigned((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - 1 DOWNTO 0);
+			-- VGA module connections
+			Xcount, Ycount : IN  unsigned(9 DOWNTO 0);                           -- VGA current pixel number todo: add ofset
+            RGBOut         : OUT unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0)
+		);
+	END COMPONENT;
 
     component SerialRead IS
         PORT (
@@ -103,115 +338,292 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
             dataInExternal : IN STD_LOGIC;
             clk_100Mhz : IN STD_LOGIC;
             sysReset : IN STD_LOGIC;
-            serialData : OUT STD_LOGIC_VECTOR (1808 -1 DOWNTO 0)
+		    serialData : OUT STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0)
         );
     END component SerialRead;
 
     component SerialDataBuffer is
         Port ( clk100Mhz : in STD_LOGIC;
              sysReset : in STD_LOGIC;
-             serialData : in STD_LOGIC_VECTOR (1808 -1 downto 0);
-             tileData : out STD_LOGIC_VECTOR (1800 -1 downto 0);
+		     serialData : in  STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
+             tileData : out STD_LOGIC_VECTOR (2400 -1 downto 0);
              entityData : out STD_LOGIC_VECTOR (1200 -1 downto 0);
              soundData : out STD_LOGIC_VECTOR (8 -1 downto 0);
              hudData : out STD_LOGIC_VECTOR (24 -1 downto 0));
     end component SerialDataBuffer;
 
 
-    SIGNAL clk_25 : STD_LOGIC;
-    SIGNAL XpicelVGA, YpicelVGA : STD_LOGIC_VECTOR(9 DOWNTO 0);
-    SIGNAL VGAcolorR, VGAcolorG, VGAcolorB : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    -- sprite
-    SIGNAL sDebug : STD_LOGIC_VECTOR(5 DOWNTO 0);
-    SIGNAL sDCounter : INTEGER RANGE 0 TO 64;
-    SIGNAL sTest : STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
-    SIGNAL sTestData : STD_LOGIC_VECTOR(((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
-    SIGNAL iTestCounter : INTEGER RANGE 0 TO 100000002;
-
-    SIGNAL BackgroundColorR : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL BackgroundColorG : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    SIGNAL BackgroundColorB : STD_LOGIC_VECTOR(3 DOWNTO 0);
-
-    SIGNAL sDebugTileNumberVector : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
-
-    signal syncClk : std_logic;
-    signal syncData : std_logic;
-    signal serialData : STD_LOGIC_VECTOR(1808 -1 downto 0);
+    --clk
+    SIGNAL clk_25             : std_logic;
     
-    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
-    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);
+	-- Debug
+	SIGNAL debugOutP             : unsigned(15 DOWNTO 0);
+	SIGNAL debugOutB             : unsigned(15 DOWNTO 0);
+	SIGNAL debugOutBG             : unsigned(15 DOWNTO 0);
+	SIGNAL debugOutE             : unsigned(15 DOWNTO 0);
+	SIGNAL debugOutH             : unsigned(15 DOWNTO 0);	
+	SIGNAL debugOutLocked             : std_logic;	
+	
+	-- non optimalized COE address to read has extra bit to indicate transparantcy
+	SIGNAL Player_Select_Adress  : unsigned (PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+	SIGNAL Boss_Select_Adress    : unsigned (BOSS_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+	SIGNAL Background_Select_Adress    : unsigned (BACKGROUND_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+	-- todo: vector for Entity
+	SIGNAL HUD_Select_Adress     : unsigned (HUD_ROM_ADRESS_BIT_SIZE DOWNTO 0);
+	
+	-- COE Output
+    SIGNAL Player_COE_Color     : unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0);
+    SIGNAL Boss_COE_Color     : unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0);
+    SIGNAL Background_COE_Color   : unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0);-- todo rest
+    SIGNAL Entity_COE_Color     : unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0);
+    SIGNAL HUD_COE_Color        : unsigned (RGB_BIT_AMOUNT - 1 DOWNTO 0);
+
+	-- optimalized COE RGB output
+	-- Lowest position in RGBin vector is given the highest priorety.
+	SIGNAL COE_RGB               : unsigned(RGB_BIT_AMOUNT * RGB_INPUT_AMOUNT - 1 DOWNTO 0); -- todo hang aan rom
+	SIGNAL Mixed_RGB_Value       : unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
+
+	-- VGA
+	SIGNAL Xcount, Ycount        : unsigned(9 DOWNTO 0); -- VGA current pixel number
+	-- Communication                                 entity + player + boss
+	SIGNAL EntityData            : STD_LOGIC_VECTOR(((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+
+    -- background
+    -- vector with map tile numbers		-- tile number starting top left going left to richt and down
+    SIGNAL tileVector  : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
+    
+
+--    signal syncClk : std_logic;
+--    signal syncData : std_logic;
+    signal serialData : STD_LOGIC_VECTOR(1240 + 2400 -1 downto 0);
+    
+--    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
+--    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);
     signal soundData : STD_LOGIC_VECTOR(8 -1 downto 0);
     signal hudData : STD_LOGIC_VECTOR (24 -1 downto 0);
 
-    FUNCTION to_std_logic(i : IN INTEGER) RETURN STD_LOGIC IS
-    BEGIN
-        IF i = 0 THEN
-            RETURN '0';
-        END IF;
-        RETURN '1';
-    END FUNCTION;
 BEGIN
-    -- map ports
-    VGA0 : VGA
-        PORT MAP
-(
-            reset    => reset,
-            clk25    => clk_25,
-            inRed    => VGAcolorR,
-            inGreen  => VGAcolorG,
-            inBlue   => VGAcolorB,
-            outRed   => red,
-            outGreen => green,
-            outBlue  => blue,
-            Xcount   => XpicelVGA,
-            Ycount   => YpicelVGA,
-            hsync    => hsync,
-            vsync    => vsync
-        );
-    -- map ports
-    prescaler0 : prescaler
-        PORT
- MAP
-(
-            clk_25MHz => clk_25,
-            reset => reset,
-            locked => locked,
-            clk_100MHz => clk_100MHz
-        );
-    -- map ports
-    BackGroundPixels0 : BackGroundPixels
-        PORT MAP
-(
-        debugIn => debugIn,
-        debugOut => debugOut,
-        reset => reset,
-        clk  => clk_25,
-        Xcount => XpicelVGA,
-        Ycount => YpicelVGA,
-        tileNumberVector => tileData,
-        Rout => BackgroundColorR,
-        Gout => BackgroundColorG,
-        Bout => BackgroundColorB
-    );
-	EntityPixels0 : EntityPixels
-	PORT
-	MAP
-	(
-        debugIn => debugIn,
-        debugOut => debugOut,
-        reset => reset,
-        clk => clk_25,
-        dataVector => entityData,
-        Xcount => XpicelVGA,
-        Ycount => YpicelVGA,
-        Rin => BackgroundColorR,
-        Gin => BackgroundColorG,
-        Bin => BackgroundColorB, 
-        Rout => VGAcolorR,
-        Gout => VGAcolorG,
-        Bout => VGAcolorB
+	clk_wiz_00: prescaler	PORT MAP(
+		clk_25MHz     => clk_25,
+		reset       => reset,
+		locked  => debugOutLocked,
+		clk_100MHz => clk_100MHz
 	);
-	
+	ColorOutputSelector0 : ColorOutputSelector GENERIC MAP(
+		RGB_INPUT_AMOUNT => RGB_INPUT_AMOUNT,
+		RGB_BIT_AMOUNT => RGB_BIT_AMOUNT,
+		RGB_TRANSPARENT_VALUE => RGB_TRANSPARENT_VALUE
+	)PORT MAP(
+		clk    => clk_25,
+		-- Lowest position in RGBin vector is given the highest priorety.		
+		RGBin  => COE_RGB,
+		RGBout => Mixed_RGB_Value
+	);
+	VGA0 : VGA  GENERIC MAP(
+		HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
+		VERTICAL_COUNT_VISIBLE_START => VERTICAL_COUNT_VISIBLE_START,
+		RGB_BIT_AMOUNT => RGB_BIT_AMOUNT
+	)
+	PORT MAP(
+		reset  => reset,
+		clk_25 => clk_25,
+		Xcount => Xcount,
+		Ycount => Ycount,
+		-- Lowest position in RGBin vector is given the highest priorety.		
+		RGBin  => Mixed_RGB_Value,
+		RGBout => RGBout,
+		hsync => hsync,
+		vsync => vsync
+	);
+	PlayerPixels0 : PlayerPixels GENERIC MAP(
+				-- VGA, start visible part of screen
+		HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
+		VERTICAL_COUNT_VISIBLE_START   => VERTICAL_COUNT_VISIBLE_START,
+		-- total visible screen
+		SCREAN_WIDTH                   => SCREAN_WIDTH,
+		SCREAN_HIGHT                   => SCREAN_HIGHT,
+		-- ENTITY SIZE
+		ENTITY_X_BIT_SIZE              => ENTITY_X_BIT_SIZE,
+		ENTITY_Y_BIT_SIZE              => ENTITY_Y_BIT_SIZE,
+		ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
+		-- PIXEL COUNT
+		ENTITY_PIXELS_HIGHT_AND_WITH   => ENTITY_PIXELS_HIGHT_AND_WITH,
+		PLAYFIELD_PIXELS_START_OFFSET  => PLAYFIELD_PIXELS_START_OFFSET,
+		-- Offsets
+		OFFSET_CLK_TO_VGA              => OFFSET_CLK_TO_VGA,
+		-- ROM
+		OFFSET_CLK_TO_ROM              => OFFSET_CLK_TO_ROM,
+		-- vga
+		PIXEL_SCALING                  => PIXEL_SCALING,
+		-- EntityPixels
+		PLAYER_ROM_ADRESS_BIT_SIZE     => PLAYER_ROM_ADRESS_BIT_SIZE,
+		INDEX_BIT_SIZE                 => PLAYER_INDEX_BIT_SIZE,
+		PALLET_BIT_SIZE                => PLAYER_PALLET_BIT_SIZE,
+		RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
+	)
+	 PORT MAP(
+		debugIn      => debugIn,
+		debugOut     => debugOutP,
+		reset        => reset,
+		clk          => clk_25,
+		dataVector   => unsigned(EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		Xcount       => Xcount,
+		Ycount       => Ycount,
+		RGBOut       => Player_COE_Color
+	);
+	BossPixels0 : BossPixels  GENERIC MAP(
+				-- VGA, start visible part of screen
+		HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
+		VERTICAL_COUNT_VISIBLE_START   => VERTICAL_COUNT_VISIBLE_START,
+		-- total visible screen
+		SCREAN_WIDTH                   => SCREAN_WIDTH,
+		SCREAN_HIGHT                   => SCREAN_HIGHT,
+		-- ENTITY SIZE
+		ENTITY_X_BIT_SIZE              => ENTITY_X_BIT_SIZE,
+		ENTITY_Y_BIT_SIZE              => ENTITY_Y_BIT_SIZE,
+		ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
+		-- PIXEL COUNT
+		ENTITY_PIXELS_HIGHT_AND_WITH   => ENTITY_PIXELS_HIGHT_AND_WITH,
+		PLAYFIELD_PIXELS_START_OFFSET  => PLAYFIELD_PIXELS_START_OFFSET,
+		-- Offsets
+		OFFSET_CLK_TO_VGA              => OFFSET_CLK_TO_VGA,
+		-- ROM
+		OFFSET_CLK_TO_ROM              => OFFSET_CLK_TO_ROM,
+		-- vga
+		PIXEL_SCALING                  => PIXEL_SCALING,
+		-- EntityPixels
+		BOSS_ROM_ADRESS_BIT_SIZE       => BOSS_ROM_ADRESS_BIT_SIZE,
+		INDEX_BIT_SIZE                 => BOSS_INDEX_BIT_SIZE,
+		PALLET_BIT_SIZE                => BOSS_PALLET_BIT_SIZE,
+		RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
+	)PORT MAP(
+		debugIn      => debugIn,
+		debugOut     => debugOutB,
+		reset        => reset,
+		clk          => clk_25,
+		dataVector   => unsigned(EntityData(((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		Xcount       => Xcount,
+		Ycount       => Ycount,
+		RGBOut       => Boss_COE_Color
+	);
+	BackgroundPixels0 : BackgroundPixels  GENERIC MAP
+		(
+			-- size of visible part screen
+			HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
+			VERTICAL_COUNT_VISIBLE_START    => VERTICAL_COUNT_VISIBLE_START,
+			-- total visible screen
+			SCREAN_WIDTH                   => SCREAN_WIDTH,
+			SCREAN_HIGHT                   => SCREAN_HIGHT,
+            -- amount of tiles visible on screan
+            TILE_AMOUNT                   =>TILE_AMOUNT,
+            TILE_AMOUNT_HIGHT            => TILE_AMOUNT_HIGHT,
+            TILE_AMOUNT_WITH             => TILE_AMOUNT_WITH,       
+--			-- ENTITY SIZE
+--			ENTITY_X_BIT_SIZE           =>ENTITY_X_BIT_SIZE,
+--			ENTITY_Y_BIT_SIZE             => ENTITY_Y_BIT_SIZE,
+--			ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
+			PLAYFIELD_PIXELS_START_OFFSET  => 0,
+            -- amount of bit to identify one tile
+            TILE_NUMBER_SIZE               => TILE_NUMBER_SIZE,
+            TILE_PIXEL_HIGHT_AND_WITH     => TILE_PIXEL_HIGHT_AND_WITH,
+			-- Offsets
+			OFFSET_CLK_TO_VGA               => OFFSET_CLK_TO_VGA,
+			-- ROM
+			OFFSET_CLK_TO_ROM              => OFFSET_CLK_TO_ROM,
+			-- vga
+			PIXEL_SCALING                   => PIXEL_SCALING,
+			-- EntityPixels	
+			BACKGROUND_ROM_ADRESS_BIT_SIZE  => BACKGROUND_ROM_ADRESS_BIT_SIZE,
+            INDEX_BIT_SIZE                 =>  BACKGROUND_INDEX_BIT_SIZE,
+            PALLET_BIT_SIZE                =>  BACKGROUND_PALLET_BIT_SIZE,
+            RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
+	) PORT MAP(
+		debugIn      => debugIn,
+		debugOut     => debugOutBG,
+		reset        => reset,
+		clk          => clk_25,
+		tileNumberVector   => unsigned(tileVector),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO ....,
+		Xcount       => Xcount,
+		Ycount       => Ycount,
+		RGBOut       => Background_COE_Color
+	);
+	Entitys0 : Entitys  GENERIC MAP(
+				-- VGA, start visible part of screen
+		HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
+		VERTICAL_COUNT_VISIBLE_START   => VERTICAL_COUNT_VISIBLE_START,
+		-- total visible screen
+		SCREAN_WIDTH                   => SCREAN_WIDTH,
+		SCREAN_HIGHT                   => SCREAN_HIGHT,
+		-- ENTITY SIZE
+		ENTITY_X_BIT_SIZE              => ENTITY_X_BIT_SIZE,
+		ENTITY_Y_BIT_SIZE              => ENTITY_Y_BIT_SIZE,
+		ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
+		-- PIXEL COUNT
+		ENTITY_PIXELS_HIGHT_AND_WITH   => ENTITY_PIXELS_HIGHT_AND_WITH,
+		PLAYFIELD_PIXELS_START_OFFSET  => PLAYFIELD_PIXELS_START_OFFSET,
+		-- Offsets
+		OFFSET_CLK_TO_VGA              => OFFSET_CLK_TO_VGA,
+		-- ROM
+		OFFSET_CLK_TO_ROM              => OFFSET_CLK_TO_ROM,
+		-- vga
+		PIXEL_SCALING                  => PIXEL_SCALING,
+		-- EntityPixels
+		ENTITY_ROM_ADRESS_BIT_SIZE        => ENTITY_ROM_ADRESS_BIT_SIZE,
+        ENTITY_AMOUNT                 => ENTITY_AMOUNT,
+        INDEX_BIT_SIZE                 =>  ENTITY_INDEX_BIT_SIZE,
+        PALLET_BIT_SIZE                =>  ENTITY_PALLET_BIT_SIZE,
+        RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
+	)  PORT MAP(
+		debugIn      => debugIn,
+		debugOut     => debugOutE,
+		reset        => reset,
+		clk          => clk_25,
+		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		Xcount       => Xcount,
+		Ycount       => Ycount,
+		RGBOut       => Entity_COE_Color
+		);
+	HUDPixels0 : HUDPixels GENERIC MAP(
+				-- VGA, start visible part of screen
+		HORIZONTAL_COUNT_VISIBLE_START => HORIZONTAL_COUNT_VISIBLE_START,
+		VERTICAL_COUNT_VISIBLE_START   => VERTICAL_COUNT_VISIBLE_START,
+		-- total visible screen
+		SCREAN_WIDTH                   => SCREAN_WIDTH,
+		SCREAN_HIGHT                   => SCREAN_HIGHT,
+		-- ENTITY SIZE
+		ENTITY_X_BIT_SIZE              => ENTITY_X_BIT_SIZE,
+		ENTITY_Y_BIT_SIZE              => ENTITY_Y_BIT_SIZE,
+		ENTITY_NUMMER_BIT_SIZE         => ENTITY_NUMMER_BIT_SIZE,
+		-- PIXEL COUNT
+		ENTITY_PIXELS_HIGHT_AND_WITH   => ENTITY_PIXELS_HIGHT_AND_WITH,
+		PLAYFIELD_PIXELS_START_OFFSET  => 0,
+		-- Offsets
+		OFFSET_CLK_TO_VGA              => OFFSET_CLK_TO_VGA,
+		-- ROM
+		OFFSET_CLK_TO_ROM              => OFFSET_CLK_TO_ROM,
+		-- vga
+		PIXEL_SCALING                  => PIXEL_SCALING,
+		-- EntityPixels
+		HUD_ROM_ADRESS_BIT_SIZE        => HUD_ROM_ADRESS_BIT_SIZE,
+        INDEX_BIT_SIZE                 =>  HUD_INDEX_BIT_SIZE,
+        PALLET_BIT_SIZE                =>  HUD_PALLET_BIT_SIZE,
+        RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
+	)  PORT MAP(
+		debugIn      => debugIn,
+		debugOut     => debugOutH,
+		reset        => reset,
+		clk          => clk_25,
+		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - HUD_VECTOR_BIT_SIZE))),--TODO:  real hud
+		Xcount       => Xcount,
+		Ycount       => Ycount,
+		RGBOut       => HUD_COE_Color
+	);
+    
+    -- lowest level left highest level right
+    COE_RGB <= Background_COE_Color & Entity_COE_Color & Boss_COE_Color & Player_COE_Color & HUD_COE_Color;   
+    
+    debugOut <= debugOutP or debugOutB or debugOutBG or debugOutH or debugOutE;
+    
 	serialReceiver : SerialRead Port map (
                 clkInExternal => serialClkIn,
                 dataInExternal => serialDataIn,
@@ -224,29 +636,18 @@ BEGIN
                 sysReset => reset,
                 clk100Mhz => clk_100Mhz,
                 serialData => serialData,
-                tileData => tileData,
-                entityData => entityData,
+                tileData => tileVector, --tileData => tileData,
+                entityData => EntityData, -- entityData => entityData
                 soundData => soundData,
                 hudData => hudData
                 
             );
-	
-	sDCounter <= 0;
-	sDebug <= (OTHERS => '0');
-
-
-    --	process(clk_100MHz)
-    --    begin
-    --    if (rising_edge (clk_100MHz)) then
-    --        sDCounter <= sDCounter + 1;
-    --        sDebug <= sDebug;
-    --        if (sDCounter > 5000) then
-    --            sDCounter <= 0;
-    --            sDebug <= std_logic_vector(unsigned (sDebug) + 1);
-    --            if (unsigned(sDebug) > 30) then
-    --                sDebug <= (others => '0');
-    --            end if;
-    --        end if;
-    --    end if;
-    --    end process;
+            
+            
+--				-- read tiles
+--				tileData       <= serialData(2408 - 1 downto 8);
+--				-- read entity
+--				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
+--				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
+--				hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
 END Behavioral;
