@@ -6,7 +6,7 @@ set_property IOSTANDARD LVCMOS33 [get_ports hsync]
 set_property IOSTANDARD LVCMOS33 [get_ports vsync]
 set_property IOSTANDARD LVCMOS33 [get_ports RGBout]
 #System
-set_property PACKAGE_PIN U17 [get_ports reset]
+set_property PACKAGE_PIN J2 [get_ports reset]
 set_property PACKAGE_PIN W5 [get_ports clk_100MHz]
 #VGA
 set_property PACKAGE_PIN P19 [get_ports hsync]

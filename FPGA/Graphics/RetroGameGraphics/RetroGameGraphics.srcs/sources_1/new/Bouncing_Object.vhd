@@ -338,14 +338,14 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
             dataInExternal : IN STD_LOGIC;
             clk_100Mhz : IN STD_LOGIC;
             sysReset : IN STD_LOGIC;
-            serialData : OUT STD_LOGIC_VECTOR (2408 -1 DOWNTO 0)
+		    serialData : OUT STD_LOGIC_VECTOR (1240+ 2408 - 1 downto 0)
         );
     END component SerialRead;
 
     component SerialDataBuffer is
         Port ( clk100Mhz : in STD_LOGIC;
              sysReset : in STD_LOGIC;
-             serialData : in STD_LOGIC_VECTOR (2408 -1 downto 0);
+		     serialData : in  STD_LOGIC_VECTOR (1240+ 2408 - 1 downto 0);
              tileData : out STD_LOGIC_VECTOR (2400 -1 downto 0);
              entityData : out STD_LOGIC_VECTOR (1200 -1 downto 0);
              soundData : out STD_LOGIC_VECTOR (8 -1 downto 0);
@@ -395,7 +395,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 
 --    signal syncClk : std_logic;
 --    signal syncData : std_logic;
-    signal serialData : STD_LOGIC_VECTOR(2408 -1 downto 0);
+    signal serialData : STD_LOGIC_VECTOR(1240 + 2408 -1 downto 0);
     
 --    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
 --    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);

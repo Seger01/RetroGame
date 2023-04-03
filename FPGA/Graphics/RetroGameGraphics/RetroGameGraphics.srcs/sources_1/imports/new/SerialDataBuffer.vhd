@@ -31,7 +31,7 @@ entity SerialDataBuffer is
 	(
 		clk100Mhz  : in  STD_LOGIC;
 		sysReset   : in  STD_LOGIC;
-		serialData : in  STD_LOGIC_VECTOR (2408 - 1 downto 0);
+		serialData : in  STD_LOGIC_VECTOR (1240+ 2408 - 1 downto 0);
 		tileData   : out STD_LOGIC_VECTOR (2400 - 1 downto 0);
 		entityData : out STD_LOGIC_VECTOR (1200 - 1 downto 0);
 		soundData  : out STD_LOGIC_VECTOR (8 - 1 downto 0);
@@ -59,23 +59,22 @@ begin
 			tileData         <= tileDataBuffer;
 			tileDataBuffer   <= tileDataBuffer;
 			entityData       <= entityDataBuffer;
-			soundData        <= soundDataBuffer;
-			hudData          <= hudDataBuffer;
 			entityDataBuffer <= entityDataBuffer;
+			soundData        <= soundDataBuffer;
 			soundDataBuffer  <= soundDataBuffer;
+			hudData          <= hudDataBuffer;
 			hudDataBuffer    <= hudDataBuffer;
 			if (serialData(7 downto 0) = x"FF") then
 				-- read tiles
 				tileDataBuffer <= serialData(2408 - 1 downto 8);
 				tileData       <= serialData(2408 - 1 downto 8);
-			else
 				-- read entity
-				entityData       <= serialData(1208 - 1 downto 8);
-				entityDataBuffer <= serialData(1208 - 1 downto 8);
-				soundData        <= serialData(1216 - 1 downto 1208);
-				soundDataBuffer  <= serialData(1216 - 1 downto 1208);
-				hudData          <= serialData(1240 - 1 downto 1216);
-				hudDataBuffer    <= serialData(1240 - 1 downto 1216);
+				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
+				entityDataBuffer <= serialData(2400+ 1208 - 1 downto 2400+ 8);
+				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
+				soundDataBuffer  <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
+				hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
+				hudDataBuffer    <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
 			end if;
 		else
 		end if;
