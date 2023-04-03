@@ -35,7 +35,7 @@ ENTITY SerialRead IS
         dataInExternal : IN STD_LOGIC;
         clk_100Mhz : IN STD_LOGIC;
         sysReset : IN STD_LOGIC;
-        serialData : OUT STD_LOGIC_VECTOR (1240 + 2408 -1 DOWNTO 0)
+        serialData : OUT STD_LOGIC_VECTOR (1240 + 2400 -1 DOWNTO 0)
     );
 END SerialRead;
 
@@ -50,7 +50,7 @@ ARCHITECTURE Behavioral OF SerialRead IS
              clk_ExternalHardwareOut : out STD_LOGIC);
     end component SerialReader;
 
-    signal received_data : STD_LOGIC_VECTOR (1240 + 2408 -1 downto 0) := (others => '0');
+    signal received_data : STD_LOGIC_VECTOR (1240 + 2400 -1 downto 0) := (others => '0');
     signal bit_counter : unsigned(12 downto 0);
 
     signal readDataFlag : STD_LOGIC := '0';
@@ -136,7 +136,7 @@ begin
                 received_data(to_integer(bit_counter)) <= data_ExternalHardwareSynch;
                 bit_counter <= bit_counter + 1;
             else
-                if bit_counter >= (1240 + 2408) then
+                if bit_counter >= (1240 + 2400) then
                     serialData <= received_data;
                     bit_counter <= (others => '0');
                 else
