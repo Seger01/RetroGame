@@ -129,7 +129,6 @@ xvlog.*
 *.mif
 *.xml
 *.txt
-*.xci
 *.xml
 *.sh
 *.xpr
