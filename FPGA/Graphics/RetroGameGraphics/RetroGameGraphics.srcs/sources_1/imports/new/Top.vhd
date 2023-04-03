@@ -21,9 +21,9 @@ LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 USE IEEE.NUMERIC_STD.ALL;
 
-ENTITY Bouncing_Object IS
-    GENERIC
-(
+ENTITY Top IS
+	GENERIC
+	(
 		-- ColorOutputSelector
 		RGB_INPUT_AMOUNT               : INTEGER := 5;
 		RGB_BIT_AMOUNT           	   : INTEGER := 12;
@@ -71,30 +71,26 @@ ENTITY Bouncing_Object IS
         TILE_AMOUNT_WITH               : INTEGER := 20;            
         -- amount of bit to identify one tile
         TILE_NUMBER_SIZE               : INTEGER := 6;
-        TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16
-    );
-    PORT
-(
+        TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16		
+	);
+	PORT (
 		debugIn       : IN  unsigned(15 DOWNTO 0); -- Debug switches
 		debugOut      : OUT unsigned(15 DOWNTO 0); -- Debug Leds
-        reset            : IN  STD_LOGIC;
-        clk_100MHz       : IN  STD_LOGIC;
-		RGBout           : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
-        locked           : OUT STD_LOGIC;
-        hsync, vsync     : OUT STD_LOGIC;
+		-- inputs
+		reset, clk_100MHz : IN  STD_LOGIC;
+		RGBout         : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
+		hsync, vsync   : OUT STD_LOGIC
+	);
+END Top;
 
-        serialClkIn : in STD_LOGIC;
-        serialDataIn : in STD_LOGIC
-    );
-END Bouncing_Object;
-ARCHITECTURE Behavioral OF Bouncing_Object IS
-    COMPONENT prescaler is
+ARCHITECTURE Behavioral OF Top IS
+    COMPONENT clk_wiz_0 is
       Port ( 
         clk_25MHz : out STD_LOGIC;
         reset : in STD_LOGIC;
         locked : out STD_LOGIC;
-        clk_100MHz : in STD_LOGIC
-      );    
+        clk_in1 : in STD_LOGIC
+      );
     end COMPONENT;
 	COMPONENT ColorOutputSelector IS
 		GENERIC
@@ -333,27 +329,6 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 		);
 	END COMPONENT;
 
-    component SerialRead IS
-        PORT (
-            clkInExternal : IN STD_LOGIC;
-            dataInExternal : IN STD_LOGIC;
-            clk_100Mhz : IN STD_LOGIC;
-            sysReset : IN STD_LOGIC;
-            serialData : OUT STD_LOGIC_VECTOR (1808 -1 DOWNTO 0)
-        );
-    END component SerialRead;
-
-    component SerialDataBuffer is
-        Port ( clk100Mhz : in STD_LOGIC;
-             sysReset : in STD_LOGIC;
-             serialData : in STD_LOGIC_VECTOR (1808 -1 downto 0);
-             tileData : out STD_LOGIC_VECTOR (1800 -1 downto 0);
-             entityData : out STD_LOGIC_VECTOR (1200 -1 downto 0);
-             soundData : out STD_LOGIC_VECTOR (8 -1 downto 0);
-             hudData : out STD_LOGIC_VECTOR (24 -1 downto 0));
-    end component SerialDataBuffer;
-
-
     --clk
     SIGNAL clk_25             : std_logic;
     
@@ -361,7 +336,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	SIGNAL debugOutP             : unsigned(15 DOWNTO 0);
 	SIGNAL debugOutB             : unsigned(15 DOWNTO 0);
 	SIGNAL debugOutE             : unsigned(15 DOWNTO 0);
-	SIGNAL debugOutH             : unsigned(15 DOWNTO 0);	
+	SIGNAL debugOutH             : unsigned(15 DOWNTO 0);
 	
 	-- non optimalized COE address to read has extra bit to indicate transparantcy
 	SIGNAL Player_Select_Adress  : unsigned (PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);
@@ -385,43 +360,18 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	-- VGA
 	SIGNAL Xcount, Ycount        : unsigned(9 DOWNTO 0); -- VGA current pixel number
 	-- Communication
-	SIGNAL EntityData            : STD_LOGIC_VECTOR( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+	SIGNAL EntityData            : unsigned( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 
     -- background
     -- vector with map tile numbers		-- tile number starting top left going left to richt and down
-    SIGNAL tileVector  : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
-    
-    
---    SIGNAL XpicelVGA, YpicelVGA : STD_LOGIC_VECTOR(9 DOWNTO 0);
---    SIGNAL VGAcolorR, VGAcolorG, VGAcolorB : STD_LOGIC_VECTOR(3 DOWNTO 0);
---    -- sprite
---    SIGNAL sDebug : STD_LOGIC_VECTOR(5 DOWNTO 0);
---    SIGNAL sDCounter : INTEGER RANGE 0 TO 64;
---    SIGNAL sTest : STD_LOGIC_VECTOR((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
---    SIGNAL sTestData : STD_LOGIC_VECTOR(((ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
---    SIGNAL iTestCounter : INTEGER RANGE 0 TO 100000002;
-
---    SIGNAL BackgroundColorR : STD_LOGIC_VECTOR(3 DOWNTO 0);
---    SIGNAL BackgroundColorG : STD_LOGIC_VECTOR(3 DOWNTO 0);
---    SIGNAL BackgroundColorB : STD_LOGIC_VECTOR(3 DOWNTO 0);
-
---    SIGNAL sDebugTileNumberVector : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);
-
---    signal syncClk : std_logic;
---    signal syncData : std_logic;
-    signal serialData : STD_LOGIC_VECTOR(1808 -1 downto 0);
-    
---    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
---    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);
-    signal soundData : STD_LOGIC_VECTOR(8 -1 downto 0);
-    signal hudData : STD_LOGIC_VECTOR (24 -1 downto 0);
-
+    SIGNAL tileVector  : UNSIGNED((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
 BEGIN
-	clk_wiz_00: prescaler	PORT MAP(
+
+	clk_wiz_00: clk_wiz_0	PORT MAP(
 		clk_25MHz     => clk_25,
 		reset       => reset,
 		locked  => debugOut(0),
-		clk_100MHz => clk_100MHz
+		clk_in1 => clk_100MHz
 	);
 	ColorOutputSelector0 : ColorOutputSelector GENERIC MAP(
 		RGB_INPUT_AMOUNT => RGB_INPUT_AMOUNT,
@@ -480,7 +430,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		dataVector   => EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Player_COE_Color
@@ -515,7 +465,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData(((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		dataVector   => EntityData(((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Boss_COE_Color
@@ -556,7 +506,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		tileNumberVector   => unsigned(tileVector),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO ....,
+		tileNumberVector   => tileVector,--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO ....,
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Background_COE_Color
@@ -592,7 +542,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		dataVector   => EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Entity_COE_Color
@@ -627,7 +577,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData(( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 + 24 bits for HUD DOWNTO ....,
+		dataVector   => EntityData(( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE))),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 + 24 bits for HUD DOWNTO ....,
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => HUD_COE_Color
@@ -636,22 +586,55 @@ BEGIN
     -- lowest level left highest level right
     COE_RGB <= Background_COE_Color & Entity_COE_Color & Boss_COE_Color & Player_COE_Color & HUD_COE_Color;   
     
-	serialReceiver : SerialRead Port map (
-                clkInExternal => serialClkIn,
-                dataInExternal => serialDataIn,
-                clk_100Mhz => clk_100Mhz,
-                sysReset => Reset,
-                serialData => serialData
-            );
     
-        serialBuffer : SerialDataBuffer Port map (
-                sysReset => reset,
-                clk100Mhz => clk_100Mhz,
-                serialData => serialData,
-                tileData => tileVector, --tileData => tileData,
-                entityData => EntityData, -- entityData => entityData
-                soundData => soundData,
-                hudData => hudData
+    PROCESS (clk_25)
+    VARIABLE vEntityVectorOffset : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
+    VARIABLE vEntityVectorOffset1 : NATURAL RANGE 0 TO ((ENTITY_AMOUNT * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) := 0;
+    --VARIABLE sDebugTileNumberVectorTemp : NATURAL RANGE 0 TO ((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1) := 0;
+	    
+	BEGIN
+		IF (rising_edge (clk_25)) THEN		
+            --todo: fix add code (for debug) tiles
+            tileVector <= (OTHERS => '0');
+            -- loop for
+            EntityData <= (OTHERS => '0');
+            
+            -- 0 upto and including (ENTITY_AMOUNT - 1)
+            FOR count IN 0 TO ENTITY_AMOUNT - 1 LOOP
+                -- vector entity 0 => 49 by count    *     total entity size
+                vEntityVectorOffset := count * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                vEntityVectorOffset1 := 1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE);
+                IF (debugIn(2) = '1') THEN
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000011" & (to_unsigned (count * 16, 8)) & (to_unsigned ((count / 16)*16, 8));
+                ELSIF (debugIn(3) = '1') THEN
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  "00000001" & (to_unsigned (count * 16, 8)) & (to_unsigned ((count / 16)*16, 8));
+                ELSE
+                    EntityData((vEntityVectorOffset + vEntityVectorOffset1 - 1) DOWNTO vEntityVectorOffset) <=  (to_unsigned (((count + 1) mod 9), 8)) & (to_unsigned (count * 16, 8)) & (to_unsigned ((count / 16)*16, 8));
+                END IF;
+            END LOOP;
+            
+            FOR tileCount IN 0 TO TILE_AMOUNT - 1 LOOP
+                if (tileCount < 20 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
+                elsif (((tileCount+1) mod 20) = 0 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
+                elsif ((tileCount mod 20) = 0 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
+                elsif (tileCount > TILE_AMOUNT - 1 - 20 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(8, 6));
+                    
+                    -- inner 15 *15 view
+                elsif (((tileCount - 3) mod 20) = 0 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(9, 6));
+                elsif (((tileCount - 17) mod 20) = 0 and debugIn(5) = '1') then
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(9, 6));
+                    
+                else
+                    tileVector(((tileCount + 1) * 6 -1) downto tileCount * 6) <= (to_unsigned(0, 6));                              
+                end if;
                 
-            );
+            END LOOP;
+        END IF;
+	END PROCESS;	
+	
 END Behavioral;
