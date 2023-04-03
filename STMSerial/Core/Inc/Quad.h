@@ -5,7 +5,7 @@
 #include "Rectangle.h"
 class Quad {
     // Hold details of the boundary of this node
-    Rectangle* boundary = nullptr;
+    Rectangle boundary;
 
     // Contains details of node
     int size = 0;
@@ -18,7 +18,8 @@ class Quad {
     Quad* botRightTree;
 
 public:
-    Quad(Rectangle *boundary);
+    Quad(Rectangle boundary);
+    virtual ~Quad();
     std::vector<CollidableObject*>* query(Rectangle range, std::vector<CollidableObject*> *found);
     bool insert(CollidableObject*);
     void remove(CollidableObject*);

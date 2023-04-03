@@ -2,7 +2,7 @@
 #include "main.h"
 #include "cmsis_os.h"
 
-Quad::Quad(Rectangle *boundary) {
+Quad::Quad(Rectangle boundary) {
     this->boundary = boundary;
     size = 0;
     for (int i = 0; i < 4; i++) {
@@ -13,20 +13,27 @@ Quad::Quad(Rectangle *boundary) {
     botLeftTree = NULL;
     botRightTree = NULL;
 }
+Quad::~Quad(){
+	delete topLeftTree;
+	delete topRightTree;
+	delete botLeftTree;
+	delete botRightTree;
+}
 void Quad::subdivide() {
-    int x = boundary->getX();
-    int y = boundary->getY();
-    int w = boundary->getW();
-    int h = boundary->getH();
-    Rectangle *ne = new Rectangle(x + w / 2, y - h / 2, w / 2, h / 2);
+    int x = boundary.getX();
+    int y = boundary.getY();
+    int w = boundary.getW();
+    int h = boundary.getH();
+    Rectangle ne(x + w / 2, y - h / 2, w / 2, h / 2);
     this->topRightTree = new Quad(ne);
-    Rectangle *nw = new Rectangle(x - w / 2, y - h / 2, w / 2, h / 2);
+    Rectangle nw(x - w / 2, y - h / 2, w / 2, h / 2);
     this->topLeftTree = new Quad(nw);
-    Rectangle *se = new Rectangle(x + w / 2, y + h / 2, w / 2, h / 2);
+    Rectangle se(x + w / 2, y + h / 2, w / 2, h / 2);
     this->botRightTree = new Quad(se);
-    Rectangle *sw = new Rectangle(x - w / 2, y + h / 2, w / 2, h / 2);
+    Rectangle sw(x - w / 2, y + h / 2, w / 2, h / 2);
     this->botLeftTree = new Quad(sw);
     this->divided = true;
+
 }
 // Insert a node into the quadtree
 bool Quad::insert(CollidableObject* node)
@@ -37,7 +44,7 @@ bool Quad::insert(CollidableObject* node)
         
 
     // Current quad cannot contain it
-    if (!(boundary->contains(node))) {
+    if (!(boundary.contains(node))) {
         return false;
     }
     // if size = full;
@@ -66,11 +73,8 @@ bool Quad::insert(CollidableObject* node)
     }
 }
 std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<CollidableObject*> *found){
-    if (found == NULL) {
-        found = new std::vector<CollidableObject*>;
-    }
     
-    if (!this->boundary->intersects(range)) {
+    if (!this->boundary.intersects(range)) {
         return found;
     }
     else {
@@ -107,13 +111,13 @@ void Quad::remove(CollidableObject* node) {
         }
     }
     if (this->divided) {
-        if (this->topRightTree->boundary->contains(node)) {
+        if (this->topRightTree->boundary.contains(node)) {
             this->topRightTree->remove(node);
-        }else if (this->topLeftTree->boundary->contains(node)) {
+        }else if (this->topLeftTree->boundary.contains(node)) {
             this->topLeftTree->remove(node);
-        }else if (this->botRightTree->boundary->contains(node)) {
+        }else if (this->botRightTree->boundary.contains(node)) {
             this->botRightTree->remove(node);
-        }else if (this->botLeftTree->boundary->contains(node)) {
+        }else if (this->botLeftTree->boundary.contains(node)) {
             this->botLeftTree->remove(node);
         }
     }

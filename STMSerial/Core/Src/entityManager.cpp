@@ -7,7 +7,7 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 		entities[i] = nullptr;
 	}
 
-	Rectangle *map = new Rectangle(120, 120, 120, 120);
+	Rectangle map(120, 120, 120, 120);
 	center = new Quad(map);
 	for (int i = 0; i < collidableTiles->size(); i++) {
 		center->insert(collidableTiles->at(i));
