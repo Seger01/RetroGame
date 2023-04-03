@@ -52,9 +52,11 @@ begin
 			entityData         <= (others => '0');
 			soundData          <= (others => '0');
 			hudData            <= (others => '1');
+			
 			if (serialData(7 downto 0) = x"FF") then
 				-- read tiles
 				tileData       <= serialData(2408 - 1 downto 8);
+			else
 				-- read entity
 				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
 				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
