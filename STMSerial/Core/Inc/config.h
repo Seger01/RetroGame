@@ -15,7 +15,7 @@
 
 #define maxAmountOfEntities 50
 
-#define timeBetweenEnemySpawns 10000
+#define timeBetweenEnemySpawns 3000
 
 #define timeBetweenShots 200
 

@@ -34,7 +34,7 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 }
 
 void Game::setup() {
-	entityManager->spawnPlayer(112, 100, 1, 20, 1);
+	entityManager->spawnPlayer(112, 100, 2, 20, 1);
 
 	//entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
@@ -75,26 +75,34 @@ void Game::run() {
 	case PlayingLevel:
 
 		static long long spawnTimer = 0;
-
+//
 		inputs = inputManager.readInput();
-
+//
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
 				playerShoot = true;
 				lastShot = xTaskGetTickCount();
 			}
 		}
-
+//
 		if ((inputs & (1 << 5)) >> 5) {
 			if (xTaskGetTickCount() >= lastLevelSwitch + 50) {
 				currentLevel = !currentLevel;
+
 				lastLevelSwitch = xTaskGetTickCount();
 				highscoreManager.setAllTimeHighscore(currentLevel);
 			}
 		}
+<<<<<<< Updated upstream
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
 
+=======
+//
+		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
+				playerShoot);
+//
+>>>>>>> Stashed changes
 		if (entityUpdate) {
 			entityManager->updateEntities();
 			entityUpdate = !entityUpdate;
@@ -105,7 +113,7 @@ void Game::run() {
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-			//entityManager->spawnEntities(1, 1, 2);
+			entityManager->spawnEntities(1, 1, 2);
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;
