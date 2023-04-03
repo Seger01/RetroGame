@@ -4,7 +4,15 @@
 Entity::Entity(){
 
 }
-
+uint8_t Entity::getPosX() {
+	return position.X;
+}
+uint8_t Entity::getPosY() {
+	return position.Y;
+}
+bool Entity::isCollidable() {
+	return true;
+}
 Entity::Entity( uint8_t x, uint8_t y, uint8_t width,uint8_t height, uint8_t health, uint8_t speed,uint8_t strength) {
 	this->speed = speed;
 	this->health = health;
@@ -51,13 +59,6 @@ uint8_t Entity::getWidth() {
 uint8_t Entity::getHeight() {
 	return height;
 }
-uint8_t Entity::getX() {
-	return position.X;
-}
-uint8_t Entity::getY()
-{
-	return position.Y;
-}
 pointVector Entity::getPosition() {
 	
 	return position;
@@ -83,6 +84,7 @@ void Entity::stepX(int direction) {
 		}
 }
 void Entity::stepY(int direction) {
+
 	int Y = this->getStart().Y;
 	if (direction == 1 && (Y + this->speed < 224)) {
 		this->position.Y += (int) speed;
@@ -93,12 +95,11 @@ void Entity::stepY(int direction) {
 	} else if (direction == -1 && (Y - this->speed > -1)) {
 		this->position.Y -= (int) speed;
 	}
-
 }
 void Entity::setTexture(uint8_t texture) {
 	textureID = texture;
 }
-void Entity::onCollide(Entity *object) {
+void Entity::onCollide(CollidableObject*object) {
 }
 bool Entity::checkTiles(Tile *object) {
 	pointVector otherPosition;
@@ -138,8 +139,10 @@ bool Entity::checkTiles(Tile *object) {
 void Entity::onDeath() {
 
 }
-bool Entity::checkEntities(Entity *object) {
-	pointVector otherPosition = object->getPosition();
+bool Entity::checkEntities(CollidableObject *object) {
+	pointVector otherPosition;
+	otherPosition.X = object->getPosX();
+	otherPosition.Y = object->getPosY();
 	pointVector otherHalfsize = object->getHalfSize();
 	pointVector thisPosition = this->getPosition();
 	pointVector thisHalfsize = this->getHalfSize();

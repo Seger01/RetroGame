@@ -77,12 +77,14 @@ void Entity::stepX(int direction) {
 		if (this->position.X > 240) {
 			this->position.X = 0;
 		}
+		setTexture(7);
 		break;
 	case -1:
 		this->position.X -= this->speed;
 		if (this->position.X > 240) {
 			position.X = 240;
 		}
+		setTexture(7);
 		break;
 	}
 }
@@ -93,12 +95,14 @@ void Entity::stepY(int direction) {
 		if (this->position.Y > 240) {
 			this->position.Y = 0;
 		}
+		setTexture(7);
 		break;
 	case -1:
 		this->position.Y -= this->speed;
 		if (this->position.Y > 240) {
 			position.Y = 240;
 		}
+		setTexture(7);
 		break;
 	}
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "Tile.h"
+#include "CollidableObject.h"
 //class tile {
 //private:
 //	uint8_t posY = 0;
@@ -17,35 +18,34 @@
 //		return height;
 //	}
 //};
-struct pointVector {
-	int X;
-	int Y;
+class Entity : public CollidableObject
 
-};
-class Entity
 {
 private:
 	uint8_t health = 1;
 	uint8_t strength = 0;
-	uint8_t speed = 0;
 	uint8_t textureID = 0;
-	pointVector position;
 	uint8_t width = 16;
 	uint8_t height = 16;
+protected:
+	pointVector position;
+	uint8_t speed = 0;
+
 public: 
 	void setTexture(uint8_t texture);
 	Entity();
 	virtual ~Entity() {};
 	Entity(uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
-	pointVector getHalfSize();
-	void stepX(int);
-	void stepY(int);
+	pointVector getHalfSize() override;
+	bool isCollidable() override;
+	virtual void stepX(int);
+	virtual void stepY(int);
 	void moveX(int);
 	void moveY(int);
-	void newLocation(uint8_t, uint8_t);
+	//void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
-	uint8_t getX();
-	uint8_t getY();
+	uint8_t getPosX() override;
+	uint8_t getPosY() override;
 	uint8_t getWidth();
 	uint8_t getHeight();
 	uint8_t getSpeed();
@@ -53,9 +53,9 @@ public:
 	void setHealth(uint8_t);
 	uint8_t getHealth();
 	pointVector getPosition();
-	virtual bool checkEntities(Entity *object);
+	virtual bool checkEntities(CollidableObject *object);
 	virtual bool checkTiles(Tile *object);
-	virtual void onCollide(Entity *object);
+	virtual void onCollide(CollidableObject*object);
 	virtual void onDeath();
 	int getTexture();
 
