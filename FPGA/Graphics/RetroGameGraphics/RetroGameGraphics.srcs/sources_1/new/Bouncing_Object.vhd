@@ -64,13 +64,13 @@ ENTITY Bouncing_Object IS
         HUD_PALLET_BIT_SIZE             : INTEGER := 11;
         HUD_VECTOR_BIT_SIZE             : INTEGER := 24;
 		-- 
-		ENTITY_AMOUNT                  : INTEGER := 50;	
+		ENTITY_AMOUNT                  : INTEGER := 48;	
         -- amount of tiles visible on screan
         TILE_AMOUNT                    : INTEGER := (20 * 15);
         TILE_AMOUNT_HIGHT              : INTEGER := 15;
         TILE_AMOUNT_WITH               : INTEGER := 20;            
         -- amount of bit to identify one tile
-        TILE_NUMBER_SIZE               : INTEGER := 6;
+        TILE_NUMBER_SIZE               : INTEGER := 8;
         TILE_PIXEL_HIGHT_AND_WITH      : INTEGER := 16
     );
     PORT
@@ -80,7 +80,6 @@ ENTITY Bouncing_Object IS
         reset            : IN  STD_LOGIC;
         clk_100MHz       : IN  STD_LOGIC;
 		RGBout           : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
-        locked           : OUT STD_LOGIC;
         hsync, vsync     : OUT STD_LOGIC;
 
         serialClkIn : in STD_LOGIC;
@@ -339,15 +338,15 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
             dataInExternal : IN STD_LOGIC;
             clk_100Mhz : IN STD_LOGIC;
             sysReset : IN STD_LOGIC;
-            serialData : OUT STD_LOGIC_VECTOR (1808 -1 DOWNTO 0)
+            serialData : OUT STD_LOGIC_VECTOR (2408 -1 DOWNTO 0)
         );
     END component SerialRead;
 
     component SerialDataBuffer is
         Port ( clk100Mhz : in STD_LOGIC;
              sysReset : in STD_LOGIC;
-             serialData : in STD_LOGIC_VECTOR (1808 -1 downto 0);
-             tileData : out STD_LOGIC_VECTOR (1800 -1 downto 0);
+             serialData : in STD_LOGIC_VECTOR (2408 -1 downto 0);
+             tileData : out STD_LOGIC_VECTOR (2400 -1 downto 0);
              entityData : out STD_LOGIC_VECTOR (1200 -1 downto 0);
              soundData : out STD_LOGIC_VECTOR (8 -1 downto 0);
              hudData : out STD_LOGIC_VECTOR (24 -1 downto 0));
@@ -360,8 +359,10 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	-- Debug
 	SIGNAL debugOutP             : unsigned(15 DOWNTO 0);
 	SIGNAL debugOutB             : unsigned(15 DOWNTO 0);
+	SIGNAL debugOutBG             : unsigned(15 DOWNTO 0);
 	SIGNAL debugOutE             : unsigned(15 DOWNTO 0);
 	SIGNAL debugOutH             : unsigned(15 DOWNTO 0);	
+	SIGNAL debugOutLocked             : std_logic;	
 	
 	-- non optimalized COE address to read has extra bit to indicate transparantcy
 	SIGNAL Player_Select_Adress  : unsigned (PLAYER_ROM_ADRESS_BIT_SIZE DOWNTO 0);
@@ -384,8 +385,8 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 
 	-- VGA
 	SIGNAL Xcount, Ycount        : unsigned(9 DOWNTO 0); -- VGA current pixel number
-	-- Communication                                   HUD bits        +       entity + player + boss
-	SIGNAL EntityData            : STD_LOGIC_VECTOR( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+	-- Communication                                 entity + player + boss
+	SIGNAL EntityData            : STD_LOGIC_VECTOR(((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 
     -- background
     -- vector with map tile numbers		-- tile number starting top left going left to richt and down
@@ -394,7 +395,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 
 --    signal syncClk : std_logic;
 --    signal syncData : std_logic;
-    signal serialData : STD_LOGIC_VECTOR(1808 -1 downto 0);
+    signal serialData : STD_LOGIC_VECTOR(2408 -1 downto 0);
     
 --    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
 --    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);
@@ -405,7 +406,7 @@ BEGIN
 	clk_wiz_00: prescaler	PORT MAP(
 		clk_25MHz     => clk_25,
 		reset       => reset,
-		locked  => debugOut(0),
+		locked  => debugOutLocked,
 		clk_100MHz => clk_100MHz
 	);
 	ColorOutputSelector0 : ColorOutputSelector GENERIC MAP(
@@ -462,7 +463,7 @@ BEGIN
 	)
 	 PORT MAP(
 		debugIn      => debugIn,
-		debugOut     => debugOutB,
+		debugOut     => debugOutP,
 		reset        => reset,
 		clk          => clk_25,
 		dataVector   => unsigned(EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
@@ -538,7 +539,7 @@ BEGIN
             RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
 	) PORT MAP(
 		debugIn      => debugIn,
-		debugOut     => debugOutB,
+		debugOut     => debugOutBG,
 		reset        => reset,
 		clk          => clk_25,
 		tileNumberVector   => unsigned(tileVector),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO ....,
@@ -574,7 +575,7 @@ BEGIN
         RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
 	)  PORT MAP(
 		debugIn      => debugIn,
-		debugOut     => debugOutB,
+		debugOut     => debugOutE,
 		reset        => reset,
 		clk          => clk_25,
 		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
@@ -609,10 +610,10 @@ BEGIN
         RGB_BIT_AMOUNT                 => RGB_BIT_AMOUNT
 	)  PORT MAP(
 		debugIn      => debugIn,
-		debugOut     => debugOutB,
+		debugOut     => debugOutH,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData(( HUD_VECTOR_BIT_SIZE + ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 + 24 bits for HUD DOWNTO ....,
+		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - HUD_VECTOR_BIT_SIZE))),--TODO:  real hud
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => HUD_COE_Color
@@ -620,6 +621,8 @@ BEGIN
     
     -- lowest level left highest level right
     COE_RGB <= Background_COE_Color & Entity_COE_Color & Boss_COE_Color & Player_COE_Color & HUD_COE_Color;   
+    
+    debugOut <= debugOutP or debugOutB or debugOutBG or debugOutH or debugOutE;
     
 	serialReceiver : SerialRead Port map (
                 clkInExternal => serialClkIn,
