@@ -1,5 +1,6 @@
 #include "Quad.h"
-#include <cmath>
+#include "main.h"
+#include "cmsis_os.h"
 
 Quad::Quad(Rectangle *boundary) {
     this->boundary = boundary;

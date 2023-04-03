@@ -1,6 +1,9 @@
-#pragma once
-#include <cstdlib>
+
+#ifndef INC_CollidableObject_H_
+#define INC_CollidableObject_H_
 #include <cstdint>
+#include <vector>
+#include <cstdlib>
 struct pointVector {
     int X = 0;
     int Y = 0;
@@ -15,3 +18,4 @@ public:
     virtual pointVector getHalfSize() = 0;
 };
 
+#endif /* INC_CollidableObject_H_ */

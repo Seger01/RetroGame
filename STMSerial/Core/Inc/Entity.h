@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INC_Entity_H_
+#define INC_Entity_H_
 #include "Tile.h"
 #include "CollidableObject.h"
 //class tile {
@@ -60,4 +61,4 @@ public:
 	int getTexture();
 
 };
-
+#endif /* INC_CollidableObject_H_ */

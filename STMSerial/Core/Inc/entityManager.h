@@ -1,7 +1,9 @@
 #pragma once
 #include "entity.h"
-#include <vector>
 #include "Quad.h"
+#include "enemy.h"
+#include "player.h"
+#include "bullet.h"
 class EntityManager
 {
 private:

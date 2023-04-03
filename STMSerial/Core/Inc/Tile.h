@@ -7,8 +7,6 @@
 
 #ifndef SRC_TILE_H_
 #define SRC_TILE_H_
-
-#include <cstdint>
 #include "CollidableObject.h"
 //#include "cmsis_os.h"
 

@@ -9,7 +9,8 @@
 #define SRC_COMMUNICATION_H_
 
 #include "Tile.h"
-
+#include "main.h"
+#include "cmsis_os.h"
 #include "Entity.h"
 
 class Communication {

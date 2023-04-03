@@ -1,4 +1,5 @@
-#pragma once
+#ifndef INC_Rectangle_H_
+#define INC_Rectangle_H_
 #include "CollidableObject.h"
 class Rectangle
 {
@@ -18,3 +19,4 @@ class Rectangle
 
 
 };
+#endif /* Inc_Rectangle_H_ */

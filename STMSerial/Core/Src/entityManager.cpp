@@ -1,11 +1,5 @@
 #include "entityManager.h"
-#include <cstdlib>
-#include "enemy.h"
-#include "player.h"
-#include "bullet.h"
-#include "entity.h"
-#include "Rectangle.h"
-#include <vector>
+
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
 	this->collidableTiles = collidableTiles;
 	this->spawnpoints = spawnpoints;
