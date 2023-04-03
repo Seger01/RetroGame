@@ -8,7 +8,7 @@ class Quad {
     Rectangle boundary;
 
     // Contains details of node
-    int size = 0;
+    uint8_t size = 0;
     CollidableObject* n[4];
     bool divided = false;
     // Children of this tree

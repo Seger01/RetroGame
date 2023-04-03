@@ -9,7 +9,7 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 
 	Rectangle map(120, 120, 120, 120);
 	center = new Quad(map);
-	for (int i = 0; i < collidableTiles->size(); i++) {
+	for (size_t i = 0; i < collidableTiles->size(); i++) {
 		center->insert(collidableTiles->at(i));
 	}
 }
@@ -86,12 +86,12 @@ void EntityManager::spawnPlayer(int x, int y, int speed, int health, int strengt
 void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies) {
 
 	std::vector<int> used_indices;
-	int spawned = 0;
-	int num_spawnpoints = spawnpoints->size();
+	uint8_t spawned = 0;
+	uint8_t num_spawnpoints = spawnpoints->size();
 	while (spawned < amountOfEnemies && used_indices.size() < num_spawnpoints) {
 		int random_index = rand() % num_spawnpoints;
 		bool index_used = false;
-		for (int i = 0; i < used_indices.size(); i++) {
+		for (size_t i = 0; i < used_indices.size(); i++) {
 			if (used_indices[i] == random_index) {
 				index_used = true;
 				break;

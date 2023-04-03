@@ -71,6 +71,7 @@ bool Quad::insert(CollidableObject* node)
             return true;
         }
     }
+    return false;
 }
 std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<CollidableObject*> *found){
     
@@ -96,17 +97,21 @@ std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<Collida
 }
 void Quad::remove(CollidableObject* node) {
     Rectangle range(node->getPosX(), node->getPosY(), 5, 5);
-    /*/if (!this->boundary->intersects(range)) {
-        return;
-    }*/
+    // loop through quad nodes
     for (int i = 0; i < size; i++) {
+    	// check if node is found
         if (n[i] == node) {
             n[i] = nullptr;
+            // shift nodes forward
             for (int j = i; j < size - 1; j++) {
                 n[j] = n[j + 1];
             }
             n[size - 1] = nullptr;
             size--;
+            // when empty and leaf delete this quad leaf;
+            if((size = 0 && !this->divided)){
+            	delete this;
+            }
             return;
         }
     }
