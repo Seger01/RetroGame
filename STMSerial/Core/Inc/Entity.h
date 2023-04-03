@@ -19,6 +19,7 @@
 //	}
 //};
 class Entity : public CollidableObject
+
 {
 private:
 	uint8_t health = 1;

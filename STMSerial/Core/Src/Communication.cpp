@@ -9,6 +9,9 @@
 
 #include "Communication.h"
 #include "Entity.h"
+
+#include "HighscoreManager.h"
+
 Communication::Communication() {
 	// TODO Auto-generated constructor stub
 
@@ -37,7 +40,6 @@ void Communication::sendMap(uint8_t *map) {
 
 void Communication::sendEntities(Entity **entities) {
 	uint8_t buffer[226] = { 0 };
-
 
 	for (int j = 0; j < maxAmountOfEntities; j++) {
 	 if (entities[j] == nullptr){

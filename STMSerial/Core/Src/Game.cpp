@@ -9,7 +9,10 @@
 
 #include "Game.h"
 
-uint32_t FlashAddr = 0x0803F800;
+#include "HighscoreManager.h"
+
+HighscoreManager highscoreManager;
+
 Game::Game() {
 	// TODO Auto-generated constructor stub
 
@@ -31,16 +34,12 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 }
 
 void Game::setup() {
-	entityManager->spawnPlayer(112, 100, 3, 20, 1);
+	entityManager->spawnPlayer(112, 100, 1, 20, 1);
 
 	//entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 
-	HAL_FLASH_Unlock();
-
-	currentLevel = *(__IO uint8_t*) FlashAddr;
-
-	HAL_FLASH_Lock();
+	currentLevel = highscoreManager.getAllTimeHighscore();
 
 	levelManager.setLevel(currentLevel);
 }
@@ -86,41 +85,16 @@ void Game::run() {
 		}
 
 		if ((inputs & (1 << 5)) >> 5) {
-			if (xTaskGetTickCount() >= lastLevelSwitch + timeBetweenShots) {
+			if (xTaskGetTickCount() >= lastLevelSwitch + 50) {
 				currentLevel = !currentLevel;
 				lastLevelSwitch = xTaskGetTickCount();
-
-				HAL_FLASH_Unlock();
-
-				FLASH_EraseInitTypeDef config;
-
-				config.PageAddress = FlashAddr;
-				config.NbPages = 1;
-				config.TypeErase = 0x00U;
-
-				uint32_t errorStatus;
-
-				HAL_FLASHEx_Erase(&config, &errorStatus);
-
-				HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, FlashAddr, currentLevel);
-
-				HAL_FLASH_Lock();
-
+				highscoreManager.setAllTimeHighscore(currentLevel);
 			}
 		}
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
 				playerShoot);
 
-		//entityManager->playerAction(0, 0, !(HAL_GPIO_ReadPin(GPIOC, GPIO_PIN_13)), 0, 0);
-
-//		entities = entityManager->getEntities();
-//
-//		for (int i = 0; i < 50; i++){
-//			//if(entities[i] == nullptr) continue;
-//			entitiesArray[i] = entities[i];
-//		}
-//
 		if (entityUpdate) {
 			entityManager->updateEntities();
 			entityUpdate = !entityUpdate;
@@ -140,7 +114,6 @@ void Game::run() {
 		}
 
 		break;
-
 	case MainMenu:
 		currentState = Startup;
 		break;
