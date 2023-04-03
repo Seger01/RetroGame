@@ -23,11 +23,13 @@ class Entity : public CollidableObject
 private:
 	uint8_t health = 1;
 	uint8_t strength = 0;
-	uint8_t speed = 0;
 	uint8_t textureID = 0;
-	pointVector position;
 	uint8_t width = 16;
 	uint8_t height = 16;
+protected:
+	pointVector position;
+	uint8_t speed = 0;
+
 public: 
 	void setTexture(uint8_t texture);
 	Entity();
@@ -35,11 +37,11 @@ public:
 	Entity(uint8_t x,uint8_t y,uint8_t width,uint8_t height,uint8_t health,uint8_t speed, uint8_t strength);
 	pointVector getHalfSize() override;
 	bool isCollidable() override;
-	void stepX(int);
-	void stepY(int);
+	virtual void stepX(int);
+	virtual void stepY(int);
 	void moveX(int);
 	void moveY(int);
-	void newLocation(uint8_t, uint8_t);
+	//void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
 	uint8_t getPosX() override;
 	uint8_t getPosY() override;
