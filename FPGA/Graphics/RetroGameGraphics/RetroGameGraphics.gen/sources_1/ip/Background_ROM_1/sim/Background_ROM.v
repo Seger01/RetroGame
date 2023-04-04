@@ -99,8 +99,8 @@ output wire [7 : 0] douta;
     .C_WRITE_MODE_A("WRITE_FIRST"),
     .C_WRITE_WIDTH_A(8),
     .C_READ_WIDTH_A(8),
-    .C_WRITE_DEPTH_A(17664),
-    .C_READ_DEPTH_A(17664),
+    .C_WRITE_DEPTH_A(17680),
+    .C_READ_DEPTH_A(17680),
     .C_ADDRA_WIDTH(15),
     .C_HAS_RSTB(0),
     .C_RST_PRIORITY_B("CE"),
@@ -113,8 +113,8 @@ output wire [7 : 0] douta;
     .C_WRITE_MODE_B("WRITE_FIRST"),
     .C_WRITE_WIDTH_B(8),
     .C_READ_WIDTH_B(8),
-    .C_WRITE_DEPTH_B(17664),
-    .C_READ_DEPTH_B(17664),
+    .C_WRITE_DEPTH_B(17680),
+    .C_READ_DEPTH_B(17680),
     .C_ADDRB_WIDTH(15),
     .C_HAS_MEM_OUTPUT_REGS_A(1),
     .C_HAS_MEM_OUTPUT_REGS_B(0),
@@ -142,7 +142,7 @@ output wire [7 : 0] douta;
     .C_DISABLE_WARN_BHV_RANGE(0),
     .C_COUNT_36K_BRAM("4"),
     .C_COUNT_18K_BRAM("1"),
-    .C_EST_POWER_SUMMARY("Estimated Power for IP     :     2.246196 mW")
+    .C_EST_POWER_SUMMARY("Estimated Power for IP     :     2.245268 mW")
   ) inst (
     .clka(clka),
     .rsta(1'D0),
