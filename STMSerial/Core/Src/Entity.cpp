@@ -83,6 +83,15 @@ void Entity::stepX(int direction) {
 			this->position.X -= (int) speed;
 		}
 }
+
+void Entity::setX(int newX){
+	this->position.X = newX;
+}
+
+void Entity::setY(int newY){
+	this->position.Y = newY;
+}
+
 void Entity::stepY(int direction) {
 
 	int Y = this->getStart().Y;

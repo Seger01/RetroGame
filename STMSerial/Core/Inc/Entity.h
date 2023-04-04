@@ -43,6 +43,8 @@ public:
 	virtual void stepY(int);
 	void moveX(int);
 	void moveY(int);
+	void setX(int);
+	void setY(int);
 	//void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
 	uint8_t getPosX() override;

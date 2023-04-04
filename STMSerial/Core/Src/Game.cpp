@@ -52,11 +52,16 @@ void Game::run() {
 
 	static int remainingEnemies = 0;
 
-	Entity **entities;
-
-	Entity *entitiesArray[50];
+	Entity **entities = entityManager->getEntities();
+	;
 
 	uint8_t inputs = 0;
+
+	static int Xpos = 0;
+	static int Ypos = 0;
+
+	int stepY = 0;
+	int stepX = 0;
 
 	switch (currentState) {
 	case Reset:
@@ -66,14 +71,28 @@ void Game::run() {
 		currentState = MainMenu;
 		break;
 	case SwitchingLevels:
-		entities = entityManager->getEntities();
+		//entities = entityManager->getEntities();
 
-		entities[0]->moveY(1);
+		if (Xpos < 120) {
+			stepX = (120 - Xpos) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
+			entities[0]->setX(Xpos + stepX);
+		} else {
+			stepX = (Xpos - 120) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
+			entities[0]->setX(Xpos - stepX);
+		}
 
-
+		if (Ypos < 120) {
+			stepY = (120 - Ypos) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
+			entities[0]->setY(Ypos + stepY);
+		} else {
+			stepY = (Ypos - 120) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
+			entities[0]->setY(Ypos - stepY);
+		}
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
 			currentState = PlayingLevel;
+			levelManager.getCollidables(&collidableTiles);
+			levelManager.getSpawnpoints(&spawnPoints);
 		}
 
 		break;
@@ -108,7 +127,9 @@ void Game::run() {
 		} else {
 			entityUpdate = !entityUpdate;
 		}
+
 		entityManager->spawnEntities(1, 1, 2);
+
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
@@ -122,13 +143,25 @@ void Game::run() {
 
 		break;
 	case MainMenu:
-		lastLevelSwitch = xTaskGetTickCount();
+		inputs = inputManager.readInput();
 
-		currentState = SwitchingLevels;
-		currentLevel = 1;
-		levelManager.switchLevel(currentLevel);
-		levelManager.getCollidables(&collidableTiles);
-		levelManager.getSpawnpoints(&spawnPoints);
+		if ((inputs & (1 << 4)) >> 4) {
+			currentState = SwitchingLevels;
+			currentLevel = 1;
+			levelManager.switchLevel(currentLevel);
+			levelManager.getCollidables(&collidableTiles);
+			levelManager.getSpawnpoints(&spawnPoints);
+
+			Xpos = entities[0]->getPosX();
+			Ypos = entities[0]->getPosY();
+
+			lastLevelSwitch = xTaskGetTickCount();
+
+		} else {
+			entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2,
+					(inputs & (1 << 3)) >> 3, playerShoot);
+		}
+
 		break;
 	default:
 

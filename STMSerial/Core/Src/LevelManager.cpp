@@ -70,6 +70,7 @@ void LevelManager::getCollidables(std::vector<Tile*> *tileVector) {
 			}
 		}
 	}
+
 }
 
 void LevelManager::getSpawnpoints(std::vector<Tile*> *spawnpointVector) {
