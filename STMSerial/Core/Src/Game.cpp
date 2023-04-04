@@ -93,16 +93,10 @@ void Game::run() {
 				highscoreManager.setAllTimeHighscore(currentLevel);
 			}
 		}
-<<<<<<< Updated upstream
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
 
-=======
-//
-		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
-				playerShoot);
-//
->>>>>>> Stashed changes
+
 		if (entityUpdate) {
 			entityManager->updateEntities();
 			entityUpdate = !entityUpdate;
