@@ -4,8 +4,7 @@ class Enemy : public Entity
 {
 private:
 	bool elite = false;
-	uint8_t directionX = 0;
-	uint8_t directionY = 0;
+	pointVector direction = {0,0};
 	uint8_t stepsRemaining = 0;
 
 public:
@@ -14,7 +13,9 @@ public:
 	void onDeath() override;
 	uint8_t getRemainingSteps();
 	pointVector getDirection();
+	void setDirection(pointVector);
 	void decrementRemainingSteps();
+	void setRemainingSteps(uint8_t steps);
 	bool checkEntities(CollidableObject *object) override;
 
 };
