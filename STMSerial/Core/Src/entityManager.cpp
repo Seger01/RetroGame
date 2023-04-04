@@ -218,7 +218,6 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 		if (entities[toBeMoved]->checkEntities(found->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-				bulletPtr->onCollideWall();
 				bulletPtr->onCollide(found->at(j));
 				center->remove(bulletPtr);
 				entities[toBeMoved] = nullptr;
@@ -228,25 +227,6 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
 	}
-	/*
-	for (uint8_t j = 0; j < collidableTiles->size(); j++) {
-		if (entities[toBeMoved] == NULL) {
-			continue;
-		}	
-		if (entities[toBeMoved]->checkTiles(collidableTiles->at(j))) {
-			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
-				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-
-				bulletPtr->onCollideWall();
-				center->remove(entities[toBeMoved]);
-				delete entities[toBeMoved];
-				entities[toBeMoved] = nullptr;
-
-			}
-
-		}
-
-	}*/
 	delete found;
 }
 void EntityManager::checkCollision() {
