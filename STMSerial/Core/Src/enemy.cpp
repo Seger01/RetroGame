@@ -2,6 +2,13 @@
 #include "enemy.h"
 #include "player.h"
 
+void Enemy::setRemainingSteps(uint8_t steps){
+	this->stepsRemaining = steps;
+}
+void Enemy::setDirection(pointVector direction)
+{
+	this->direction = direction;
+}
 uint8_t Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }
@@ -9,7 +16,6 @@ void Enemy::onCollide(CollidableObject *object) {
 	Entity* entityptr = dynamic_cast<Player*>(object);
 	if (dynamic_cast<Player*>(entityptr)) {
 		entityptr->setHealth(entityptr->getHealth() - this->getStrength());
-
 	}
 	else if (dynamic_cast<Enemy*>(object)) {
 		/*if (stepsRemaining <= 0) { // Need to generate a new random direction
@@ -25,8 +31,8 @@ void Enemy::onDeath() {
 }
 pointVector Enemy::getDirection() {
 	pointVector pos;
-	pos.X = directionX;
-	pos.Y = directionY;
+	pos.X = direction.X;
+	pos.Y = direction.Y;
 	return pos;
 }
 void Enemy::decrementRemainingSteps() {
