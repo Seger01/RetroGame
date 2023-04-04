@@ -346,6 +346,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
         Port ( clk100Mhz : in STD_LOGIC;
              sysReset : in STD_LOGIC;
 		     serialData : in  STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
+		     Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
              tileData : out STD_LOGIC_VECTOR (2400 -1 downto 0);
              entityData : out STD_LOGIC_VECTOR (1200 -1 downto 0);
              soundData : out STD_LOGIC_VECTOR (8 -1 downto 0);
@@ -636,6 +637,7 @@ BEGIN
                 sysReset => reset,
                 clk100Mhz => clk_100Mhz,
                 serialData => serialData,
+                Ycount => std_logic_vector (Ycount),
                 tileData => tileVector, --tileData => tileData,
                 entityData => EntityData, -- entityData => entityData
                 soundData => soundData,

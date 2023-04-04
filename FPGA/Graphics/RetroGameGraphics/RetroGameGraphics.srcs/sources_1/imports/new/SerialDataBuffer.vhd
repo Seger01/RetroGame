@@ -32,12 +32,15 @@ entity SerialDataBuffer is
 		clk100Mhz  : in  STD_LOGIC;
 		sysReset   : in  STD_LOGIC;
 		serialData : in  STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
+		-- VGA module connections
+		Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
 		tileData   : out STD_LOGIC_VECTOR (2400 - 1 downto 0);
 		entityData : out STD_LOGIC_VECTOR (1200 - 1 downto 0);
 		soundData  : out STD_LOGIC_VECTOR (8 - 1 downto 0);
 		hudData    : out STD_LOGIC_VECTOR (24 - 1 downto 0));
 end SerialDataBuffer;
 architecture Behavioral of SerialDataBuffer is
+    signal serialDataBuffer : STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
 begin
 	process (clk100Mhz, sysReset)
 	begin
@@ -49,12 +52,17 @@ begin
 		elsif (rising_edge(clk100Mhz)) then
 			-- store tile data and entity data
 			if (serialData(7 downto 0) = x"FF") then
-				-- read tiles
-				tileData       <= serialData(2408 - 1 downto 8);
+			    serialDataBuffer <= serialData;
+			end if;
+			
+			-- VGA not in visible part to prevent tearing < 31
+			if ((Ycount) < "0000011111") then
+			    -- read tiles
+				tileData         <= serialDataBuffer(2408 - 1 downto 8);
 				-- read entity
-				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
-				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
-				hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
+				entityData       <= serialDataBuffer(2400+ 1208 - 1 downto 2400+ 8);
+				soundData        <= serialDataBuffer(2400+ 1216 - 1 downto 2400+ 1208);
+				hudData          <= serialDataBuffer(2400+ 1240 - 1 downto 2400+ 1216);
 			end if;
 		else
 		end if;
