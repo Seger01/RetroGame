@@ -27,8 +27,6 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 
 	communication = new Communication(hspi1);
 
-	levelManager.getCollidables(&collidableTiles);
-	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
 
 }
@@ -36,12 +34,12 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 void Game::setup() {
 	entityManager->spawnPlayer(112, 100, 2, 20, 1);
 
-	//entityManager->spawnEntities(1, 1, 2);
+	entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 
-	currentLevel = highscoreManager.getAllTimeHighscore();
-
-	levelManager.setLevel(currentLevel);
+	//currentLevel = highscoreManager.getAllTimeHighscore();
+	currentLevel = 0;
+	levelManager.setLevel(0);
 }
 
 void Game::run() {
@@ -65,12 +63,19 @@ void Game::run() {
 		currentState = Startup;
 		break;
 	case Startup:
-		currentState = SwitchingLevels;
+		currentState = MainMenu;
 		break;
 	case SwitchingLevels:
+		entities = entityManager->getEntities();
 
-		currentState = PlayingLevel;
-		remainingEnemies = 50;
+		entities[0]->moveY(1);
+
+
+
+		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
+			currentState = PlayingLevel;
+		}
+
 		break;
 	case PlayingLevel:
 
@@ -94,7 +99,8 @@ void Game::run() {
 			}
 		}
 
-		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
+		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
+				playerShoot);
 
 		if (entityUpdate) {
 			entityManager->updateEntities();
@@ -102,11 +108,11 @@ void Game::run() {
 		} else {
 			entityUpdate = !entityUpdate;
 		}
-
+		entityManager->spawnEntities(1, 1, 2);
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-			entityManager->spawnEntities(1, 1, 2);
+
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;
@@ -116,7 +122,13 @@ void Game::run() {
 
 		break;
 	case MainMenu:
-		currentState = Startup;
+		lastLevelSwitch = xTaskGetTickCount();
+
+		currentState = SwitchingLevels;
+		currentLevel = 1;
+		levelManager.switchLevel(currentLevel);
+		levelManager.getCollidables(&collidableTiles);
+		levelManager.getSpawnpoints(&spawnPoints);
 		break;
 	default:
 
@@ -125,6 +137,6 @@ void Game::run() {
 
 	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
 
-	levelManager.switchLevel(currentLevel);
+	//levelManager.switchLevel(currentLevel);
 
 }
