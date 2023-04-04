@@ -17,7 +17,7 @@ void Simulator::setup() {
     //niet door de spawnpoints heen lopen
     //powerup droppen
     //remove naam
-    em->spawnEntities(1, 1, 1);
+    em->spawnEntities(1, 1, 5);
     em->spawnPlayer(10, 10, 1, 20, 1);
     //drawField();
 }
@@ -72,5 +72,5 @@ void Simulator::loop() {
     
     //drawField();
 
-
+     
 }

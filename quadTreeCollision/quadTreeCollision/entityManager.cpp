@@ -7,6 +7,9 @@
 #include "Rectangle.h"
 #include <vector>
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
+	//collidableTiles->clear();
+	//collidableTiles->push_back(new	Tile(50, 50, 3, true, false));
+	//collidableTiles->push_back(new	Tile(100,20, 3, false, true));
 	this->collidableTiles = collidableTiles;
 	this->spawnpoints = spawnpoints;
 	for (uint8_t i = 1; i < 50; i++) {
@@ -180,9 +183,9 @@ void EntityManager::updateEntities() {
 	}
 }
 void EntityManager::moveEntity(int toBeMoved, int x, int y) {
+	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-	center->remove(entities[toBeMoved]);
 	center->insert(entities[toBeMoved]);
 	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 20, 20);
 	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
@@ -194,7 +197,6 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 		if (entities[toBeMoved]->checkEntities(found->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-				bulletPtr->onCollideWall();
 				bulletPtr->onCollide(found->at(j));
 				center->remove(bulletPtr);
 				entities[toBeMoved] = nullptr;
@@ -203,26 +205,9 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 			}
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
+
 	}
-	/*
-	for (uint8_t j = 0; j < collidableTiles->size(); j++) {
-		if (entities[toBeMoved] == NULL) {
-			continue;
-		}	
-		if (entities[toBeMoved]->checkTiles(collidableTiles->at(j))) {
-			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
-				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-
-				bulletPtr->onCollideWall();
-				center->remove(entities[toBeMoved]);
-				delete entities[toBeMoved];
-				entities[toBeMoved] = nullptr;
-
-			}
-
-		}
-
-	}*/
+	delete found;
 	
 }
 void EntityManager::checkCollision() {

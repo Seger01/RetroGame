@@ -104,7 +104,7 @@ std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<Collida
     return found;
 }
 
-void Quad::remove(CollidableObject * node) {
+void Quad::remove(CollidableObject* node) {
     std::stack<Quad*> stack;
     stack.push(this);
 
@@ -116,20 +116,23 @@ void Quad::remove(CollidableObject * node) {
         for (int i = 0; i < current->size; i++) {
             // check if node is found
             if (current->n[i] == node) {
-                current->n[i] = nullptr;
+               
                 // shift nodes forward
                 for (int j = i; j < current->size - 1; j++) {
                     current->n[j] = current->n[j + 1];
                 }
+                current->n[current->size - 1] = nullptr;
                 current->size--;
                 // when empty and leaf delete this quad leaf;
+                /*
                 if (current->size == 0 && !current->divided) {
                     if (current != this) {
                         delete current;
+                        current = nullptr;
                     }
                     return;
-                }
-                break;
+                }*/
+                return;
             }
         }
 
@@ -147,103 +150,7 @@ void Quad::remove(CollidableObject * node) {
                 stack.push(current->botLeftTree);
             }
         }
-    
 
+
+    }
 }
-    // Insert a node into the quadtree
-    /*bool Quad::insert(CollidableObject* node)
-    {
-
-        if (node == NULL) {
-            return false;
-        }
-
-
-        // Current quad cannot contain it
-        if (!(boundary.contains(node))) {
-            return false;
-        }
-        // if size = full;
-        if (size < 4) {
-            n[size] = node;
-            size++;
-            return true;
-        }
-        else {
-            // divide into smaller squares
-            if (!this->divided) {
-                this->subdivide();
-            }
-            if (this->topRightTree->insert(node)) {
-                return true;
-            }
-            else if (this->topLeftTree->insert(node)) {
-                return true;
-            }
-            else if (this->botRightTree->insert(node)) {
-                return true;
-            }
-            else if (this->botLeftTree->insert(node)) {
-                return true;
-            }
-        }
-        return false;
-    }*/
-/*void Quad::remove(CollidableObject* node) {
-    Rectangle range(node->getPosX(), node->getPosY(), 5, 5);
-    // loop through quad nodes
-    for (int i = 0; i < size; i++) {
-        // check if node is found
-        if (n[i] == node) {
-            n[i] = nullptr;
-            // shift nodes forward
-            for (int j = i; j < size - 1; j++) {
-                n[j] = n[j + 1];
-            }
-            size--;
-            // when empty and leaf delete this quad leaf;
-            if ((size = 0 && !this->divided)) {
-                delete this;
-            }
-            return;
-        }
-    }
-    if (this->divided) {
-        if (this->topRightTree->boundary.contains(node)) {
-            this->topRightTree->remove(node);
-        }
-        else if (this->topLeftTree->boundary.contains(node)) {
-            this->topLeftTree->remove(node);
-        }
-        else if (this->botRightTree->boundary.contains(node)) {
-            this->botRightTree->remove(node);
-        }
-        else if (this->botLeftTree->boundary.contains(node)) {
-            this->botLeftTree->remove(node);
-        }
-    }
-
-}*/
-/*
-std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<CollidableObject*>* found) {
-
-    if (!this->boundary.intersects(range)) {
-        return found;
-    }
-    else {
-        for (auto p : this->n) {
-            if (p != nullptr) {
-                if (range.contains(p)) {
-                    found->push_back(p);
-                }
-            }
-        }
-    }
-    if (this->divided) {
-        this->topRightTree->query(range, found);
-        this->topLeftTree->query(range, found);
-        this->botRightTree->query(range, found);
-        this->botLeftTree->query(range, found);
-    }
-    return found;
-}*/

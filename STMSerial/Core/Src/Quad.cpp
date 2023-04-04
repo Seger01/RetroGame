@@ -104,7 +104,7 @@ std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<Collida
     return found;
 }
 
-void Quad::remove(CollidableObject * node) {
+void Quad::remove(CollidableObject* node) {
     std::stack<Quad*> stack;
     stack.push(this);
 
@@ -116,20 +116,23 @@ void Quad::remove(CollidableObject * node) {
         for (int i = 0; i < current->size; i++) {
             // check if node is found
             if (current->n[i] == node) {
-                current->n[i] = nullptr;
+
                 // shift nodes forward
                 for (int j = i; j < current->size - 1; j++) {
                     current->n[j] = current->n[j + 1];
                 }
+                current->n[current->size - 1] = nullptr;
                 current->size--;
                 // when empty and leaf delete this quad leaf;
+                /*
                 if (current->size == 0 && !current->divided) {
                     if (current != this) {
                         delete current;
+                        current = nullptr;
                     }
                     return;
-                }
-                break;
+                }*/
+                return;
             }
         }
 
@@ -147,7 +150,7 @@ void Quad::remove(CollidableObject * node) {
                 stack.push(current->botLeftTree);
             }
         }
-    
 
-}
+
+    }
 }
