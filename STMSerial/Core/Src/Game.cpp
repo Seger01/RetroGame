@@ -72,7 +72,7 @@ void Game::run() {
 		break;
 	case SwitchingLevels:
 		//entities = entityManager->getEntities();
-
+		levelManager.switchLevel(currentLevel);
 		if (Xpos < 120) {
 			stepX = (120 - Xpos) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
 			entities[0]->setX(Xpos + stepX);
@@ -111,7 +111,17 @@ void Game::run() {
 //
 		if ((inputs & (1 << 5)) >> 5) {
 			if (xTaskGetTickCount() >= lastLevelSwitch + 50) {
-				currentLevel = !currentLevel;
+				if (currentLevel == 1) {
+					currentLevel = 2;
+				} else if (currentLevel == 2) {
+					currentLevel = 1;
+				}
+
+				currentState = SwitchingLevels;
+
+				Xpos = entities[0]->getPosX();
+				Ypos = entities[0]->getPosY();
+
 
 				lastLevelSwitch = xTaskGetTickCount();
 				highscoreManager.setAllTimeHighscore(currentLevel);
@@ -128,7 +138,7 @@ void Game::run() {
 			entityUpdate = !entityUpdate;
 		}
 
-		entityManager->spawnEntities(1, 1, 2);
+		//entityManager->spawnEntities(1, 1, 2);
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
@@ -148,7 +158,6 @@ void Game::run() {
 		if ((inputs & (1 << 4)) >> 4) {
 			currentState = SwitchingLevels;
 			currentLevel = 1;
-			levelManager.switchLevel(currentLevel);
 			levelManager.getCollidables(&collidableTiles);
 			levelManager.getSpawnpoints(&spawnPoints);
 

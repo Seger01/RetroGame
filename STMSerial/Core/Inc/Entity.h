@@ -60,7 +60,7 @@ public:
 	virtual bool checkTiles(Tile *object);
 	virtual void onCollide(CollidableObject*object);
 	virtual void onDeath();
-	int getTexture();
+	virtual int getTexture();
 
 };
 #endif /* INC_CollidableObject_H_ */

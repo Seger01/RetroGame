@@ -12,6 +12,11 @@
 
 #include "HighscoreManager.h"
 
+#include "Converter.h"
+
+#include "entityManager.h"
+#include "Player.h"
+#include "enemy.h"
 Communication::Communication() {
 	// TODO Auto-generated constructor stub
 
@@ -55,14 +60,19 @@ void Communication::sendEntities(Entity **entities) {
 	HAL_SPI_Transmit(hspi1, (uint8_t*) buffer, 226, 100);
 }
 
+//int charToIndex(uint8_t character){
+//	return (int)character  - 'a' + 31 + 10 + 2;
+//}
+
 void Communication::sendBoth(uint8_t *map, Entity **entities) {
 //	sendMap(map);
 //
 //	sendEntities(entities);
+	Converter converter;
 	uint8_t buffer[456] = { 0 };
 
 	for (int i = 0; i < 301; i++) {
-		buffer[i] = 30;
+		buffer[i] = 73;
 	}
 //
 	for (int i = 0; i < mapSizeTilesX; i++) {
@@ -70,6 +80,13 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 			buffer[((i * 20) + j + 3) + 1] = map[(i * 15) + j];
 		}
 	}
+
+	buffer[1] = converter.characterToIndex('s');
+	buffer[21] = converter.characterToIndex('c');
+	buffer[41] = converter.characterToIndex('o');
+	buffer[61] = converter.characterToIndex('r');
+	buffer[81] = converter.characterToIndex('e');
+
 
 	for (int j = 0; j < maxAmountOfEntities; j++) {
 		if (entities[j] == nullptr) {

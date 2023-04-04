@@ -5,9 +5,10 @@
 extern "C" {
 #include "FreeRTOS.h"
 #include "task.h"
+}
 
 #include <cstring>
-}
+
 
 LevelManager::LevelManager() {
 	// TODO Auto-generated constructor stub
