@@ -20,7 +20,7 @@ vlog -work blk_mem_gen_v8_4_5  -incr -mfcu \
 "../../../ipstatic/simulation/blk_mem_gen_v8_4.v" \
 
 vlog -work xil_defaultlib  -incr -mfcu \
-"../../../../RetroGameGraphics.gen/sources_1/ip/Player_ROM_1/sim/Player_ROM.v" \
+"../../../../RetroGameGraphics.gen/sources_1/ip/Player_ROM/sim/Player_ROM.v" \
 
 vlog -work xil_defaultlib \
 "glbl.v"

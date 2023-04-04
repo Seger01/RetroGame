@@ -1,27 +1,27 @@
 -- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2022.1 (win64) Build 3526262 Mon Apr 18 15:48:16 MDT 2022
--- Date        : Tue Apr  4 14:13:18 2023
+-- Date        : Tue Apr  4 14:12:34 2023
 -- Host        : Big-Chinese-Export-Toaster running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode synth_stub
---               d:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.gen/sources_1/ip/Boss_ROM_1/Boss_ROM_stub.vhdl
--- Design      : Boss_ROM
+--               d:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.gen/sources_1/ip/Player_ROM/Player_ROM_stub.vhdl
+-- Design      : Player_ROM
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a35tcpg236-1
 -- --------------------------------------------------------------------------------
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
-entity Boss_ROM is
+entity Player_ROM is
   Port ( 
     clka : in STD_LOGIC;
     addra : in STD_LOGIC_VECTOR ( 11 downto 0 );
     douta : out STD_LOGIC_VECTOR ( 7 downto 0 )
   );
 
-end Boss_ROM;
+end Player_ROM;
 
-architecture stub of Boss_ROM is
+architecture stub of Player_ROM is
 attribute syn_black_box : boolean;
 attribute black_box_pad_pin : string;
 attribute syn_black_box of stub : architecture is true;
