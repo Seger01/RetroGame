@@ -8,7 +8,7 @@ USE UNISIM.Vcomponents.ALL;
 entity RetroSynth is
     Port (
         CLK : in STD_LOGIC;
-        SFXswitch : std_logic_vector( 3 downto 0);
+        SFXswitch : std_logic;
         PWM : out STD_LOGIC
     );
 end RetroSynth;
@@ -27,7 +27,7 @@ architecture Behavioral of RetroSynth is
         port (
             clk : in std_logic;
             toggle : in std_logic;
-            sound : in std_logic_vector (3 downto 0);
+            sound : in std_logic;
             SFXpwm : out std_Logic
         );
     end component;
@@ -38,36 +38,39 @@ architecture Behavioral of RetroSynth is
     signal counterToggle : integer := 0;
     signal PWMcombined : std_logic;
     signal BGMpwmcombine : std_logic;
-    signal SFXcombine : std_logic;
+    signal SFXpwmcombine : std_logic;
 
 begin
     toggle: process(clk)
     begin
---        pwm <= BGMpwmcombine;
---        if rising_edge (clk) then
---            if(counterToggle >= 127) then
---                BGMtoggle <= '1';
---                SFXtoggle <= '0';
---            else
---                BGMtoggle <= '0';
---                SFXtoggle <= '1';
---            end if;
---            if(counterToggle >= 255) then
---                counterToggle <= 0;
---            end if;
---        end if;
+        if rising_edge (clk) then
+        counterToggle <= counterToggle + 1;
+        -- toggle is used to switch between sfx and bgm to "combine" the pwm signals
+            if(counterToggle >= 127) then
+                pwm <= BGMpwmcombine;
+                BGMtoggle <= '1';
+                SFXtoggle <= '0';
+            else
+                pwm <= SFXpwmcombine;
+                BGMtoggle <= '0';
+                SFXtoggle <= '1';
+            end if;
+            if(counterToggle >= 255) then
+                counterToggle <= 0;
+            end if;
+        end if;
     end process;
 
     BGMcomp : BGMdata port map(
             clk => clk,
             toggle => BGMtoggle,
-            BGMpwm => PWM 
+            BGMpwm => BGMpwmcombine
         );
 
     SFXcomp : SFXdata  port map(
             clk => clk,
             toggle => SFXtoggle,
             sound => SFXswitch,
-            SFXpwm => SFXcombine
+            SFXpwm => SFXpwmcombine
         );
 end Behavioral;

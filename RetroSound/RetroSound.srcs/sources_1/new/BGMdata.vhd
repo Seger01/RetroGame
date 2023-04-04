@@ -5,7 +5,6 @@ use IEEE.std_logic_unsigned.all;
 LIBRARY UNISIM;
 USE UNISIM.Vcomponents.ALL;
 
-
 entity BGMdata is
     Port(
         clk : in std_logic;
@@ -16,7 +15,7 @@ end BGMdata;
 
 architecture Behavioral of BGMdata is
 
-    component westernBGM is
+    component BGMwestern is
         Port(
             clka : IN STD_LOGIC;
             ena : IN STD_LOGIC;
@@ -66,7 +65,7 @@ begin
     end process;
 
 
-    sound : westernBGM port map(
+    sound : BGMwestern port map(
             clka => clk,
             ena => '1',
             addra => romAddress,

@@ -26,3 +26,6 @@ set_property IOSTANDARD LVCMOS33 [get_ports {SFXswitch[3]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {SFXswitch[2]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {SFXswitch[1]}]
 set_property IOSTANDARD LVCMOS33 [get_ports {SFXswitch[0]}]
+
+set_property PACKAGE_PIN U18 [get_ports SFXswitch]
+set_property IOSTANDARD LVCMOS33 [get_ports SFXswitch]
