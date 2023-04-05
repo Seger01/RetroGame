@@ -17,11 +17,16 @@ architecture Behavioral of SynthBGM is
 
     signal pwmSignal : std_logic := '0';
 
+    signal tempToggle : std_logic := '0';
+
 begin
     BGM : process(clk)
     begin
         if rising_edge(clk) then
             if toggle = '1' then
+                if ( tempToggle = '0' ) then
+                    counter2 <= counter2 + 1;
+                end if;
                 -- chooses tone depending on signal
                 case noteIndicator is
                     when "0000" => counterLimit <= 0;
@@ -44,15 +49,6 @@ begin
                     PWM <= '0';
                 end if;
 
-                -- main loop counter
-                if (counter >= 127) then
-                    counter <= 0;
-                    counter2 <= counter2 + 1;
-                else
-                    counter <= counter + 1;
-                end if;
-
-
                 -- sub loop counter
                 if counter2 >= counterLimit then
                     counter2 <= 0;
@@ -64,6 +60,7 @@ begin
                 end if;
 
             end if;
+            tempToggle <= toggle;
         end if;
     end process;
 end Behavioral;

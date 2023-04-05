@@ -8,7 +8,7 @@ USE UNISIM.Vcomponents.ALL;
 entity RetroSynth is
     Port (
         CLK : in STD_LOGIC;
-        SFXswitch : std_logic;
+        SFXswitch : std_logic_vector(5 downto 0);
         PWM : out STD_LOGIC
     );
 end RetroSynth;
@@ -27,16 +27,18 @@ architecture Behavioral of RetroSynth is
         port (
             clk : in std_logic;
             toggle : in std_logic;
-            sound : in std_logic;
+            sound : in std_logic_vector(5 downto 0);
             SFXpwm : out std_Logic
         );
     end component;
 
+    -- toggles to toggle soundsfx/bgm
     signal BGMtoggle : std_logic := '0';
     signal SFXtoggle : std_logic := '0';
     signal SFXsound : std_logic_vector(5 downto 0);
     signal counterToggle : integer := 0;
-    signal PWMcombined : std_logic;
+    
+    -- pwm signals
     signal BGMpwmcombine : std_logic;
     signal SFXpwmcombine : std_logic;
 
@@ -47,7 +49,7 @@ begin
         counterToggle <= counterToggle + 1;
         -- toggle is used to switch between sfx and bgm to "combine" the pwm signals
             if(counterToggle >= 127) then
-                pwm <= BGMpwmcombine;
+                --pwm <= BGMpwmcombine;
                 BGMtoggle <= '1';
                 SFXtoggle <= '0';
             else
