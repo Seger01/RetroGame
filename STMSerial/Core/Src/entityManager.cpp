@@ -34,6 +34,7 @@ Entity** EntityManager::getEntities() {
 	return entities;
 }
 void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
+	this->spawnpoints = spawnpoints;
 	for (int i = 0; i < collidableTiles->size(); i++) {
 			center->remove(collidableTiles->at(i));
 		}
