@@ -201,6 +201,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 		if (found->at(j) == entities[toBeMoved]) {
 			continue;
 		}
+		center->remove(found->at(j));
 		if (entities[toBeMoved]->checkEntities(found->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
@@ -212,7 +213,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 			}
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
-
+		center->insert(found->at(j));
 	}
 	center->insert(entities[toBeMoved]);
 	delete found;
