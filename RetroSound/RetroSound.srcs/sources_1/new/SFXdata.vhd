@@ -109,6 +109,13 @@ architecture Behavioral of SFXdata is
 
 begin
 
+    toggleSFX : process(clk)
+    begin
+        if rising_edge(clk) then
+            togglePdeath <= '1';
+        end if;
+    end process;
+
     shoot : SFXshoot port map(
             clk => clk,
             toggleShoot => toggleHit,
@@ -131,7 +138,7 @@ begin
     pDeath : SFXpDeath port map(
             clk => clk,
             togglePdeath => togglePdeath,
-            pwm => pwmPdeath
+            pwm => SFXpwm
         );
 
     powerup : SFXpowerup port map(

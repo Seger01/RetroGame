@@ -16,7 +16,7 @@ architecture Behavioral of squareWave is
     signal counter : integer  range 0 to 255 := 0;
     signal counter2 : integer := 0;
     signal counterLimit : integer := 1000;
-
+    signal noteIndicatorTest : std_logic_vector(5 downto 0) := "100000";
     signal effectCounter : integer := 0;
 
     signal pwmSignal : std_logic := '0';
@@ -28,20 +28,24 @@ architecture Behavioral of squareWave is
     constant clockFrequency : integer := 100e6;
     constant clockperiod : time := 100ms / clockFrequency;
     signal tempCLK : std_Logic := '0';
+
 begin
     BGM : process(clk)
     begin
         tempCLK <= not tempCLK after Clockperiod / 2;
+
         if rising_edge(clk) then
             if toggle = '1' then
                 if ( tempToggle = '0' ) then
                     counter2 <= counter2 + 1;
                 end if;
+
                 -- chooses tone depending on signal
                 case noteIndicator is
-                    when "100000" => effectCounter <= 5000000;
+                    when "100000" => effectCounter <= 50000000;
                         counterLimit <= 1000;
                     when "000001" => effectCounter <= 50000;
+                    when others => effectCounter <= 0;
 
                 end case;
 
@@ -58,15 +62,22 @@ begin
                 --                    when "1111" => counterLimit <= 800;
                 --                    when others => counterLimit <= 0;
                 --                end case;
-                if tempCount >= 5000000 then
+
+
+                -- rising square
+
+                -- falling square
+                if tempCount >= effectCounter then
                     tempCount <= 0;
                     counterLimit <= counterLimit + 100;
-                    if counterLimit >= 3000 then
-                        counterLimit <= 1000;
-                    end if;
                 else
                     tempCount <= tempCount + 1;
                 end if;
+
+                if counterLimit >= 3000 then
+                    counterLimit <= 1000;
+                end if;
+
                 -- toggles pwm signal
                 if pwmSignal = '1' then
                     PWM <= '1';
