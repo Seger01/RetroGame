@@ -456,9 +456,7 @@
     </Run>
     <Run Id="Player_ROM_synth_1" Type="Ft3:Synth" SrcSet="Player_ROM" Part="xc7a35tcpg236-1" ConstrsSet="Player_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/Player_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/Player_ROM_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/Player_ROM_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -468,9 +466,7 @@
     </Run>
     <Run Id="Boss_ROM_synth_1" Type="Ft3:Synth" SrcSet="Boss_ROM" Part="xc7a35tcpg236-1" ConstrsSet="Boss_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/Boss_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/Boss_ROM_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/Boss_ROM_synth_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
       <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
@@ -532,9 +528,7 @@
     </Run>
     <Run Id="Player_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="Player_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="Player_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/Player_ROM_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/Player_ROM_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
@@ -551,9 +545,7 @@
     </Run>
     <Run Id="Boss_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="Boss_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="Boss_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/Boss_ROM_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/Boss_ROM_impl_1">
       <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
-          <Desc>Default settings for Implementation.</Desc>
-        </StratHandle>
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>
