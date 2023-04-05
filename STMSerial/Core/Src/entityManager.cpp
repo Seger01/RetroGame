@@ -34,7 +34,13 @@ Entity** EntityManager::getEntities() {
 	return entities;
 }
 void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
-	this->collidableTiles = collidableTiles;
+	for (int i = 0; i < collidableTiles->size(); i++) {
+			center->remove(collidableTiles->at(i));
+		}
+		this->collidableTiles = collidableTiles;
+		for (int i = 0; i < collidableTiles->size(); i++) {
+			center->insert(collidableTiles->at(i));
+		}
 }
 void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
 	int x = 0;
