@@ -1,6 +1,15 @@
 #include "entityManager.h"
-#include <cmath>
+#include <cstdlib>
+#include "enemy.h"
+#include "player.h"
+#include "bullet.h"
+#include "entity.h"
+#include "Rectangle.h"
+#include <vector>
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
+	//collidableTiles->clear();
+	//collidableTiles->push_back(new	Tile(50, 50, 3, true, false));
+	//collidableTiles->push_back(new	Tile(100,20, 3, false, true));
 	this->collidableTiles = collidableTiles;
 	this->spawnpoints = spawnpoints;
 	for (uint8_t i = 1; i < 50; i++) {
@@ -9,7 +18,7 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 
 	Rectangle map(120, 120, 120, 120);
 	center = new Quad(map);
-	for (size_t i = 0; i < collidableTiles->size(); i++) {
+	for (int i = 0; i < collidableTiles->size(); i++) {
 		center->insert(collidableTiles->at(i));
 	}
 }
@@ -25,10 +34,16 @@ Entity** EntityManager::getEntities() {
 	return entities;
 }
 void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
-	this->collidableTiles = collidableTiles;
+	this->spawnpoints = spawnpoints;
+	for (int i = 0; i < collidableTiles->size(); i++) {
+			center->remove(collidableTiles->at(i));
+		}
+		this->collidableTiles = collidableTiles;
+		for (int i = 0; i < collidableTiles->size(); i++) {
+			center->insert(collidableTiles->at(i));
+		}
 }
 void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
-
 	int x = 0;
 	int y = 0;
 	Player *playerPtr = dynamic_cast<Player*>(entities[0]);
@@ -40,7 +55,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 	}
 	if (movePlayerRight) {
 		x = 1;
-		
+
 
 	} else if (movePlayerLeft) {
 		x = -1;
@@ -64,7 +79,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 
 				entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 4, 4, 1, 5, playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
-				bulletPtr->setTexture(8);
+				bulletPtr->setTexture(7);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());
 				break;
 			}
@@ -86,12 +101,12 @@ void EntityManager::spawnPlayer(int x, int y, int speed, int health, int strengt
 void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies) {
 
 	std::vector<int> used_indices;
-	uint8_t spawned = 0;
-	uint8_t num_spawnpoints = spawnpoints->size();
+	int spawned = 0;
+	int num_spawnpoints = spawnpoints->size();
 	while (spawned < amountOfEnemies && used_indices.size() < num_spawnpoints) {
 		int random_index = rand() % num_spawnpoints;
 		bool index_used = false;
-		for (size_t i = 0; i < used_indices.size(); i++) {
+		for (int i = 0; i < used_indices.size(); i++) {
 			if (used_indices[i] == random_index) {
 				index_used = true;
 				break;
@@ -111,17 +126,7 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 				}
 			}
 			if (!spawn_occupied) {
-				Enemy *e = new Enemy(p.X, p.Y, 16, 16, 2, 1, 1);
-				if(p.X < 10 ){
-					e->setDirection({1,0});
-				}else if(p.X > 225){
-					e->setDirection({-1,0});
-				}else if(p.Y < 10){
-					e->setDirection({0,-1});
-				}else if(p.Y > 225){
-					e->setDirection({0,1});
-				}
-
+				Entity *e = new Enemy(p.X, p.Y, 16, 16, 2, 1, 1);
 				for (uint8_t i = 1; i < 45; i++) {
 					if (entities[i] == nullptr) {
 						entities[i] = e;
@@ -146,108 +151,69 @@ void EntityManager::updateEntities() {
 				center->remove(entities[i]);
 				delete entities[i];
 				entities[i] = nullptr;
-				break;
+				continue;
 			}
 
 		int x = 0;
 		int y = 0;
-		// when enemy
 		if (dynamic_cast<Enemy*>(entities[i])) {
 			Enemy *enemyPtr = dynamic_cast<Enemy*>(entities[i]);
-			pointVector enemyPos = enemyPtr->getPosition();
-			int8_t deltaX = playerPos.X - enemyPos.X;
-			int8_t deltaY = playerPos.Y - enemyPos.Y;
 			if (enemyPtr->getRemainingSteps() > 0) {
 				pointVector direction = enemyPtr->getDirection();
-				x = direction.X;
-				y = direction.Y;
+				enemyPtr->stepX(direction.X);
+				enemyPtr->stepY(direction.Y);
 				enemyPtr->decrementRemainingSteps();
 				break;
-			}else if(abs(deltaX) < 150 || abs(deltaY) < 150){
-				if (playerPos.X < enemyPos.X) {
-						x = -1;
-					} else if (playerPos.X > enemyPos.X) {
-						x = 1;
-					}if (playerPos.Y < enemyPos.Y) {
-						y = -1;
-					} else if (playerPos.Y > enemyPos.Y) {
-						y = 1;
-					}
-			}else{
-				uint8_t randomDirection = rand() % 4;
-				pointVector direction = {0,0};
-				switch(randomDirection){
-				case 1:
-					direction.Y = -1;
-				case 2:
-					direction.X = 1;
-				case 3:
-					direction.Y = 1;
-				case 4:
-					direction.X = -1;
-				}
-				enemyPtr->setDirection(direction);
+			}
+			pointVector enemyPos = enemyPtr->getPosition();
+			if (playerPos.X < enemyPos.X) {
+				x = -1;
+			} else if (playerPos.X > enemyPos.X) {
+				x = 1;
+			}
+			if (playerPos.Y < enemyPos.Y) {
+				y = -1;
+			} else if (playerPos.Y > enemyPos.Y) {
+				y = 1;
 			}
 
 		} else if (dynamic_cast<Bullet*>(entities[i])) {
+
 			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
 			pointVector direction = bulletPtr->getTravelDirection();
 
 			x = direction.X;
 			y = direction.Y;
 
-
 		}
 		moveEntity(i, x, y);
 	}
 }
 void EntityManager::moveEntity(int toBeMoved, int x, int y) {
+	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-	center->remove(entities[toBeMoved]);
-	center->insert(entities[toBeMoved]);
-	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 20, 20);
+	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 15, 15);
 	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
-
-	found->resize(0);
 	center->query(box, found);
 	for (uint8_t j = 0; j < found->size(); j++) {
-		if (found->at(j) == entities[toBeMoved] || found->size() < 2) {
+		if (found->at(j) == entities[toBeMoved]) {
 			continue;
 		}
 		if (entities[toBeMoved]->checkEntities(found->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-				bulletPtr->onCollideWall();
 				bulletPtr->onCollide(found->at(j));
-				center->remove(bulletPtr);
-				entities[toBeMoved] = nullptr;
-				delete entities[toBeMoved];
 				break;
 			}
+
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
+
 	}
-	/*
-	for (uint8_t j = 0; j < collidableTiles->size(); j++) {
-		if (entities[toBeMoved] == NULL) {
-			continue;
-		}	
-		if (entities[toBeMoved]->checkTiles(collidableTiles->at(j))) {
-			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
-				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-
-				bulletPtr->onCollideWall();
-				center->remove(entities[toBeMoved]);
-				delete entities[toBeMoved];
-				entities[toBeMoved] = nullptr;
-
-			}
-
-		}
-
-	}*/
+	center->insert(entities[toBeMoved]);
 	delete found;
+
 }
 void EntityManager::checkCollision() {
 

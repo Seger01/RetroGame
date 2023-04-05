@@ -34,12 +34,12 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 void Game::setup() {
 	entityManager->spawnPlayer(112, 100, 2, 20, 1);
 
-	entityManager->spawnEntities(1, 1, 2);
+	//entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 
 	//currentLevel = highscoreManager.getAllTimeHighscore();
-	currentLevel = 0;
-	levelManager.setLevel(0);
+	currentLevel = 1;
+	levelManager.setLevel(1);
 }
 
 void Game::run() {
@@ -70,11 +70,16 @@ void Game::run() {
 
 		entities[0]->moveY(1);
 
-
-
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
 			currentState = PlayingLevel;
+			levelManager.getCollidables(&collidableTiles);
+			levelManager.getSpawnpoints(&spawnPoints);
+			entityManager->updateTiles(&collidableTiles);
 		}
+		currentState = PlayingLevel;
+		levelManager.getCollidables(&collidableTiles);
+		levelManager.getSpawnpoints(&spawnPoints);
+		entityManager->updateTiles(&collidableTiles);
 
 		break;
 	case PlayingLevel:
@@ -108,11 +113,11 @@ void Game::run() {
 		} else {
 			entityUpdate = !entityUpdate;
 		}
-		entityManager->spawnEntities(1, 1, 2);
+
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-
+			entityManager->spawnEntities(1, 1, 2);
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;

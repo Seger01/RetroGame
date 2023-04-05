@@ -8,7 +8,7 @@ class Rectangle
 		int w;
 		int h;
 	public:
-		Rectangle(int x, int y,int w, int h);
+		Rectangle(int x = 0, int y = 0,int w = 0, int h = 0);
 		bool contains(CollidableObject* node);
 		bool intersects(Rectangle range);
 		int getX();
