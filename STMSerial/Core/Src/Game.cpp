@@ -27,6 +27,11 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 
 	communication = new Communication(hspi1);
 
+
+	currentLevel = 1;
+	levelManager.setLevel(1);
+	levelManager.getCollidables(&collidableTiles);
+	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
 
 }
@@ -34,12 +39,14 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 void Game::setup() {
 	entityManager->spawnPlayer(112, 100, 2, 20, 1);
 
-	entityManager->spawnEntities(1, 1, 2);
+	//entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 
 	//currentLevel = highscoreManager.getAllTimeHighscore();
-	currentLevel = 0;
-	levelManager.setLevel(0);
+	currentLevel = 1;
+	levelManager.setLevel(currentLevel);
+
+	entityManager->spawnEntities(1, 1, 1);
 }
 
 void Game::run() {
@@ -57,36 +64,26 @@ void Game::run() {
 
 	uint8_t inputs = 0;
 
-	static int Xpos = 0;
-	static int Ypos = 0;
-
-	int stepY = 0;
-	int stepX = 0;
-
 	switch (currentState) {
 	case Reset:
 		currentState = Startup;
 		break;
 	case Startup:
-		currentState = MainMenu;
+		currentState = PlayingLevel;
 		break;
 	case SwitchingLevels:
 		//entities = entityManager->getEntities();
 		levelManager.switchLevel(currentLevel);
-		if (Xpos < 120) {
-			stepX = (120 - Xpos) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
-			entities[0]->setX(Xpos + stepX);
-		} else {
-			stepX = (Xpos - 120) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
-			entities[0]->setX(Xpos - stepX);
+		if (entities[0]->getPosX() < 120) {
+			entities[0]->setX(entities[0]->getPosX() + 1);
+		} else if (entities[0]->getPosX() > 120) {
+			entities[0]->setX(entities[0]->getPosX() - 1);
 		}
 
-		if (Ypos < 120) {
-			stepY = (120 - Ypos) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
-			entities[0]->setY(Ypos + stepY);
-		} else {
-			stepY = (Ypos - 120) * ((xTaskGetTickCount() - lastLevelSwitch) / timeForLevelSwitch);
-			entities[0]->setY(Ypos - stepY);
+		if (entities[0]->getPosY() < 120) {
+			entities[0]->setY(entities[0]->getPosY() + 1);
+		} else if (entities[0]->getPosY() > 120) {
+			entities[0]->setY(entities[0]->getPosY() - 1);
 		}
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
@@ -117,11 +114,9 @@ void Game::run() {
 					currentLevel = 1;
 				}
 
+				//entities[1] = new Boss(40, 40, 16, 16, 10, 1, 1);
+				entityManager->spawnEntities(1, 1, 1);
 				currentState = SwitchingLevels;
-
-				Xpos = entities[0]->getPosX();
-				Ypos = entities[0]->getPosY();
-
 
 				lastLevelSwitch = xTaskGetTickCount();
 				highscoreManager.setAllTimeHighscore(currentLevel);
@@ -160,9 +155,6 @@ void Game::run() {
 			currentLevel = 1;
 			levelManager.getCollidables(&collidableTiles);
 			levelManager.getSpawnpoints(&spawnPoints);
-
-			Xpos = entities[0]->getPosX();
-			Ypos = entities[0]->getPosY();
 
 			lastLevelSwitch = xTaskGetTickCount();
 

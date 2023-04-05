@@ -38,6 +38,7 @@ void Player::onDeath() {
 
 int Player::getTexture() {
 	static int offset = 0;
+	int baseSprite = 0;
 	static pointVector lastPosition;
 	static pointVector lastSpriteUpdate;
 	static long long lastFrameUpdate = 0;
@@ -61,7 +62,17 @@ int Player::getTexture() {
 
 	}
 
+	if(direction.X == -1){
+		baseSprite = 9;
+	} else if(direction.X == 1){
+		baseSprite = 3;
+	} else if(direction.Y == 1){
+		baseSprite = 6;
+	} else {
+		baseSprite = 0;
+	}
+
 	lastPosition = this->position;
-	return offset;
+	return offset + baseSprite;
 
 }

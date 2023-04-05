@@ -87,7 +87,6 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 	buffer[61] = converter.characterToIndex('r');
 	buffer[81] = converter.characterToIndex('e');
 
-
 	for (int j = 0; j < maxAmountOfEntities; j++) {
 		if (entities[j] == nullptr) {
 			//buffer[(j * 3) + 2 + 1 + 300] = 15;
@@ -102,6 +101,9 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 //	buffer[301] = 20;
 //	buffer[302] = 10;
 //	buffer[303] = 3;
+	buffer[(1 * 3) + 0 + 1 + 300] = entities[1]->getStart().X;
+	buffer[(1 * 3) + 1 + 1 + 300] = entities[1]->getStart().Y;
+	buffer[(1 * 3) + 2 + 1 + 300] = entities[1]->getTexture();
 
 	buffer[0] = 0xFF;
 

@@ -79,7 +79,7 @@ void LevelManager::getSpawnpoints(std::vector<Tile*> *spawnpointVector) {
 
 	for (int i = 0; i < mapSizeTilesX; i++) {
 		for (int j = 0; j < mapSizeTilesY; j++) {
-			if (levels[currentMapNumber][i][j] <= 6 || levels[currentMapNumber][i][j] == 12) {
+			if (levels[currentMapNumber * 2][i][j] <= 6 || levels[currentMapNumber * 2][i][j] == 12) {
 				spawnpointVector->push_back(new Tile((i * 16) + 8, (j * 16) + 8, levels[currentMapNumber * 2][i][j], false, true));
 			}
 		}

@@ -388,10 +388,10 @@ void startSend(void *argument) {
 	/* USER CODE BEGIN 5 */
 	fpgaReset();
 	{
-		uint8_t buffer[226] = { 0 };
+		uint8_t buffer[10] = { 0 };
 
-		for (int i = 0; i < 2; i++) {
-			HAL_SPI_Transmit(&hspi1, (uint8_t*) buffer, 226, 100);
+		for (int i = 0; i < 1000; i++) {
+			HAL_SPI_Transmit(&hspi1, (uint8_t*) buffer, 10, 100);
 
 		}
 	}
