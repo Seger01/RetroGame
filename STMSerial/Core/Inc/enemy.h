@@ -12,6 +12,7 @@ private:
 public:
 	Enemy(uint8_t x, uint8_t y,uint8_t type);
 	void onCollide(CollidableObject*object) override;
+	pointVector Update(pointVector playerPos);
 	void onDeath() override;
 	uint8_t getRemainingSteps();
 	pointVector getDirection();

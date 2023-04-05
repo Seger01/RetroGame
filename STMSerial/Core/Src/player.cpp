@@ -5,6 +5,9 @@ Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
 	setWidth(16);
 	setHeight(16);
 	setTexture(2);
+	setStrength(1);
+	setSpeed(2);
+	setHealth(4);
 }
 void Player::onCollide(CollidableObject *object) {
 	Entity* entityptr = dynamic_cast<Enemy*>(object);
