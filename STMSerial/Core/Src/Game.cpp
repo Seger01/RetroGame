@@ -46,7 +46,7 @@ void Game::setup() {
 	currentLevel = 1;
 	levelManager.setLevel(currentLevel);
 
-	entityManager->spawnEntities(1, 1, 1);
+	entityManager->spawnEntities(1, 1, 2);
 }
 
 void Game::run() {

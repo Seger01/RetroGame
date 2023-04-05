@@ -2,6 +2,12 @@
 #define INC_Entity_H_
 #include "Tile.h"
 #include "CollidableObject.h"
+
+extern "C" {
+#include "FreeRTOS.h"
+#include "task.h"
+}
+
 //class tile {
 //private:
 //	uint8_t posY = 0;

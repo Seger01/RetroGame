@@ -46,9 +46,11 @@ int Entity::getTexture() {
 	static int offset;
 	static long long lastOffsetUpdate = 0;
 
+	if(xTaskGetTickCount() > lastOffsetUpdate + 150){
+		lastOffsetUpdate = xTaskGetTickCount();
+		offset = !offset;
+	}
 
-
-	offset = !offset
 	return textureID + offset;
 }
 void Entity::moveX(int shift) {
