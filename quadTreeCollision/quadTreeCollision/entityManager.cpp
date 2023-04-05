@@ -196,6 +196,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 	
 	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 14, 14);
 	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
+
 	center->query(box, found);
 	for (uint8_t j = 0; j < found->size(); j++) {
 		if (found->at(j) == entities[toBeMoved]) {

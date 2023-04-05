@@ -193,32 +193,23 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-
-	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 20, 20);
+	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 15, 15);
 	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
 	center->query(box, found);
 	for (uint8_t j = 0; j < found->size(); j++) {
 		if (found->at(j) == entities[toBeMoved]) {
 			continue;
 		}
-		center->remove(entities[toBeMoved]);
-		center->remove(found->at(j));
 		if (entities[toBeMoved]->checkEntities(found->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
 				bulletPtr->onCollide(found->at(j));
-				center->remove(bulletPtr);
-				entities[toBeMoved] = nullptr;
-				delete entities[toBeMoved];
-				center->insert(found->at(j));
-				center->insert(entities[toBeMoved]);
 				break;
 			}
 
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
-		center->insert(entities[toBeMoved]);
-		center->insert(found->at(j));
+
 	}
 	center->insert(entities[toBeMoved]);
 	delete found;

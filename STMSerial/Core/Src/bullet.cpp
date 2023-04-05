@@ -5,7 +5,7 @@ Bullet::Bullet(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t heal
 }
 void Bullet::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Entity*>(object);
-
+	this->setHealth(0);
 if(dynamic_cast<Enemy*>(entityptr)) {
 		if(this->getStrength() > entityptr->getHealth()){
 			entityptr->setHealth(0);
