@@ -390,7 +390,7 @@ void startSend(void *argument) {
 	{
 		uint8_t buffer[10] = { 0 };
 
-		for (int i = 0; i < 1000; i++) {
+		for (int i = 0; i < 1; i++) {
 			HAL_SPI_Transmit(&hspi1, (uint8_t*) buffer, 10, 100);
 
 		}
