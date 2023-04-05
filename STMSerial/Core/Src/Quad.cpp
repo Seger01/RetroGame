@@ -3,7 +3,7 @@
 Quad::Quad(Rectangle boundary) {
     this->boundary = boundary;
     size = 0;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 6; i++) {
         n[i] = nullptr;
     }
     topLeftTree = NULL;
@@ -24,9 +24,6 @@ Quad::~Quad() {
 	if(botRightTree != NULL){
 		 delete botRightTree;
 	}
-    for(int i = 0; i < size; i++){
-    	delete n[i];
-    }
 }
 void Quad::subdivide() {
     int x = boundary.getX();
@@ -65,7 +62,7 @@ bool Quad::insert(CollidableObject* node) {
         }
 
         // If the current quad has room, insert the node
-        if (curr->size < 4) {
+        if (curr->size < 6) {
             curr->n[curr->size] = node;
             curr->size++;
             return true;

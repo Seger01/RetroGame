@@ -193,7 +193,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-	center->insert(entities[toBeMoved]);
+
 	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 20, 20);
 	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
 	center->query(box, found);
@@ -214,6 +214,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 		}
 
 	}
+	center->insert(entities[toBeMoved]);
 	delete found;
 
 }
