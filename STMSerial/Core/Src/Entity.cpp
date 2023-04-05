@@ -13,14 +13,25 @@ uint8_t Entity::getPosY() {
 bool Entity::isCollidable() {
 	return true;
 }
-Entity::Entity( uint8_t x, uint8_t y, uint8_t width,uint8_t height, uint8_t health, uint8_t speed,uint8_t strength) {
+void Entity::setWidth(uint8_t width){
+	this->width = width;
+}
+void Entity::setHeight(uint8_t height){
+	this->height = height;
+}
+void Entity::setSpeed(uint8_t speed){
 	this->speed = speed;
-	this->health = health;
+}
+void Entity::setStrength(uint8_t strength){
 	this->strength = strength;
+}
+Entity::Entity( uint8_t x, uint8_t y) {
+	this->speed = 0;
+	this->strength = 0;
 	this->position.X = x;
 	this->position.Y = y;
-	this->width = width;
-	this->height = height;
+	this->width = 0;
+	this->height = 0;
 }
 pointVector Entity::getStart() {
 	pointVector start;

@@ -1,8 +1,10 @@
 #include "player.h"
 #include "boss.h"
-Player::Player(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength) : Entity(x,y,width,height,health,speed,strength)
+Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
 {
-
+	setWidth(16);
+	setHeight(16);
+	setTexture(2);
 }
 void Player::onCollide(CollidableObject *object) {
 	Entity* entityptr = dynamic_cast<Enemy*>(object);

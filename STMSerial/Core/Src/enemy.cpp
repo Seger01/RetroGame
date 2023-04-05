@@ -2,6 +2,30 @@
 #include "enemy.h"
 #include "player.h"
 
+
+Enemy::Enemy(uint8_t x, uint8_t y,uint8_t type) : Entity(x, y) {
+	setWidth(16);
+	setHeight(16);
+	this->type = type;
+	switch(type){
+	case 1:
+		setSpeed(2);
+		setHealth(2);
+		setTexture(3);
+		break;
+	case 2:
+		setSpeed(3);
+		setHealth(1);
+		setTexture(4);
+		break;
+	case 3:
+		setSpeed(1);
+		setHealth(4);
+		setTexture(5);
+		break;
+	}
+
+};
 uint8_t Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }

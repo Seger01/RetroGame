@@ -34,9 +34,9 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 }
 
 void Game::setup() {
-	entityManager->spawnPlayer(112, 100, 2, 20, 1);
+	entityManager->spawnPlayer(112, 100);
 
-	//entityManager->spawnEntities(1, 1, 2);
+	entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 
 	currentLevel = highscoreManager.getAllTimeHighscore();
@@ -93,16 +93,8 @@ void Game::run() {
 				highscoreManager.setAllTimeHighscore(currentLevel);
 			}
 		}
-<<<<<<< Updated upstream
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
-
-=======
-//
-		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
-				playerShoot);
-//
->>>>>>> Stashed changes
 		if (entityUpdate) {
 			entityManager->updateEntities();
 			entityUpdate = !entityUpdate;

@@ -59,10 +59,12 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 		pointVector playerDirection = playerPtr->getDirection();
 		bulletStart.X = (playerPosition.X + playerDirection.X * 9);
 		bulletStart.Y = (playerPosition.Y + playerDirection.Y * 9);
+		uint8_t bullets = 5;
+		if(entities[1] != nullptr)
 		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
 
-				entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 4, 4, 1, 5, playerPtr->getStrength());
+				entities[i] = new Bullet(bulletStart.X, bulletStart.Y,playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
 				bulletPtr->setTexture(8);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());
@@ -73,13 +75,14 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 }
 void EntityManager::clear() {
 	for (uint8_t i = 1; i < 50; i++) {
+		center->remove(entities[i]);
 		delete entities[i];
 		entities[i] = nullptr;
 	}
 }
 
-void EntityManager::spawnPlayer(int x, int y, int speed, int health, int strength) {
-	entities[0] = new Player(x, y, 16, 16, health, speed, strength);
+void EntityManager::spawnPlayer(int x, int y) {
+	entities[0] = new Player(x, y);
 	center->insert(entities[0]);
 }
 
@@ -111,8 +114,8 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 				}
 			}
 			if (!spawn_occupied) {
-				Entity *e = new Enemy(p.X, p.Y, 16, 16, 2, 1, 1);
-				for (uint8_t i = 1; i < 45; i++) {
+				Entity *e = new Enemy(p.X, p.Y,1);
+				for (uint8_t i = 2; i < 45; i++) {
 					if (entities[i] == nullptr) {
 						entities[i] = e;
 						center->insert(entities[i]);
@@ -136,7 +139,7 @@ void EntityManager::updateEntities() {
 				center->remove(entities[i]);
 				delete entities[i];
 				entities[i] = nullptr;
-				break;
+				continue;
 			}
 
 		int x = 0;
@@ -145,34 +148,33 @@ void EntityManager::updateEntities() {
 			Enemy *enemyPtr = dynamic_cast<Enemy*>(entities[i]);
 			if (enemyPtr->getRemainingSteps() > 0) {
 				pointVector direction = enemyPtr->getDirection();
-				enemyPtr->stepX(direction.X);
-				enemyPtr->stepY(direction.Y);
+				x = direction.X;
+				y = direction.Y;
 				enemyPtr->decrementRemainingSteps();
-				break;
+
+			}else{
+				pointVector enemyPos = enemyPtr->getPosition();
+				if (playerPos.X < enemyPos.X) {
+					x = -1;
+				} else if (playerPos.X > enemyPos.X) {
+					x = 1;
+				}
+				if (playerPos.Y < enemyPos.Y) {
+					y = -1;
+				} else if (playerPos.Y > enemyPos.Y) {
+					y = 1;
+				}
 			}
-			pointVector enemyPos = enemyPtr->getPosition();
-			if (playerPos.X < enemyPos.X) {
-				x = -1;
-			} else if (playerPos.X > enemyPos.X) {
-				x = 1;
-			}
-			if (playerPos.Y < enemyPos.Y) {
-				y = -1;
-			} else if (playerPos.Y > enemyPos.Y) {
-				y = 1;
-			}
-			moveEntity(i, x, y);
+
 		} else if (dynamic_cast<Bullet*>(entities[i])) {
 
 			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
 			pointVector direction = bulletPtr->getTravelDirection();
 
-  	  x = direction.X;
+			x = direction.X;
 			y = direction.Y;
-
-
 		}
-
+		moveEntity(i, x, y);
 	}
 }
 void EntityManager::moveEntity(int toBeMoved, int x, int y) {
