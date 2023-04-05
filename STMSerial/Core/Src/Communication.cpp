@@ -81,11 +81,26 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 		}
 	}
 
-	buffer[1] = converter.characterToIndex('s');
-	buffer[21] = converter.characterToIndex('c');
-	buffer[41] = converter.characterToIndex('o');
-	buffer[61] = converter.characterToIndex('r');
-	buffer[81] = converter.characterToIndex('e');
+//	buffer[1] = converter.characterToIndex('s');
+//	buffer[21] = converter.characterToIndex('c');
+//	buffer[41] = converter.characterToIndex('o');
+//	buffer[61] = converter.characterToIndex('r');
+//	buffer[81] = converter.characterToIndex('e');
+
+	buffer[1] = converter.characterToIndex('l');
+	buffer[2] = converter.characterToIndex('v');
+	buffer[3] = converter.characterToIndex('l');
+
+	int score = highscoreManager.getCurrentScore();
+
+	int d1 = score % 10;
+	int d2 = ((score % 100) /10);
+	int d3 = ((score % 1000)/ 100);
+
+	buffer[21] = converter.intToIndex(d3);
+	buffer[22] = converter.intToIndex(d2);
+	buffer[23] = converter.intToIndex(d1);
+
 
 	for (int j = 0; j < maxAmountOfEntities; j++) {
 		if (entities[j] == nullptr) {

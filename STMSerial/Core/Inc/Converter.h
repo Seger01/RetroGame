@@ -17,6 +17,7 @@ public:
 	virtual ~Converter();
 
 	int characterToIndex(int character);
+	int intToIndex(int number);
 
 	int justSomeFunction();
 };

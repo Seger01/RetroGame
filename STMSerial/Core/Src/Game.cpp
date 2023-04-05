@@ -95,13 +95,16 @@ void Game::run() {
 	case PlayingLevel:
 
 		static long long spawnTimer = 0;
+
+
 //
 		inputs = inputManager.readInput();
 //
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
-				playerShoot = true;
+				//playerShoot = true;
 				lastShot = xTaskGetTickCount();
+				highscoreManager.addToScore(1);
 			}
 		}
 //
