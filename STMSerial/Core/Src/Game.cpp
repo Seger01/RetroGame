@@ -74,6 +74,7 @@ void Game::run() {
 			currentState = PlayingLevel;
 			levelManager.getCollidables(&collidableTiles);
 			levelManager.getSpawnpoints(&spawnPoints);
+			entityManager->updateTiles(&collidableTiles);
 		}
 
 		break;
