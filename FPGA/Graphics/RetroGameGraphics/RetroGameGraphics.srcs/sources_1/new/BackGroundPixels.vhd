@@ -146,7 +146,7 @@ BEGIN
 	currentTileXYPosition <= resize((to_unsigned(XVGA       MOD TILE_PIXEL_HIGHT_AND_WITH, currentTileXYPosition'length)      + ((YVGA    MOD TILE_PIXEL_HIGHT_AND_WITH)   * TILE_PIXEL_HIGHT_AND_WITH)), currentTileXYPosition'length); -- //todo: add offset in x and y count
 	
 	PROCESS (reset, clk)
-	   variable temp: unsigned (13 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
+	   variable temp: unsigned (BACKGROUND_ROM_ADRESS_BIT_SIZE-1 DOWNTO 0) := (OTHERS => '0'); -- address to read from 1 of all tile
 	BEGIN
 		-- if reset
 		IF (reset = '1') THEN

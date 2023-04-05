@@ -19,6 +19,6 @@
 
 #define timeBetweenShots 200
 
-#define timeForLevelSwitch 10000.0
+#define timeForLevelSwitch 5000.0
 
 #endif /* INC_CONFIG_H_ */
