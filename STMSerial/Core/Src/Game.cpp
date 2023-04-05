@@ -60,7 +60,6 @@ void Game::run() {
 	static int remainingEnemies = 0;
 
 	Entity **entities = entityManager->getEntities();
-	;
 
 	uint8_t inputs = 0;
 

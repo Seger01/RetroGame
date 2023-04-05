@@ -43,7 +43,13 @@ pointVector Entity::getHalfSize(){
 	return halfsize;
 }
 int Entity::getTexture() {
-	return textureID;
+	static int offset;
+	static long long lastOffsetUpdate = 0;
+
+
+
+	offset = !offset
+	return textureID + offset;
 }
 void Entity::moveX(int shift) {
 	this->position.X += (int)shift;
