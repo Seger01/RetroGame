@@ -140,6 +140,7 @@ void Quad::remove(CollidableObject* node) {
                     }
                     return;
                 }*/
+                //stack.clear();
                 return;
             }
         }
