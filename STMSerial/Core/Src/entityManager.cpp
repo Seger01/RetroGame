@@ -211,6 +211,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 				entities[toBeMoved] = nullptr;
 				delete entities[toBeMoved];
 				center->insert(found->at(j));
+				center->insert(entities[toBeMoved]);
 				break;
 			}
 
