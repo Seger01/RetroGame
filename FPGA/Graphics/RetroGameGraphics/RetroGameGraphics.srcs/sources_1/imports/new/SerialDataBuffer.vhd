@@ -40,7 +40,6 @@ entity SerialDataBuffer is
 		hudData    : out STD_LOGIC_VECTOR (24 - 1 downto 0));
 end SerialDataBuffer;
 architecture Behavioral of SerialDataBuffer is
-    signal serialDataBuffer : STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
 begin
 	process (clk100Mhz, sysReset)
 	begin
@@ -49,25 +48,14 @@ begin
 			entityData         <= (others => '0');
 			soundData          <= (others => '0');
 			hudData            <= (others => '1');
-			serialDataBuffer   <= (others => '0');
 			
 		elsif (rising_edge(clk100Mhz)) then
-			tileData           <= (others => '0');
-			entityData         <= (others => '0');
-			soundData          <= (others => '0');
-			hudData            <= (others => '1');
-			serialDataBuffer   <= serialDataBuffer;
-			
-			-- VGA not in visible part to prevent tearing < 31
-			if (((Ycount) < "0000011111") and (serialData(7 downto 0) = x"FF")) then
-			     serialDataBuffer <= serialData;
-			end if;
             -- read tiles
-            tileData     <= serialDataBuffer(2408       - 1 downto 8);
+            tileData       <= serialData(2408 - 1 downto 8);
             -- read entity
-            entityData   <= serialDataBuffer(2400+ 1208 - 1 downto 2400+ 8);
-            soundData    <= serialDataBuffer(2400+ 1216 - 1 downto 2400+ 1208);
-            hudData      <= serialDataBuffer(2400+ 1240 - 1 downto 2400+ 1216);
+            entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
+            soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
+            hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
 		end if;
 	end process;
 end Behavioral;
