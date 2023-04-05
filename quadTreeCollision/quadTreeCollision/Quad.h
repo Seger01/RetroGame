@@ -10,7 +10,7 @@ class Quad {
 
     // Contains details of node
     uint8_t size = 0;
-    CollidableObject* n[4];
+    CollidableObject* n[6];
     bool divided = false;
     // Children of this tree
     Quad* topLeftTree;

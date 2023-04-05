@@ -54,7 +54,7 @@ bool Quad::insert(CollidableObject* node) {
         }
 
         // If the current quad has room, insert the node
-        if (curr->size < 4) {
+        if (curr->size < 6) {
             curr->n[curr->size] = node;
             curr->size++;
             return true;
