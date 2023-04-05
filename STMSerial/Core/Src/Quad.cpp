@@ -12,10 +12,21 @@ Quad::Quad(Rectangle boundary) {
     botRightTree = NULL;
 }
 Quad::~Quad() {
-    delete topLeftTree;
-    delete topRightTree;
-    delete botLeftTree;
-    delete botRightTree;
+	if(topLeftTree != NULL){
+		delete topLeftTree;
+	}
+	if(topRightTree != NULL){
+		delete topRightTree;
+	}
+	if(botLeftTree != NULL){
+		delete botLeftTree;
+	}
+	if(botRightTree != NULL){
+		 delete botRightTree;
+	}
+    for(int i = 0; i < size; i++){
+    	delete n[i];
+    }
 }
 void Quad::subdivide() {
     int x = boundary.getX();
