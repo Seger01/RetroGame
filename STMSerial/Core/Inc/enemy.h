@@ -20,6 +20,6 @@ public:
 	void decrementRemainingSteps();
 	void setRemainingSteps(uint8_t steps);
 	bool checkEntities(CollidableObject *object) override;
-	pointVector update(pointVector playerVector);
+	pointVector update(pointVector playerPos);
 };
 

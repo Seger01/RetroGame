@@ -58,9 +58,28 @@ int Entity::getTexture() {
 }
 void Entity::moveX(int shift) {
 	this->position.X += (int)shift;
+	if (direction == 1 && (X + shift < 226)) {
+		this->position.X += shift;
+	} else if (direction == 1 && (X + shift >= 226)) {
+				this->position.X = 8;
+	} else if (direction == -1 && (X - shift <= -1)) {
+				this->position.X = 232;
+	} else if (direction == -1 && (X - shift > - 1)) {
+				this->position.X -= shift;
+	}
 }
 void Entity::moveY(int shift) {
 	this->position.Y += (int)shift;
+	int Y = this->getStart().Y;
+		if (direction == 1 && (Y + shift < 224)) {
+			this->position.Y += shift;
+		} else if (direction == 1 && (Y + shift >= 224)) {
+			this->position.Y = 8;
+		} else if (direction == -1 && (Y -  shift <= -1)) {
+			this->position.Y = 230;
+		} else if (direction == -1 && (Y - shift > -1)) {
+			this->position.Y -= shift;
+		}
 }
 
 

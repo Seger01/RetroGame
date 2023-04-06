@@ -34,12 +34,12 @@ Enemy::Enemy(uint8_t x, uint8_t y,uint8_t type) : Entity(x, y) {
 	}
 
 };
-void Enemy::update(pointVector playerPos){
-	pointVector newMovement();
+pointVector Enemy::update(pointVector playerPos){
+	pointVector newMovement;
 	pointVector enemyPos = this->getDirection();
 	int8_t deltaX = playerPos.X - enemyPos.X;
 					int8_t deltaY = playerPos.Y - enemyPos.Y;
-	if (enemyPtr->getRemainingSteps() > 0) {
+	if (stepsRemaining > 0) {
 		newMovement.X = direction.X;
 		newMovement.Y = direction.Y;
 		stepsRemaining--;
@@ -47,7 +47,7 @@ void Enemy::update(pointVector playerPos){
 	}
 	switch(type){
 		case 1:
-				if(abs(deltaX) > 100 && abs(deltaY) > 100){
+				if(abs(deltaX) > 150 && abs(deltaY) > 150){
 					direction.X = rand() % 3 - 1; // Random integer between -1 and 1
 					direction.Y = rand() % 3 - 1; // Random integer between -1 and 1
 					stepsRemaining = 10; // Move in this direction for 2 steps
@@ -58,9 +58,9 @@ void Enemy::update(pointVector playerPos){
 						newMovement.X = 1;
 					}
 					if (playerPos.Y < enemyPos.Y) {
-						newMovement = -1;
+						newMovement.Y = -1;
 					} else if (playerPos.Y > enemyPos.Y) {
-						newMovement = 1;
+						newMovement.Y = 1;
 					}
 
 				}
@@ -71,7 +71,7 @@ void Enemy::update(pointVector playerPos){
 								direction.Y = rand() % 3 - 1; // Random integer between -1 and 1
 								stepsRemaining = 10; // Move in this direction for 2 steps
 			}else if(locationLoc.X != 0 && locationLoc.Y != 0){
-				if(locationLoc.X = enemyPos.X && locationLoc.Y = enemyPos.Y){
+				if(locationLoc.X == enemyPos.X && locationLoc.Y == enemyPos.Y){
 					locationLoc = {0,0};
 				}
 				if (locationLoc.X < enemyPos.X) {
@@ -80,9 +80,9 @@ void Enemy::update(pointVector playerPos){
 					newMovement.X = 1;
 				}
 				if (locationLoc.Y < enemyPos.Y) {
-					newMovement = -1;
+					newMovement.Y = -1;
 				} else if (locationLoc.Y > enemyPos.Y) {
-					newMovement = 1;
+					newMovement.Y = 1;
 				}
 
 				}

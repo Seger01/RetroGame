@@ -161,8 +161,9 @@ void EntityManager::updateEntities() {
 		int y = 0;
 		if (dynamic_cast<Enemy*>(entities[i])) {
 			Enemy *enemyPtr = dynamic_cast<Enemy*>(entities[i]);
-
-
+			pointVector newMovement = enemyPtr->update(playerPos);
+			x = newMovement.X;
+			y = newMovement.Y;
 		} else if (dynamic_cast<Bullet*>(entities[i])) {
 
 			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
