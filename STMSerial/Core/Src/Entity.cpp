@@ -43,7 +43,15 @@ pointVector Entity::getHalfSize(){
 	return halfsize;
 }
 int Entity::getTexture() {
-	return textureID;
+	static int offset;
+	static long long lastOffsetUpdate = 0;
+
+	if(xTaskGetTickCount() > lastOffsetUpdate + 150){
+		lastOffsetUpdate = xTaskGetTickCount();
+		offset = !offset;
+	}
+
+	return textureID + offset;
 }
 void Entity::moveX(int shift) {
 	this->position.X += (int)shift;
@@ -83,6 +91,15 @@ void Entity::stepX(int direction) {
 			this->position.X -= (int) speed;
 		}
 }
+
+void Entity::setX(int newX){
+	this->position.X = newX;
+}
+
+void Entity::setY(int newY){
+	this->position.Y = newY;
+}
+
 void Entity::stepY(int direction) {
 
 	int Y = this->getStart().Y;

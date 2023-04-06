@@ -2,6 +2,12 @@
 #define INC_Entity_H_
 #include "Tile.h"
 #include "CollidableObject.h"
+
+extern "C" {
+#include "FreeRTOS.h"
+#include "task.h"
+}
+
 //class tile {
 //private:
 //	uint8_t posY = 0;
@@ -43,6 +49,8 @@ public:
 	virtual void stepY(int);
 	void moveX(int);
 	void moveY(int);
+	void setX(int);
+	void setY(int);
 	//void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
 	uint8_t getPosX() override;
@@ -58,7 +66,7 @@ public:
 	virtual bool checkTiles(Tile *object);
 	virtual void onCollide(CollidableObject*object);
 	virtual void onDeath();
-	int getTexture();
+	virtual int getTexture();
 
 };
 #endif /* INC_CollidableObject_H_ */
