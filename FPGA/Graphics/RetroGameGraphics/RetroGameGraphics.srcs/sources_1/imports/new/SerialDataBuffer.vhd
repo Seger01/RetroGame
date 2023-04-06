@@ -43,15 +43,12 @@ begin
 			soundData          <= (others => '0');
 			hudData            <= (others => '1');
 		elsif (rising_edge(clk100Mhz)) then
-			-- VGA not in visible part to prevent tearing < 31
-			if ((Ycount) < "0000010100") then
-                -- read tiles
-                tileData         <= serialData(2408 - 1 downto 8);
-                -- read entity
-                entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
-                soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
-                hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
-			end if;
+            -- read tiles
+            tileData         <= serialData(2408 - 1 downto 8);
+            -- read entity
+            entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
+            soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
+            hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
 		end if;
 	end process;
 end Behavioral;
