@@ -1,16 +1,16 @@
-#pragma once
-#include "entity.h"
-#include "CollidableObject.h"
-#include "Rectangle.h"
-#include <vector>
 
+
+#ifndef INC_Quad_H_
+#define INC_Quad_H_
+#include <vector>
+#include "Rectangle.h"
 class Quad {
     // Hold details of the boundary of this node
-    Rectangle* boundary = nullptr;
+    Rectangle boundary;
 
     // Contains details of node
-    uint16_t size = 0;
-    CollidableObject* n[4];
+    uint8_t size = 0;
+    CollidableObject* n[6];
     bool divided = false;
     // Children of this tree
     Quad* topLeftTree;
@@ -19,11 +19,12 @@ class Quad {
     Quad* botRightTree;
 
 public:
-    Quad(Rectangle *boundary);
-    std::vector<CollidableObject*>* query(Rectangle range, std::vector<CollidableObject*> *found);
+    Quad(Rectangle boundary);
+    virtual ~Quad();
+    std::vector<CollidableObject*>* query(Rectangle range, std::vector<CollidableObject*>* found);
     bool insert(CollidableObject*);
     void remove(CollidableObject*);
     void subdivide();
 };
-
+#endif /* INC_Quad_H_ */
 

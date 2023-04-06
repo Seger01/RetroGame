@@ -27,8 +27,6 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 
 	communication = new Communication(hspi1);
 
-	levelManager.getCollidables(&collidableTiles);
-	levelManager.getSpawnpoints(&spawnPoints);
 	entityManager = new EntityManager(&collidableTiles, &spawnPoints);
 
 }
@@ -39,9 +37,9 @@ void Game::setup() {
 	entityManager->spawnEntities(1, 1, 2);
 	entityManager->getEntities()[0]->setTexture(2);
 
-	currentLevel = highscoreManager.getAllTimeHighscore();
-
-	levelManager.setLevel(currentLevel);
+	//currentLevel = highscoreManager.getAllTimeHighscore();
+	currentLevel = 1;
+	levelManager.setLevel(1);
 }
 
 void Game::run() {
@@ -65,12 +63,24 @@ void Game::run() {
 		currentState = Startup;
 		break;
 	case Startup:
-		currentState = SwitchingLevels;
+		currentState = MainMenu;
 		break;
 	case SwitchingLevels:
+		entities = entityManager->getEntities();
 
+		entities[0]->moveY(1);
+
+		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
+			currentState = PlayingLevel;
+			levelManager.getCollidables(&collidableTiles);
+			levelManager.getSpawnpoints(&spawnPoints);
+			entityManager->updateTiles(&collidableTiles);
+		}
 		currentState = PlayingLevel;
-		remainingEnemies = 50;
+		levelManager.getCollidables(&collidableTiles);
+		levelManager.getSpawnpoints(&spawnPoints);
+		entityManager->updateTiles(&collidableTiles);
+
 		break;
 	case PlayingLevel:
 
@@ -95,6 +105,7 @@ void Game::run() {
 		}
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
+
 		if (entityUpdate) {
 			entityManager->updateEntities();
 			entityUpdate = !entityUpdate;
@@ -115,7 +126,13 @@ void Game::run() {
 
 		break;
 	case MainMenu:
-		currentState = Startup;
+		lastLevelSwitch = xTaskGetTickCount();
+
+		currentState = SwitchingLevels;
+		currentLevel = 1;
+		levelManager.switchLevel(currentLevel);
+		levelManager.getCollidables(&collidableTiles);
+		levelManager.getSpawnpoints(&spawnPoints);
 		break;
 	default:
 
@@ -124,6 +141,6 @@ void Game::run() {
 
 	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
 
-	levelManager.switchLevel(currentLevel);
+	//levelManager.switchLevel(currentLevel);
 
 }
