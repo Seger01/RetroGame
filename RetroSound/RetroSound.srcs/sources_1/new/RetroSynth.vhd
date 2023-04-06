@@ -49,7 +49,7 @@ begin
             counterToggle <= counterToggle + 1;
             -- toggle is used to switch between sfx and bgm to "combine" the pwm signals
             if(counterToggle >= 150) then
-                pwm <= BGMpwmcombine;
+                --pwm <= BGMpwmcombine;
                 BGMtoggle <= '1';
                 SFXtoggle <= '0';
             else

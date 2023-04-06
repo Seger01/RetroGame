@@ -168,11 +168,6 @@ begin
                     SFXcounter <= 0;
                 end if;
             end if;
-
-
-
-
-
         end if;
     end process;
 

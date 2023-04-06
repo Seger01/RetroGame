@@ -13,11 +13,10 @@ architecture Behavioral of squareWave is
 
 
     -- signals used in counters
-    signal counter : integer  range 0 to 255 := 0;
-    signal counter2 : integer := 0;
-    signal counterLimit : integer := 2000;
+    signal counter : integer := 0;
+    signal counterLimit : integer := 2000; -- octave
     signal noteIndicatorTest : std_logic_vector(5 downto 0) := "100000";
-    signal effectCounter : integer := 0;
+    signal effectCounter : integer := 0; -- attack
 
     signal pwmSignal : std_logic := '0';
 
@@ -25,29 +24,33 @@ architecture Behavioral of squareWave is
 
     signal tempCount : integer := 0;
 
-    signal soundTimer : integer := 0;
+    signal soundTimer : integer := 0; -- indicates how long a sound lasts
     signal timeCounter : integer := 0;
 
     signal soundEnable : std_logic := '0';
 
     signal subToggle : std_logic := '0';
 
-    signal soundPlus : integer := 0;
+    signal octaveIncrease : integer := 0;
 
-    signal counterLimit2 : integer := 0;
+    signal octaveLimit : integer := 0;
 
     signal invert : std_logic := '0';
 
-    constant clockFrequency : integer := 100e6;
-    constant clockperiod : time := 100ms / clockFrequency;
-    signal tempCLK : std_Logic := '0';
+    signal normalizeCounter : integer := 0; -- used to normalize frequentie to 5000
+    signal normalizeCounterLimit : integer := 0;
 
+    signal setAttackRoof : integer := 0;
 
+    signal attack : integer := 0;
+    signal attackRoof : integer := 0;
+    signal attackFloor : integer := 0;
+    signal attackGain : integer := 0; -- the more you add 
 
 begin
+    --
     BGM : process(clk)
     begin
-        tempCLK <= not tempCLK after Clockperiod / 2;
 
         if rising_edge(clk) then
             if toggle = '1' then
@@ -55,25 +58,33 @@ begin
                 -- chooses tone depending on signal
                 case noteIndicator is
                     when "100000" => effectCounter <= 5000000; -- player death
+                        normalizeCounterLimit <= 15000;
                         soundTimer <= 75000000;
-                        soundPlus <= 100;
-                        counterLimit2 <= 3000;
+                        octaveIncrease <= 100;
+                        octaveLimit <= 3000;
                         invert <= '0';
+
+                        setAttackRoof <= 10000;
+                        attackGain <= 500;
+                        attackFloor <= 1000;
                     when "010000" => effectCounter <= 250000; -- shoot
+                        normalizeCounterLimit <= 3000;
                         soundTimer <= 5000000;
-                        soundPlus <= 100;
-                        counterLimit2 <= 3000;
+                        octaveIncrease <= 100;
+                        octaveLimit <= 3000;
                         invert <= '0';
                     when "001000" => effectCounter <= 10000; -- walk
+                        normalizeCounterLimit <= 1500;
                         soundTimer <= 50000;
-                        counterLimit2 <= 5000;
-                        soundPlus <= 500;
+                        octaveLimit <= 5000;
+                        octaveIncrease <= 500;
                         invert <= '0';
                     when "000100" => effectCounter <= 500000; -- powerup
+                        normalizeCounterLimit <= 4500;
                         invert <= '1';
                         soundTimer <= 10000000;
-                        soundPlus <= 100;
-                        counterLimit2 <= 3000;
+                        octaveIncrease <= 100;
+                        octaveLimit <= 3000;
                     when "000010" => effectCounter <= 500;
                     when others => effectCounter <= 0;
                 end case;
@@ -94,33 +105,46 @@ begin
 
 
                 if soundEnable = '1' then
-                    if counter >= 127 then
-                        counter2 <= counter2 + 1;
-                        counter <= 0;
+                    -- converts hertz for each component to 5000
+                    if normalizeCounter >= normalizeCounterLimit then
+                        normalizeCounter <= 0;
+                        attack <= attack + 1;
                     else
-                        counter <= counter + 1;
+                        normalizeCounter <= normalizeCounter + 1;
                     end if;
-                    
+
                     -- rising square
                     if invert = '1' then
                         if tempCount >= effectCounter then
                             tempCount <= 0;
-                            counterLimit <= counterLimit - soundPlus;
+                            counterLimit <= counterLimit - octaveIncrease;
                         else
                             tempCount <= tempCount + 1;
                         end if;
                     else
                         -- falling square
-                        if tempCount >= effectCounter then
-                            tempCount <= 0;
-                            counterLimit <= counterLimit + soundPlus;
+                        if attack >= attackRoof then
+                            if attackRoof  <= attackFloor then
+                                attackRoof <= setAttackRoof;
+                            end if;
+
+                            attack <= 0;
+                            attackRoof <= attackRoof + attackGain;
                         else
-                            tempCount <= tempCount + 1;
+                            attack <= attack + 1;
                         end if;
+
+
+                        --                        if tempCount >= effectCounter then
+                        --                            tempCount <= 0;
+                        --                            counterLimit <= counterLimit + octaveIncrease;
+                        --                        else
+                        --                            tempCount <= tempCount + 1;
+                        --                        end if;
                     end if;
 
                     -- counter used for rising sound
-                    if counterLimit >= counterLimit2 then
+                    if counterLimit >= octaveLimit then
                         counterLimit <= 1000;
                     end if;
 
@@ -132,8 +156,7 @@ begin
                     end if;
 
                     -- sub loop counter toggles pwm (duty cycle)
-                    if counter2 >= counterLimit then
-                        counter2 <= 0;
+                    if attack >= attackRoof  then
                         if pwmSignal = '1' then
                             pwmSignal <= '0';
                         else
@@ -147,8 +170,8 @@ begin
                 --set all counters to 0
                 tempCount <= 0;
                 counter <= 0;
-                counter2 <= 0;
                 counterLimit <= 1000;
+                attackRoof <= setAttackRoof;
             end if;
             tempToggle <= toggle;
         end if;
