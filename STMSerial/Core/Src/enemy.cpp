@@ -121,6 +121,8 @@ void Enemy::setRemainingSteps(uint8_t steps) {
 void Enemy::setDirection(pointVector direction) {
 	this->direction = direction;
 }
+
+
 uint8_t Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }

@@ -97,7 +97,6 @@ void EntityManager::spawnPlayer(int x, int y) {
 }
 
 void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies) {
-
 	std::vector<int> used_indices;
 	int spawned = 0;
 	int num_spawnpoints = spawnpoints->size();

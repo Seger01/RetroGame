@@ -3,6 +3,11 @@
 #include "Tile.h"
 #include "CollidableObject.h"
 
+extern "C" {
+#include "FreeRTOS.h"
+#include "task.h"
+}
+
 //class tile {
 //private:
 //	uint8_t posY = 0;
@@ -44,6 +49,8 @@ public:
 	virtual void stepY(int);
 	void moveX(int);
 	void moveY(int);
+	void setX(int);
+	void setY(int);
 	//void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
 	uint8_t getPosX() override;
@@ -59,11 +66,11 @@ public:
 	void setHealth(uint8_t);
 	uint8_t getHealth();
 	pointVector getPosition();
-	int getTexture();
 	virtual bool checkEntities(CollidableObject *object);
 	virtual bool checkTiles(Tile *object);
 	virtual void onCollide(CollidableObject*object);
 	virtual void onDeath();
+	virtual int getTexture();
 
 };
 #endif /* INC_CollidableObject_H_ */
