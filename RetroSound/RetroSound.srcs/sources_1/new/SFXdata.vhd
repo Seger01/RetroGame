@@ -77,6 +77,14 @@ architecture Behavioral of SFXdata is
              pwm : out STD_LOGIC);
     end component;
 
+    component squareWave is
+        Port (CLK : in std_logic;
+             noteIndicator : in std_logic_vector (5 downto 0);
+             toggle : in std_logic;
+             PWM : out std_logic
+            );
+    end component;
+
     -- TOGGLES FOR SFX COMPONENTS
     signal toggleShoot : std_logic;
     signal toggleWalk : std_logic;
@@ -87,6 +95,7 @@ architecture Behavioral of SFXdata is
 
     -- TEMPORARY TOGGLES
     signal triangleToggle : std_Logic := '1';
+    signal squareToggle : std_logic := '0';
 
     -- PWM SIGNALS FOR COMPONENTS
     signal pwmShoot : std_logic;
@@ -106,19 +115,41 @@ architecture Behavioral of SFXdata is
 
     signal toneRiseInt : integer := 0;
     signal countTemp : integer := 0;
+    
+    signal SFXcounter : integer := 0;
 
 begin
 
     toggleSFX : process(clk)
     begin
         if rising_edge(clk) then
-            togglePdeath <= '1';
+            -- TOGGLES TO SWITCH BETWEEN SOUNDS
+            togglePdeath <= sound(0);
+            toggleShoot <= sound(1);
+            toggleWalk <= sound(2);
+            togglePowerup <= sound(3);
+            
+            if togglePdeath = '1' then
+                SFXpwm <= pwmPdeath;
+            end if;
+            
+            if toggleShoot = '1' then
+                SFXpwm <= pwmShoot;
+            end if;
+            
+            if toggleWalk = '1' then
+                SFXpwm <= pwmWalk;
+            end if;
+            
+            if togglePowerup = '1' then
+                SFXpwm <= pwmPowerup;
+            end if;
         end if;
     end process;
 
     shoot : SFXshoot port map(
             clk => clk,
-            toggleShoot => toggleHit,
+            toggleShoot => toggleShoot,
             pwm => pwmShoot
         );
 
@@ -134,11 +165,10 @@ begin
             pwm => pwmHit
         );
 
-
     pDeath : SFXpDeath port map(
             clk => clk,
             togglePdeath => togglePdeath,
-            pwm => SFXpwm
+            pwm => pwmPdeath
         );
 
     powerup : SFXpowerup port map(
@@ -158,6 +188,13 @@ begin
             clk => clk,
             toggleMdeath => toggleMdeath,
             pwm => pwmMdeath
+        );
+
+    square : squareWave port map(
+            clk => clk,
+            noteIndicator => sound,
+            toggle => squareToggle,
+            pwm =>  temppwm
         );
 
 end Behavioral;

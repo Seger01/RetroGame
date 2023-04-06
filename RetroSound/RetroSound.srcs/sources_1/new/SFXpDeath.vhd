@@ -18,23 +18,23 @@ architecture Behavioral of SFXpDeath is
              pwm : out std_logic
             );
     end component;
-    
+
     signal toggle : std_logic;
     signal sound : std_logic_vector(5 downto 0) := "100000";
-    
+
     constant clockFrequency : integer := 100e6;
     constant clockperiod : time := 100ms / clockFrequency;
     signal tempCLK : std_Logic := '0';
 begin
-test : process(clk)
-begin
-tempCLK <= not tempCLK after Clockperiod / 2;
-end process;
+    pDeath : process(clk)
+    begin
+        sound <= "100000";
+    end process;
     squareDeath : squareWave port map(
-            clk => clk,
+            clk => clk ,
             noteIndicator => sound,
             toggle => togglepDeath,
-            pwm => pwm 
+            pwm => pwm
         );
 
 end Behavioral;
