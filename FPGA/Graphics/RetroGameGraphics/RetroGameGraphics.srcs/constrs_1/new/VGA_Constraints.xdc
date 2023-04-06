@@ -1,12 +1,10 @@
-#System                                                       
-set_property IOSTANDARD LVCMOS33 [get_ports reset]     
+#System                                                
 set_property IOSTANDARD LVCMOS33 [get_ports clk_100MHz]
 #VGA
 set_property IOSTANDARD LVCMOS33 [get_ports hsync]
 set_property IOSTANDARD LVCMOS33 [get_ports vsync]
 set_property IOSTANDARD LVCMOS33 [get_ports RGBout]
 #System
-set_property PACKAGE_PIN J2 [get_ports reset]
 set_property PACKAGE_PIN W5 [get_ports clk_100MHz]
 #VGA
 set_property PACKAGE_PIN P19 [get_ports hsync]
@@ -61,8 +59,18 @@ set_property PACKAGE_PIN P3  [get_ports debugOut[12]]
 set_property PACKAGE_PIN N3  [get_ports debugOut[13]]
 set_property PACKAGE_PIN P1  [get_ports debugOut[14]]
 set_property PACKAGE_PIN L1  [get_ports debugOut[15]]
-### serial communiaction ###
-set_property PACKAGE_PIN J1 [get_ports serialClkIn]
-set_property PACKAGE_PIN L2 [get_ports serialDataIn]
+#
+#
+### serial communiaction ###       
+set_property IOSTANDARD LVCMOS33 [get_ports reset]   
 set_property IOSTANDARD LVCMOS33 [get_ports serialClkIn]
 set_property IOSTANDARD LVCMOS33 [get_ports serialDataIn]
+# 
+set_property PACKAGE_PIN J2 [get_ports reset] 
+set_property PACKAGE_PIN J1 [get_ports serialClkIn]
+set_property PACKAGE_PIN L2 [get_ports serialDataIn]
+#
+#
+### Sound ###
+set_property IOSTANDARD LVCMOS33 [get_ports PWMOut]
+set_property PACKAGE_PIN A15 [get_ports PWMOut] 

@@ -75,15 +75,17 @@ ENTITY Bouncing_Object IS
     );
     PORT
 (
-		debugIn       : IN  unsigned(15 DOWNTO 0); -- Debug switches
-		debugOut      : OUT unsigned(15 DOWNTO 0); -- Debug Leds
+		debugIn          : IN  unsigned(15 DOWNTO 0); -- Debug switches
+		debugOut         : OUT unsigned(15 DOWNTO 0); -- Debug Leds
         reset            : IN  STD_LOGIC;
         clk_100MHz       : IN  STD_LOGIC;
 		RGBout           : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
         hsync, vsync     : OUT STD_LOGIC;
 
-        serialClkIn : in STD_LOGIC;
-        serialDataIn : in STD_LOGIC
+        serialClkIn      : in STD_LOGIC;
+        serialDataIn     : in STD_LOGIC;
+        
+        PWMOut           : OUT STD_LOGIC
     );
 END Bouncing_Object;
 ARCHITECTURE Behavioral OF Bouncing_Object IS
@@ -353,6 +355,13 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
              hudData : out STD_LOGIC_VECTOR (24 -1 downto 0));
     end component SerialDataBuffer;
 
+    component RetroSynth is
+        Port (
+            CLK : in STD_LOGIC;
+            SFXswitch : std_logic_vector(5 downto 0);
+            PWM : out STD_LOGIC
+        );
+    end component;
 
     --clk
     SIGNAL clk_25             : std_logic;
@@ -398,10 +407,11 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 --    signal syncData : std_logic;
     signal serialData : STD_LOGIC_VECTOR(1240 + 2400 -1 downto 0);
     
---    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
---    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);
     signal soundData : STD_LOGIC_VECTOR(8 -1 downto 0);
     signal hudData : STD_LOGIC_VECTOR (24 -1 downto 0);
+    
+    -- sound    
+    signal soundDataMixed : STD_LOGIC_VECTOR(5 downto 0);    
 
 BEGIN
 	clk_wiz_00: prescaler	PORT MAP(
@@ -645,11 +655,13 @@ BEGIN
                 
             );
             
+        RetroSynth0 : RetroSynth Port map (
+                CLK => clk_100Mhz,
+                SFXswitch => soundDataMixed, --soundData(5 downto 0),
+                PWM => PWMOut
+            );
             
---				-- read tiles
---				tileData       <= serialData(2408 - 1 downto 8);
---				-- read entity
---				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
---				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
---				hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
+            soundDataMixed <= soundData(5 downto 0) when debugIn(0) = '0' else
+                              std_logic_vector (debugIn(6 downto 1));
+                              
 END Behavioral;
