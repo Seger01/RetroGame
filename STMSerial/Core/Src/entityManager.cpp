@@ -18,9 +18,8 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 
 	Rectangle map(120, 120, 120, 120);
 	center = new Quad(map);
-	for (int i = 0; i < collidableTiles->size(); i++) {
-		center->insert(collidableTiles->at(i));
-	}
+	removeTiles();
+	addTiles();
 }
 EntityManager::~EntityManager() {
 	for (uint8_t i = 0; i < 50; i++) {
@@ -33,9 +32,10 @@ EntityManager::~EntityManager() {
 Entity** EntityManager::getEntities() {
 	return entities;
 }
-void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
+void EntityManager::removeTiles() {
 	center->removeTiles();
-	this->collidableTiles = collidableTiles;
+}
+void EntityManager::addTiles(){
 	for (int i = 0; i < collidableTiles->size(); i++) {
 		center->insert(collidableTiles->at(i));
 	}
