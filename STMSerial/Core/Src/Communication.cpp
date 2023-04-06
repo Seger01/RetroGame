@@ -11,6 +11,7 @@
 #include "Entity.h"
 
 #include "HighscoreManager.h"
+#include "SoundManager.h"
 
 #include "Converter.h"
 
@@ -119,6 +120,11 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 //	buffer[(1 * 3) + 0 + 1 + 300] = entities[1]->getStart().X;
 //	buffer[(1 * 3) + 1 + 1 + 300] = entities[1]->getStart().Y;
 //	buffer[(1 * 3) + 2 + 1 + 300] = entities[1]->getTexture();
+
+
+
+	buffer[451] = soundManager.getActiveSounds();
+
 
 	buffer[0] = 0xFF;
 

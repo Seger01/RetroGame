@@ -11,6 +11,10 @@
 
 #include "HighscoreManager.h"
 
+#include "SoundManager.h"
+
+SoundManager soundManager;
+
 HighscoreManager highscoreManager;
 
 Game::Game() {
@@ -36,7 +40,6 @@ Game::Game(SPI_HandleTypeDef *hspi1) {
 
 void Game::setup() {
 	entityManager->spawnPlayer(112, 100);
-
 
 	//entityManager->spawnEntities(1, 1, 2);
 	//entityManager->getEntities()[0]->setTexture(2);
@@ -72,7 +75,7 @@ void Game::run() {
 		break;
 	case SwitchingLevels:
 //		entities = entityManager->getEntities();
-//		levelManager.switchLevel(currentLevel);
+		levelManager.switchLevel(currentLevel);
 //		if (entities[0]->getPosX() < 120) {
 //			entities[0]->setX(entities[0]->getPosX() + 1);
 //		} else if (entities[0]->getPosX() > 120) {
@@ -84,7 +87,6 @@ void Game::run() {
 //		} else if (entities[0]->getPosY() > 120) {
 //			entities[0]->setY(entities[0]->getPosY() - 1);
 //		}
-
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
 			currentState = PlayingLevel;
@@ -124,8 +126,8 @@ void Game::run() {
 			}
 		}
 
-		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,playerShoot);
-
+		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
+				playerShoot);
 
 		if (entityUpdate) {
 			entityManager->updateEntities();
@@ -133,7 +135,6 @@ void Game::run() {
 		} else {
 			entityUpdate = !entityUpdate;
 		}
-
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
@@ -165,6 +166,8 @@ void Game::run() {
 			currentLevel = 0;
 
 			levelManager.setLevel(currentLevel);
+
+			soundManager.setSoundActive(1);
 			//levelManager.getCollidables(&collidableTiles);
 			//levelManager.getSpawnpoints(&spawnPoints);
 			//entitymanager.updateTiles ofzxo
