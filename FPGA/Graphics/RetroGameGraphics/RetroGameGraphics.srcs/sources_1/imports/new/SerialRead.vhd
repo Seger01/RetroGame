@@ -19,15 +19,7 @@
 ----------------------------------------------------------------------------------
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
-
--- Uncomment the following library declaration if using
--- arithmetic functions with Signed or Unsigned values
 use IEEE.NUMERIC_STD.ALL;
-
--- Uncomment the following library declaration if instantiating
--- any Xilinx leaf cells in this code.
---library UNISIM;
---use UNISIM.VComponents.all;
 
 ENTITY SerialRead IS
     PORT (
@@ -35,7 +27,7 @@ ENTITY SerialRead IS
         dataInExternal : IN STD_LOGIC;
         clk_100Mhz : IN STD_LOGIC;
         sysReset : IN STD_LOGIC;
-        serialData : OUT STD_LOGIC_VECTOR (1240 + 2400 -1 DOWNTO 0)
+        serialData : OUT unsigned (1240 + 2400 -1 DOWNTO 0)
     );
 END SerialRead;
 
@@ -50,7 +42,7 @@ ARCHITECTURE Behavioral OF SerialRead IS
              clk_ExternalHardwareOut : out STD_LOGIC);
     end component SerialReader;
 
-    signal received_data : STD_LOGIC_VECTOR (1240 + 2400 -1 downto 0) := (others => '0');
+    signal received_data : unsigned (1240 + 2400 -1 downto 0) := (others => '0');
     signal bit_counter : unsigned(12 downto 0);
 
     signal readDataFlag : STD_LOGIC := '0';
@@ -131,7 +123,7 @@ begin
             bit_counter <= (others => '0');
             received_data <= (others => '1');
         elsif rising_edge(clk_100Mhz) then
-            --serialData <= (others => '1'); 
+            --serialData <= (others => '0'); 
             if (readDataFlag = '1') then
                 received_data(to_integer(bit_counter)) <= data_ExternalHardwareSynch;
                 bit_counter <= bit_counter + 1;
