@@ -42,6 +42,7 @@ begin
 			entityData         <= (others => '0');
 			soundData          <= (others => '0');
 			hudData            <= (others => '1');
+			
 		elsif (rising_edge(clk100Mhz)) then
             -- read tiles
             tileData         <= serialData(2408 - 1 downto 8);
