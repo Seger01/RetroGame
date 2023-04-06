@@ -22,6 +22,6 @@ public:
 	void clear();
 	void updateEntities();
 	void moveEntity(int toBeMoved, int x, int y);
-	void spawnPlayer(int x,int Y,int speed,int health,int strength);
+	void spawnPlayer(int x,int y);
 	void checkCollision();
 };

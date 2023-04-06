@@ -13,14 +13,25 @@ uint8_t Entity::getPosY() {
 bool Entity::isCollidable() {
 	return true;
 }
-Entity::Entity( uint8_t x, uint8_t y, uint8_t width,uint8_t height, uint8_t health, uint8_t speed,uint8_t strength) {
+void Entity::setWidth(uint8_t width){
+	this->width = width;
+}
+void Entity::setHeight(uint8_t height){
+	this->height = height;
+}
+void Entity::setSpeed(uint8_t speed){
 	this->speed = speed;
-	this->health = health;
+}
+void Entity::setStrength(uint8_t strength){
 	this->strength = strength;
+}
+Entity::Entity( uint8_t x, uint8_t y) {
+	this->speed = 0;
+	this->strength = 0;
 	this->position.X = x;
 	this->position.Y = y;
-	this->width = width;
-	this->height = height;
+	this->width = 0;
+	this->height = 0;
 }
 pointVector Entity::getStart() {
 	pointVector start;
@@ -54,10 +65,27 @@ int Entity::getTexture() {
 	return textureID + offset;
 }
 void Entity::moveX(int shift) {
+	int X = this->getStart().X;
 	this->position.X += (int)shift;
+		if((X + shift < 224) || (X + shift > - 1)){
+			this->position.X += shift;
+		}else if((X + shift >= 224)){
+			this->position.X = 8;
+		}else if(X + shift <= -1){
+			this->position.X = 230;
+		}
 }
+
 void Entity::moveY(int shift) {
+	int Y = this->getStart().Y;
 	this->position.Y += (int)shift;
+		if((Y + shift < 224) || (Y + shift > - 1)){
+			this->position.Y += shift;
+		}else if((Y + shift >= 224)){
+			this->position.Y = 8;
+		}else if(Y + shift <= -1){
+			this->position.Y = 230;
+		}
 }
 
 

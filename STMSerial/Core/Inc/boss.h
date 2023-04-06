@@ -9,7 +9,7 @@ extern "C" {
 class Boss : public Entity
 {
 	public:
-		Boss(int x, int y, int width, int height, int health, int speed, int strength) : Entity(x,y,width,height, health,speed,strength) {};
+		Boss(int x, int y) : Entity(x,y) {};
 		void onCollide(CollidableObject *object) override;
 		void onDeath() override;
 	    int getTexture() override;

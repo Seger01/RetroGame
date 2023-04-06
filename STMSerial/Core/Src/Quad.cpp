@@ -1,5 +1,6 @@
 #include "Quad.h"
 #include <stack>
+#include "tile.h"
 Quad::Quad(Rectangle boundary) {
     this->boundary = boundary;
     size = 0;
@@ -82,6 +83,26 @@ bool Quad::insert(CollidableObject* node) {
 
     // Node could not be inserted
     return false;
+}
+void Quad::removeTiles(){
+    std::stack<Quad*> stack;
+    stack.push(this);
+
+    while (!stack.empty()) {
+        Quad* current = stack.top();
+        stack.pop();
+        for (auto p : current->n) {
+            if (p != nullptr && dynamic_cast<Tile*>(p)) {
+                p = nullptr;
+            }
+        }
+        if (current->divided) {
+            stack.push(current->topRightTree);
+            stack.push(current->topLeftTree);
+            stack.push(current->botRightTree);
+            stack.push(current->botLeftTree);
+        }
+    }
 }
 std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<CollidableObject*>* found) {
     std::stack<Quad*> stack;
