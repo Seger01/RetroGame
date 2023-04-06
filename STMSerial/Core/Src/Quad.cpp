@@ -92,8 +92,10 @@ void Quad::removeTiles(){
         Quad* current = stack.top();
         stack.pop();
         for (auto p : current->n) {
-            if (p != nullptr && dynamic_cast<Tile*>(p)) {
-                p = nullptr;
+            if (p != nullptr ) {
+            	if(dynamic_cast<Tile*>(p)){
+            		p = nullptr;
+            	}
             }
         }
         if (current->divided) {
