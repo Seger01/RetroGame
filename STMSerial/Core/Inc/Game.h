@@ -25,7 +25,7 @@ extern "C" {
 #include "entitymanager.h"
 
 enum GameState {
-	Reset, Startup, SwitchingLevels, PlayingLevel, MainMenu
+	Reset, Startup, SwitchingLevels, PlayingLevel, MainMenu, Credits
 };
 
 class Game {

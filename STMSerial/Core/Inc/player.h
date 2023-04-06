@@ -4,6 +4,11 @@
 #include "item.h"
 #include "boss.h"
 
+extern "C" {
+#include "FreeRTOS.h"
+#include "task.h"
+}
+
 class powerUpHandler {
 };
 class Player :
@@ -23,5 +28,7 @@ public:
 
     void setDirection(pointVector);
     void onDeath() override;
+
+    int getTexture() override;
 };
 
