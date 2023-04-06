@@ -15,7 +15,7 @@ architecture Behavioral of squareWave is
     -- signals used in counters
     signal counter : integer  range 0 to 255 := 0;
     signal counter2 : integer := 0;
-    signal counterLimit : integer := 1000;
+    signal counterLimit : integer := 2000;
     signal noteIndicatorTest : std_logic_vector(5 downto 0) := "100000";
     signal effectCounter : integer := 0;
 
@@ -32,9 +32,17 @@ architecture Behavioral of squareWave is
 
     signal subToggle : std_logic := '0';
 
+    signal soundPlus : integer := 0;
+
+    signal counterLimit2 : integer := 0;
+
+    signal invert : std_logic := '0';
+
     constant clockFrequency : integer := 100e6;
     constant clockperiod : time := 100ms / clockFrequency;
     signal tempCLK : std_Logic := '0';
+
+
 
 begin
     BGM : process(clk)
@@ -48,13 +56,28 @@ begin
                 case noteIndicator is
                     when "100000" => effectCounter <= 5000000; -- player death
                         soundTimer <= 50000000;
-                    when "010000" => effectCounter <= 250000;
+                        soundPlus <= 100;
+                        counterLimit2 <= 3000;
+                        invert <= '0';
+                    when "010000" => effectCounter <= 250000; -- shoot
                         soundTimer <= 5000000;
-                    when "001000" => effectCounter <= 50000;
-                    when "000100" => effectCounter <= 5000;
+                        soundPlus <= 100;
+                        counterLimit2 <= 3000;
+                        invert <= '0';
+                    when "001000" => effectCounter <= 10000; -- walk
+                        soundTimer <= 50000;
+                        counterLimit2 <= 5000;
+                        soundPlus <= 500;
+                        invert <= '0';
+                    when "000100" => effectCounter <= 50000000; -- powerup
+                        invert <= '1';
+                        soundTimer <= 50000000;
+                        soundPlus <= 100;
+                        counterLimit2 <= 3000;
                     when "000010" => effectCounter <= 500;
                     when others => effectCounter <= 0;
                 end case;
+                
                 -- start counter 
                 if timeCounter >= soundTimer then
                     -- when timer ends set sound off
@@ -93,18 +116,26 @@ begin
 
 
                     -- rising square
-
-                    -- falling square
-                    if tempCount >= effectCounter then
-                        tempCount <= 0;
-                        counterLimit <= counterLimit + 100;
+                    if invert = '1' then
+                        if tempCount >= effectCounter then
+                            tempCount <= 0;
+                            counterLimit <= counterLimit - soundPlus;
+                        else
+                            tempCount <= tempCount + 1;
+                        end if;
                     else
-                        tempCount <= tempCount + 1;
+                        -- falling square
+                        if tempCount >= effectCounter then
+                            tempCount <= 0;
+                            counterLimit <= counterLimit + soundPlus;
+                        else
+                            tempCount <= tempCount + 1;
+                        end if;
                     end if;
 
                     -- counter used for rising sound
-                    if counterLimit >= 3000 then
-                        counterLimit <= 1000;
+                    if counterLimit >= counterLimit2 then
+                        counterLimit <= 2000;
                     end if;
 
                     -- toggles pwm signal

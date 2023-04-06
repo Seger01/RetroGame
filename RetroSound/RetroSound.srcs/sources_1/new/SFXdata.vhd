@@ -127,6 +127,7 @@ begin
             togglePdeath <= sound(0);
             toggleShoot <= sound(1);
             toggleWalk <= sound(2);
+            togglePowerup <= sound(3);
             
             if togglePdeath = '1' then
                 SFXpwm <= pwmPdeath;
@@ -138,6 +139,10 @@ begin
             
             if toggleWalk = '1' then
                 SFXpwm <= pwmWalk;
+            end if;
+            
+            if togglePowerup = '1' then
+                SFXpwm <= pwmPowerup;
             end if;
         end if;
     end process;
