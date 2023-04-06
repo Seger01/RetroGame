@@ -45,6 +45,7 @@ void Game::setup() {
 	levelManager.setLevel(currentLevel);
 
 	//entityManager->spawnEntities(1, 1, 2);
+
 }
 
 void Game::run() {
@@ -83,11 +84,17 @@ void Game::run() {
 //			entities[0]->setY(entities[0]->getPosY() - 1);
 //		}
 
+
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
 			currentState = PlayingLevel;
 			levelManager.getCollidables(&collidableTiles);
 			levelManager.getSpawnpoints(&spawnPoints);
+			entityManager->updateTiles(&collidableTiles);
 		}
+		currentState = PlayingLevel;
+		levelManager.getCollidables(&collidableTiles);
+		levelManager.getSpawnpoints(&spawnPoints);
+		entityManager->updateTiles(&collidableTiles);
 
 		break;
 	case PlayingLevel:
@@ -129,12 +136,11 @@ void Game::run() {
 			entityUpdate = !entityUpdate;
 		}
 
-		//entityManager->spawnEntities(1, 1, 2);
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-
+			//entityManager->spawnEntities(1, 1, 2);
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;

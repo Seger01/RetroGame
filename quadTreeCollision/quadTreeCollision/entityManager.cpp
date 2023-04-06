@@ -7,13 +7,16 @@
 #include "Rectangle.h"
 #include <vector>
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
+	//collidableTiles->clear();
+	//collidableTiles->push_back(new	Tile(50, 50, 3, true, false));
+	//collidableTiles->push_back(new	Tile(100,20, 3, false, true));
 	this->collidableTiles = collidableTiles;
 	this->spawnpoints = spawnpoints;
 	for (uint8_t i = 1; i < 50; i++) {
 		entities[i] = nullptr;
 	}
 
-	Rectangle *map = new Rectangle(120, 120, 120, 120);
+	Rectangle map(120, 120, 120, 120);
 	center = new Quad(map);
 	for (int i = 0; i < collidableTiles->size(); i++) {
 		center->insert(collidableTiles->at(i));
@@ -30,8 +33,15 @@ EntityManager::~EntityManager() {
 Entity** EntityManager::getEntities() {
 	return entities;
 }
-void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
+void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) 
+{
+	for (int i = 0; i < collidableTiles->size(); i++) {
+		center->remove(collidableTiles->at(i));
+	}
 	this->collidableTiles = collidableTiles;
+	for (int i = 0; i < collidableTiles->size(); i++) {
+		center->insert(collidableTiles->at(i));
+	}
 }
 void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
 	int x = 0;
@@ -180,21 +190,21 @@ void EntityManager::updateEntities() {
 	}
 }
 void EntityManager::moveEntity(int toBeMoved, int x, int y) {
+	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-	center->remove(entities[toBeMoved]);
-	center->insert(entities[toBeMoved]);
-	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 20, 20);
+	
+	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 14, 14);
 	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
+
 	center->query(box, found);
 	for (uint8_t j = 0; j < found->size(); j++) {
-		if (found->at(j) == entities[toBeMoved] || found->size() < 2) {
+		if (found->at(j) == entities[toBeMoved]) {
 			continue;
 		}
 		if (entities[toBeMoved]->checkEntities(found->at(j))) {
 			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-				bulletPtr->onCollideWall();
 				bulletPtr->onCollide(found->at(j));
 				center->remove(bulletPtr);
 				entities[toBeMoved] = nullptr;
@@ -203,26 +213,10 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 			}
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
+
 	}
-	/*
-	for (uint8_t j = 0; j < collidableTiles->size(); j++) {
-		if (entities[toBeMoved] == NULL) {
-			continue;
-		}	
-		if (entities[toBeMoved]->checkTiles(collidableTiles->at(j))) {
-			if (dynamic_cast<Bullet*>(entities[toBeMoved])) {
-				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
-
-				bulletPtr->onCollideWall();
-				center->remove(entities[toBeMoved]);
-				delete entities[toBeMoved];
-				entities[toBeMoved] = nullptr;
-
-			}
-
-		}
-
-	}*/
+	center->insert(entities[toBeMoved]);
+	delete found;
 	
 }
 void EntityManager::checkCollision() {
