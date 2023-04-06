@@ -34,14 +34,11 @@ Entity** EntityManager::getEntities() {
 	return entities;
 }
 void EntityManager::updateTiles(std::vector<Tile*> *collidableTiles) {
-	this->spawnpoints = spawnpoints;
+	center->removeTiles();
+	this->collidableTiles = collidableTiles;
 	for (int i = 0; i < collidableTiles->size(); i++) {
-			center->remove(collidableTiles->at(i));
-		}
-		this->collidableTiles = collidableTiles;
-		for (int i = 0; i < collidableTiles->size(); i++) {
-			center->insert(collidableTiles->at(i));
-		}
+		center->insert(collidableTiles->at(i));
+	}
 }
 void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight, bool playerShoot) {
 	int x = 0;
@@ -55,8 +52,6 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 	}
 	if (movePlayerRight) {
 		x = 1;
-
-
 	} else if (movePlayerLeft) {
 		x = -1;
 
@@ -109,7 +104,7 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 	while (spawned < amountOfEnemies && used_indices.size() < num_spawnpoints) {
 		int random_index = rand() % num_spawnpoints;
 		bool index_used = false;
-		for (int i = 0; i < used_indices.size(); i++) {
+		for (size_t i = 0; i < used_indices.size(); i++) {
 			if (used_indices[i] == random_index) {
 				index_used = true;
 				break;

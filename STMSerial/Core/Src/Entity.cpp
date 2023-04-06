@@ -57,28 +57,26 @@ int Entity::getTexture() {
 	return textureID;
 }
 void Entity::moveX(int shift) {
+	int X = this->getStart().X;
 	this->position.X += (int)shift;
-	if (direction == 1 && (X + shift < 226)) {
-		this->position.X += shift;
-	} else if (direction == 1 && (X + shift >= 226)) {
-				this->position.X = 8;
-	} else if (direction == -1 && (X - shift <= -1)) {
-				this->position.X = 232;
-	} else if (direction == -1 && (X - shift > - 1)) {
-				this->position.X -= shift;
-	}
+		if((X + shift < 224) || (X + shift > - 1)){
+			this->position.X += shift;
+		}else if((X + shift >= 224)){
+			this->position.X = 8;
+		}else if(X + shift <= -1){
+			this->position.X = 230;
+		}
 }
+
 void Entity::moveY(int shift) {
-	this->position.Y += (int)shift;
 	int Y = this->getStart().Y;
-		if (direction == 1 && (Y + shift < 224)) {
+	this->position.Y += (int)shift;
+		if((Y + shift < 224) || (Y + shift > - 1)){
 			this->position.Y += shift;
-		} else if (direction == 1 && (Y + shift >= 224)) {
+		}else if((Y + shift >= 224)){
 			this->position.Y = 8;
-		} else if (direction == -1 && (Y -  shift <= -1)) {
+		}else if(Y + shift <= -1){
 			this->position.Y = 230;
-		} else if (direction == -1 && (Y - shift > -1)) {
-			this->position.Y -= shift;
 		}
 }
 
