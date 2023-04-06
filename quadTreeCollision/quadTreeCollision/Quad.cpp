@@ -1,4 +1,5 @@
 #include "Quad.h"
+#include "Tile.h"
 #include <stack>
 Quad::Quad(Rectangle boundary) {
     this->boundary = boundary;
@@ -16,6 +17,44 @@ Quad::~Quad() {
     delete topRightTree;
     delete botLeftTree;
     delete botRightTree;
+}
+void Quad::removeTiles() {
+    std::stack<Quad*> stack;
+    stack.push(this);
+
+    while (!stack.empty()) {
+        Quad* current = stack.top();
+        stack.pop();
+        for (int i = 0; i < current->size; ) {
+            if (current->n[i] != nullptr) {
+                if (dynamic_cast<Tile*>(current->n[i])) {
+                    if (current->size == 1) {
+                        current->n[i] = nullptr;
+                        current->size--;
+                    }
+                    else {
+                        for (int j = i; j < current->size - 1; j++) {
+                            current->n[j] = current->n[j + 1];
+                        }
+                        current->n[current->size - 1] = nullptr;
+                        current->size--;
+                    }
+                }
+                else {
+                    i++; // only increment if no shift occurred
+                }
+            }
+            else {
+                i++; // skip null elements
+            }
+        }
+        if (current->divided) {
+            stack.push(current->topRightTree);
+            stack.push(current->topLeftTree);
+            stack.push(current->botRightTree);
+            stack.push(current->botLeftTree);
+        }
+    }
 }
 void Quad::subdivide() {
     int x = boundary.getX();

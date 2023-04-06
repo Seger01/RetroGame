@@ -191,10 +191,10 @@ bool Entity::checkEntities(CollidableObject *object) {
 	pointVector otherHalfsize = object->getHalfSize();
 	pointVector thisPosition = this->getPosition();
 	pointVector thisHalfsize = this->getHalfSize();
-	int8_t deltaX = otherPosition.X - thisPosition.X;
-	int8_t deltaY = otherPosition.Y - thisPosition.Y;
-	int8_t intersectX = abs(deltaX) - (otherHalfsize.X + thisHalfsize.X);
-	int8_t intersectY = abs(deltaY) - (otherHalfsize.Y + thisHalfsize.Y);
+	int deltaX = otherPosition.X - thisPosition.X;
+	int deltaY = otherPosition.Y - thisPosition.Y;
+	int intersectX = abs(deltaX) - (otherHalfsize.X + thisHalfsize.X);
+	int intersectY = abs(deltaY) - (otherHalfsize.Y + thisHalfsize.Y);
 	if (intersectX < 0 && intersectY < 0) {
 		if (intersectX > intersectY) {
 			if (deltaX > 0) {

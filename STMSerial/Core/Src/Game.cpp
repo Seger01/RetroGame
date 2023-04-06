@@ -88,9 +88,11 @@ void Game::run() {
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
 			currentState = PlayingLevel;
+			entityManager->removeTiles();
 			levelManager.getCollidables(&collidableTiles);
+			entityManager->addTiles();
 			levelManager.getSpawnpoints(&spawnPoints);
-			entityManager->updateTiles(&collidableTiles);
+
 		}
 		break;
 	case PlayingLevel:
@@ -152,9 +154,10 @@ void Game::run() {
 			currentState = SwitchingLevels;
 			currentLevel = 2;
 			levelManager.switchLevel(currentLevel);
+			entityManager->removeTiles();
 			levelManager.getCollidables(&collidableTiles);
+			entityManager->addTiles();
 			levelManager.getSpawnpoints(&spawnPoints);
-			entityManager->updateTiles(&collidableTiles);
 			lastLevelSwitch = xTaskGetTickCount();
 
 		} else if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + 100) {
