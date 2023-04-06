@@ -51,7 +51,7 @@
     <Option Name="IPDefaultOutputPath" Val="$PGENDIR/sources_1"/>
     <Option Name="IPCachePermission" Val="read"/>
     <Option Name="IPCachePermission" Val="write"/>
-    <Option Name="EnableCoreContainer" Val="FALSE"/>
+    <Option Name="EnableCoreContainer" Val="TRUE"/>
     <Option Name="EnableResourceEstimation" Val="FALSE"/>
     <Option Name="CreateRefXciForCoreContainers" Val="FALSE"/>
     <Option Name="IPUserFilesDir" Val="$PIPUSERFILESDIR"/>
@@ -65,13 +65,13 @@
     <Option Name="WTVcsLaunchSim" Val="0"/>
     <Option Name="WTRivieraLaunchSim" Val="0"/>
     <Option Name="WTActivehdlLaunchSim" Val="0"/>
-    <Option Name="WTXSimExportSim" Val="28"/>
-    <Option Name="WTModelSimExportSim" Val="28"/>
-    <Option Name="WTQuestaExportSim" Val="28"/>
+    <Option Name="WTXSimExportSim" Val="27"/>
+    <Option Name="WTModelSimExportSim" Val="27"/>
+    <Option Name="WTQuestaExportSim" Val="27"/>
     <Option Name="WTIesExportSim" Val="0"/>
-    <Option Name="WTVcsExportSim" Val="28"/>
-    <Option Name="WTRivieraExportSim" Val="28"/>
-    <Option Name="WTActivehdlExportSim" Val="28"/>
+    <Option Name="WTVcsExportSim" Val="27"/>
+    <Option Name="WTRivieraExportSim" Val="27"/>
+    <Option Name="WTActivehdlExportSim" Val="27"/>
     <Option Name="GenerateIPUpgradeLog" Val="TRUE"/>
     <Option Name="XSimRadix" Val="hex"/>
     <Option Name="XSimTimeUnit" Val="ns"/>
@@ -89,41 +89,6 @@
   <FileSets Version="1" Minor="31">
     <FileSet Name="sources_1" Type="DesignSrcs" RelSrcDir="$PSRCDIR/sources_1" RelGenDir="$PGENDIR/sources_1">
       <Filter Type="Srcs"/>
-      <File Path="$PSRCDIR/sources_1/ip/HUD_ROM_1/HUD_ROM.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/Entity_ROM_1/Entity_ROM.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/Background_ROM_1/Background_ROM.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/Boss_ROM_1/Boss_ROM.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/ip/Player_ROM_1/Player_ROM.xci">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
       <File Path="$PSRCDIR/sources_1/new/BackGroundPixels.vhd">
         <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
@@ -264,66 +229,44 @@
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/COE/veelEntitys.coe.coe">
+      <File Path="$PPRDIR/../COE/PlayerV1.4.coe">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../COE/veelEntitys.coe.coe"/>
-          <Attr Name="ImportTime" Val="1678111067"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/COE/AllTilesV3.0.coe">
+      <File Path="$PPRDIR/../COE/AllEntitiesV1.3.coe">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../COE/AllTilesV3.0.coe"/>
-          <Attr Name="ImportTime" Val="1678111067"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/new/SpritePixels.vhd">
+      <File Path="$PPRDIR/../COE/BossPlayerCopyV1.4.coe">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../workspace/VIVADO/RetroGameGraphics/RetroGameGraphics/RetroGameGraphics.srcs/sources_1/new/SpritePixels.vhd"/>
-          <Attr Name="ImportTime" Val="1678122484"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/new/Object_Physics.vhd">
+      <File Path="$PPRDIR/../COE/AllTilesV3.0And0tm9AtmZ.coe">
         <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="ImportPath" Val="$PPRDIR/../../../../../workspace/VIVADO/RetroGameGraphics/RetroGameGraphics/RetroGameGraphics.srcs/sources_1/new/Object_Physics.vhd"/>
-          <Attr Name="ImportTime" Val="1678122484"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PPRDIR/../COE/AllTilesV3.0.coe">
-        <FileInfo RelPath="AllTilesV3.0.coe">
+      <File Path="$PPRDIR/../COE/AllTilesV3.0And0tm9AtmZAndRevolvers.coe">
+        <FileInfo>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/COE/BossPlayerCopyV1.4.coe">
+      <File Path="$PPRDIR/../COE/PlayerV1.6.coe.coe">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../COE/BossPlayerCopyV1.4.coe"/>
-          <Attr Name="ImportTime" Val="1680516335"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
       </File>
-      <File Path="$PSRCDIR/sources_1/imports/COE/AllEntitiesV1.3.coe">
+      <File Path="$PPRDIR/../COE/BossPlayerCopyV1.6.coe">
         <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../COE/AllEntitiesV1.3.coe"/>
-          <Attr Name="ImportTime" Val="1680516335"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <File Path="$PSRCDIR/sources_1/imports/COE/PlayerV1.4.coe">
-        <FileInfo>
-          <Attr Name="ImportPath" Val="$PPRDIR/../COE/PlayerV1.4.coe"/>
-          <Attr Name="ImportTime" Val="1680516335"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
         </FileInfo>
@@ -367,12 +310,6 @@
     </FileSet>
     <FileSet Name="utils_1" Type="Utils" RelSrcDir="$PSRCDIR/utils_1" RelGenDir="$PGENDIR/utils_1">
       <Filter Type="Utils"/>
-      <File Path="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/synth_1/Bouncing_Object.dcp">
-        <FileInfo>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-        </FileInfo>
-      </File>
       <Config>
         <Option Name="TopAutoSet" Val="TRUE"/>
       </Config>
@@ -392,20 +329,6 @@
         <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
-    <FileSet Name="AllBackgroundTiles" Type="BlockSrcs" RelSrcDir="$PSRCDIR/AllBackgroundTiles" RelGenDir="$PGENDIR/AllBackgroundTiles">
-      <File Path="$PSRCDIR/sources_1/ip/AllBackgroundTiles/AllBackgroundTiles.xci">
-        <FileInfo>
-          <Attr Name="AutoDisabled" Val="1"/>
-          <Attr Name="UsedIn" Val="synthesis"/>
-          <Attr Name="UsedIn" Val="implementation"/>
-          <Attr Name="UsedIn" Val="simulation"/>
-        </FileInfo>
-      </File>
-      <Config>
-        <Option Name="TopModule" Val="AllBackgroundTiles"/>
-        <Option Name="UseBlackboxStub" Val="1"/>
-      </Config>
-    </FileSet>
     <FileSet Name="Timing" Type="Constrs" RelSrcDir="$PSRCDIR/Timing" RelGenDir="$PGENDIR/Timing">
       <File Path="$PSRCDIR/Timing/new/TimingContrains.xdc">
         <FileInfo>
@@ -416,6 +339,73 @@
       <Config>
         <Option Name="TargetConstrsFile" Val="$PSRCDIR/Timing/new/TimingContrains.xdc"/>
         <Option Name="ConstrsType" Val="XDC"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="Background_ROM" Type="BlockSrcs" RelSrcDir="$PSRCDIR/Background_ROM" RelGenDir="$PGENDIR/Background_ROM">
+      <File Path="$PSRCDIR/sources_1/ip/Background_ROM_1/Background_ROM.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="Background_ROM"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="Player_ROM" Type="BlockSrcs" RelSrcDir="$PSRCDIR/Player_ROM" RelGenDir="$PGENDIR/Player_ROM">
+      <File Path="$PSRCDIR/sources_1/ip/Player_ROM_1/Player_ROM.xci">
+        <FileInfo>
+          <Attr Name="ImportPath" Val="$PSRCDIR/sources_1/ip/Player_ROM_1/Player_ROM.xci"/>
+          <Attr Name="ImportTime" Val="1680594148"/>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="Player_ROM"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="Boss_ROM" Type="BlockSrcs" RelSrcDir="$PSRCDIR/Boss_ROM" RelGenDir="$PGENDIR/Boss_ROM">
+      <File Path="$PSRCDIR/sources_1/ip/Boss_ROM_1/Boss_ROM.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="Boss_ROM"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="Entity_ROM" Type="BlockSrcs" RelSrcDir="$PSRCDIR/Entity_ROM" RelGenDir="$PGENDIR/Entity_ROM">
+      <File Path="$PSRCDIR/sources_1/ip/Entity_ROM_1/Entity_ROM.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="Entity_ROM"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
+      </Config>
+    </FileSet>
+    <FileSet Name="HUD_ROM" Type="BlockSrcs" RelSrcDir="$PSRCDIR/HUD_ROM" RelGenDir="$PGENDIR/HUD_ROM">
+      <File Path="$PSRCDIR/sources_1/ip/HUD_ROM_1/HUD_ROM.xci">
+        <FileInfo>
+          <Attr Name="UsedIn" Val="synthesis"/>
+          <Attr Name="UsedIn" Val="implementation"/>
+          <Attr Name="UsedIn" Val="simulation"/>
+        </FileInfo>
+      </File>
+      <Config>
+        <Option Name="TopModule" Val="HUD_ROM"/>
+        <Option Name="UseBlackboxStub" Val="1"/>
       </Config>
     </FileSet>
   </FileSets>
@@ -438,23 +428,7 @@
     </Simulator>
   </Simulators>
   <Runs Version="1" Minor="19">
-<<<<<<< Updated upstream
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" IncrementalCheckpoint="$PSRCDIR/utils_1/imports/synth_1/Top.dcp" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/synth_1" AutoRQSDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/synth_1">
-      <Strategy Version="1" Minor="2">
-        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
-          <Desc>Vivado Synthesis Defaults</Desc>
-        </StratHandle>
-        <Step Id="synth_design"/>
-      </Strategy>
-      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
-      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
-      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
-      <RQSFiles/>
-    </Run>
-    <Run Id="prescaler_synth_1" Type="Ft3:Synth" SrcSet="prescaler" Part="xc7a35tcpg236-1" ConstrsSet="prescaler" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/prescaler_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_synth_1" AutoRQSDir="$PPRDIR/../../../../../workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/prescaler_synth_1">
-=======
-    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/synth_1" AutoRQSDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/synth_1">
->>>>>>> Stashed changes
+    <Run Id="synth_1" Type="Ft3:Synth" SrcSet="sources_1" Part="xc7a35tcpg236-1" ConstrsSet="constrs_1" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="true" WriteIncrSynthDcp="false" State="current" Dir="$PRUNDIR/synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/synth_1" AutoRQSDir="D:/workspace/VIVADO/ProgHw_VGA_Display/ProgHw_VGA_Display.srcs/utils_1/imports/synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
@@ -474,11 +448,56 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="AllBackgroundTiles_synth_1" Type="Ft3:Synth" SrcSet="AllBackgroundTiles" Part="xc7a35tcpg236-1" ConstrsSet="AllBackgroundTiles" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_synth_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_synth_1">
+    <Run Id="Background_ROM_synth_1" Type="Ft3:Synth" SrcSet="Background_ROM" Part="xc7a35tcpg236-1" ConstrsSet="Background_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/Background_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Background_ROM_synth_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Background_ROM_synth_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
         <Step Id="synth_design"/>
       </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="Player_ROM_synth_1" Type="Ft3:Synth" SrcSet="Player_ROM" Part="xc7a35tcpg236-1" ConstrsSet="Player_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/Player_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Player_ROM_synth_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Player_ROM_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="Boss_ROM_synth_1" Type="Ft3:Synth" SrcSet="Boss_ROM" Part="xc7a35tcpg236-1" ConstrsSet="Boss_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/Boss_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Boss_ROM_synth_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Boss_ROM_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022"/>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="Entity_ROM_synth_1" Type="Ft3:Synth" SrcSet="Entity_ROM" Part="xc7a35tcpg236-1" ConstrsSet="Entity_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/Entity_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/Entity_ROM_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/Entity_ROM_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
+      <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="HUD_ROM_synth_1" Type="Ft3:Synth" SrcSet="HUD_ROM" Part="xc7a35tcpg236-1" ConstrsSet="HUD_ROM" Description="Vivado Synthesis Defaults" AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" Dir="$PRUNDIR/HUD_ROM_synth_1" IncludeInArchive="true" IsChild="false" AutoIncrementalDir="$PSRCDIR/utils_1/imports/HUD_ROM_synth_1" AutoRQSDir="$PSRCDIR/utils_1/imports/HUD_ROM_synth_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Synthesis Defaults" Flow="Vivado Synthesis 2022">
+          <Desc>Vivado Synthesis Defaults</Desc>
+        </StratHandle>
+        <Step Id="synth_design"/>
+      </Strategy>
+      <GeneratedRun Dir="$PRUNDIR" File="gen_run.xml"/>
       <ReportStrategy Name="Vivado Synthesis Default Reports" Flow="Vivado Synthesis 2022"/>
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
@@ -518,9 +537,81 @@
       <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
       <RQSFiles/>
     </Run>
-    <Run Id="AllBackgroundTiles_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="AllBackgroundTiles" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="AllBackgroundTiles_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_impl_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/AllBackgroundTiles_impl_1">
+    <Run Id="Background_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="Background_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="Background_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Background_ROM_impl_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Background_ROM_impl_1">
       <Strategy Version="1" Minor="2">
         <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="Player_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="Player_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="Player_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Player_ROM_impl_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Player_ROM_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="Boss_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="Boss_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="Boss_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Boss_ROM_impl_1" AutoRQSDir="D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.srcs/utils_1/imports/Boss_ROM_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022"/>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="Entity_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="Entity_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="Entity_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/Entity_ROM_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/Entity_ROM_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
+        <Step Id="init_design"/>
+        <Step Id="opt_design"/>
+        <Step Id="power_opt_design"/>
+        <Step Id="place_design"/>
+        <Step Id="post_place_power_opt_design"/>
+        <Step Id="phys_opt_design"/>
+        <Step Id="route_design"/>
+        <Step Id="post_route_phys_opt_design"/>
+        <Step Id="write_bitstream"/>
+      </Strategy>
+      <ReportStrategy Name="Vivado Implementation Default Reports" Flow="Vivado Implementation 2022"/>
+      <Report Name="ROUTE_DESIGN.REPORT_METHODOLOGY" Enabled="1"/>
+      <RQSFiles/>
+    </Run>
+    <Run Id="HUD_ROM_impl_1" Type="Ft2:EntireDesign" Part="xc7a35tcpg236-1" ConstrsSet="HUD_ROM" Description="Default settings for Implementation." AutoIncrementalCheckpoint="false" WriteIncrSynthDcp="false" SynthRun="HUD_ROM_synth_1" IncludeInArchive="false" IsChild="false" GenFullBitstream="true" AutoIncrementalDir="$PSRCDIR/utils_1/imports/HUD_ROM_impl_1" AutoRQSDir="$PSRCDIR/utils_1/imports/HUD_ROM_impl_1">
+      <Strategy Version="1" Minor="2">
+        <StratHandle Name="Vivado Implementation Defaults" Flow="Vivado Implementation 2022">
+          <Desc>Default settings for Implementation.</Desc>
+        </StratHandle>
         <Step Id="init_design"/>
         <Step Id="opt_design"/>
         <Step Id="power_opt_design"/>

@@ -9,7 +9,7 @@
   "../../../ipstatic/simulation/blk_mem_gen_v8_4.v" \
 -endlib
 -makelib xcelium_lib/xil_defaultlib \
-  "../../../../RetroGameGraphics.gen/sources_1/ip/Player_ROM_1/sim/Player_ROM.v" \
+  "../../../../RetroGameGraphics.gen/sources_1/ip/Player_ROM/sim/Player_ROM.v" \
 -endlib
 -makelib xcelium_lib/xil_defaultlib \
   glbl.v
