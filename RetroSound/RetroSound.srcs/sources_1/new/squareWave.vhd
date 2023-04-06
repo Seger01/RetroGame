@@ -55,7 +55,7 @@ begin
                 -- chooses tone depending on signal
                 case noteIndicator is
                     when "100000" => effectCounter <= 5000000; -- player death
-                        soundTimer <= 50000000;
+                        soundTimer <= 75000000;
                         soundPlus <= 100;
                         counterLimit2 <= 3000;
                         invert <= '0';
@@ -69,15 +69,15 @@ begin
                         counterLimit2 <= 5000;
                         soundPlus <= 500;
                         invert <= '0';
-                    when "000100" => effectCounter <= 50000000; -- powerup
+                    when "000100" => effectCounter <= 500000; -- powerup
                         invert <= '1';
-                        soundTimer <= 50000000;
+                        soundTimer <= 10000000;
                         soundPlus <= 100;
                         counterLimit2 <= 3000;
                     when "000010" => effectCounter <= 500;
                     when others => effectCounter <= 0;
                 end case;
-                
+
                 -- start counter 
                 if timeCounter >= soundTimer then
                     -- when timer ends set sound off
@@ -100,21 +100,7 @@ begin
                     else
                         counter <= counter + 1;
                     end if;
-                    --                case noteIndicator is
-                    --                    when "0000" => counterLimit <= 0;
-                    --                    when "0001" => counterLimit <= 2255; -- f
-                    --                    when "0010" => counterLimit <= 2009; -- g
-                    --                    when "0011" => counterLimit <= 1790; -- a
-                    --                    when "0100" => counterLimit <= 1595;  -- b
-                    --                    when "0101" => counterLimit <= 1505;  -- c
-                    --                    when "0110" => counterLimit <= 1341;  -- d
-                    --                    when "0111" => counterLimit <= 1194;  -- e
-                    --                    when "1000" => counterLimit <= 1127;  -- f
-                    --                    when "1111" => counterLimit <= 800;
-                    --                    when others => counterLimit <= 0;
-                    --                end case;
-
-
+                    
                     -- rising square
                     if invert = '1' then
                         if tempCount >= effectCounter then
@@ -135,7 +121,7 @@ begin
 
                     -- counter used for rising sound
                     if counterLimit >= counterLimit2 then
-                        counterLimit <= 2000;
+                        counterLimit <= 1000;
                     end if;
 
                     -- toggles pwm signal
@@ -154,9 +140,15 @@ begin
                             pwmSignal <= '1';
                         end if;
                     end if;
-                else
-                --set all counters to 0
+
+
                 end if;
+            else
+                --set all counters to 0
+                tempCount <= 0;
+                counter <= 0;
+                counter2 <= 0;
+                counterLimit <= 1000;
             end if;
             tempToggle <= toggle;
         end if;

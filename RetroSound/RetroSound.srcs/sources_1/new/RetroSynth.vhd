@@ -48,7 +48,7 @@ begin
         if rising_edge (clk) then
             counterToggle <= counterToggle + 1;
             -- toggle is used to switch between sfx and bgm to "combine" the pwm signals
-            if(counterToggle >= 125) then
+            if(counterToggle >= 150) then
                 pwm <= BGMpwmcombine;
                 BGMtoggle <= '1';
                 SFXtoggle <= '0';
