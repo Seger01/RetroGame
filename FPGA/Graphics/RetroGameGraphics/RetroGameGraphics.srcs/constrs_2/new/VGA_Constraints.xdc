@@ -138,4 +138,6 @@ create_clock -period 1.000 -name virtual_clock
 set_input_delay -clock [get_clocks virtual_clock] -min -add_delay 1.000 [get_ports {debugIn[0]}]
 set_input_delay -clock [get_clocks virtual_clock] -max -add_delay 20.000 [get_ports {debugIn[0]}]
 set_output_delay -clock [get_clocks virtual_clock] -min -add_delay 1.000 [get_ports PWMOut]
-set_output_delay -clock [get_clocks virtual_clock] -max -add_delay 20.000 [get_ports PWMOut]
+set_output_delay -clock [get_clocks virtual_clock] -max -add_delay 20000.000 [get_ports PWMOut]
+
+
