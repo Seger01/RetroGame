@@ -53,6 +53,9 @@ void Simulator::loop() {
         case 'u':
             em->removeTiles();
             break;
+        case 'i':
+            em->clear();
+            break;
         default:
             break;
     }

@@ -22,6 +22,7 @@ public:
 	bool checkEntities(CollidableObject *object) override;
 	pointVector update(pointVector playerPos);
 	pointVector followPlayer(pointVector playerPos);
+	pointVector moveNear(pointVector playerPos);
 	void randomSteps();
 };
 

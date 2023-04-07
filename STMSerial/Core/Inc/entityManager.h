@@ -19,7 +19,7 @@ public:
 	void addTiles();
 	Entity** getEntities();
 	void playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight,bool playerShoot);
-	void spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies);
+	void spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies);
 	void clear();
 	void updateEntities();
 	void moveEntity(int toBeMoved, int x, int y);

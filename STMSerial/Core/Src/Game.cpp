@@ -137,8 +137,8 @@ void Game::run() {
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
-			//remainingEnemies += entityManager->spawnEntities(0, 0, remainingEnemies);
-			//entityManager->spawnEntities(1, 1, 2);
+			//remainingEnemies += entityManager->spawnEntities(1, remainingEnemies);
+			entityManager->spawnEntities(2, 1);
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;

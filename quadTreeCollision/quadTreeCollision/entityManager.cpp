@@ -88,6 +88,10 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 }
 void EntityManager::clear() {
 	for (uint8_t i = 1; i < 50; i++) {
+		if (entities[i] == nullptr) {
+			continue;
+		}
+		center->remove(entities[i]);
 		delete entities[i];
 		entities[i] = nullptr;
 	}

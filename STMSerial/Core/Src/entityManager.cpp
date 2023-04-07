@@ -6,6 +6,7 @@
 #include "entity.h"
 #include "Rectangle.h"
 #include <vector>
+
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
 	//collidableTiles->clear();
 	//collidableTiles->push_back(new	Tile(50, 50, 3, true, false));
@@ -70,13 +71,12 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 		bulletStart.X = (playerPosition.X + playerDirection.X * 9);
 		bulletStart.Y = (playerPosition.Y + playerDirection.Y * 9);
 		uint8_t bullets = 5;
-		if(entities[1] != nullptr)
+		//if(entities[1] != nullptr)
 		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
 
 				entities[i] = new Bullet(bulletStart.X, bulletStart.Y,playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
-				bulletPtr->setTexture(7);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());
 				break;
 			}
@@ -85,18 +85,20 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 }
 void EntityManager::clear() {
 	for (uint8_t i = 1; i < 50; i++) {
+		if (entities[i] == nullptr) {
+			continue;
+		}
 		center->remove(entities[i]);
 		delete entities[i];
 		entities[i] = nullptr;
 	}
 }
-
 void EntityManager::spawnPlayer(int x, int y) {
 	entities[0] = new Player(x, y);
 	center->insert(entities[0]);
 }
 
-void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies) {
+void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 	std::vector<int> used_indices;
 	int spawned = 0;
 	int num_spawnpoints = spawnpoints->size();
@@ -123,9 +125,11 @@ void EntityManager::spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty,
 				}
 			}
 			if (!spawn_occupied) {
-				Entity *e = new Enemy(p.X, p.Y,1);
+				Enemy *e = new Enemy(p.X, p.Y,enemyType);
+
 				for (uint8_t i = 2; i < 45; i++) {
 					if (entities[i] == nullptr) {
+
 						entities[i] = e;
 						center->insert(entities[i]);
 						spawned++;
@@ -141,6 +145,8 @@ void EntityManager::updateEntities() {
 
 	pointVector playerPos = entities[0]->getPosition();
 	for (uint8_t i = 1; i < 50; i++) {
+		int x = 0;
+		int y = 0;
 		if (entities[i] == nullptr) {
 			continue;
 		}
@@ -151,8 +157,7 @@ void EntityManager::updateEntities() {
 				continue;
 			}
 
-		int x = 0;
-		int y = 0;
+
 		if (dynamic_cast<Enemy*>(entities[i])) {
 			Enemy *enemyPtr = dynamic_cast<Enemy*>(entities[i]);
 			pointVector newMovement = enemyPtr->update(playerPos);

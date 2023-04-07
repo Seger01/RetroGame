@@ -1,9 +1,10 @@
 #include "bullet.h"
 #include "enemy.h"
 Bullet::Bullet(uint8_t x, uint8_t y,uint8_t strength) : Entity(x, y) {
-	setSpeed(5);
+	setSpeed(10);
 	setWidth(4);
 	setHeight(4);
+	setTexture(8);
 	setStrength(strength);
 }
 void Bullet::onCollide(CollidableObject *object) {
@@ -14,7 +15,6 @@ if(dynamic_cast<Enemy*>(entityptr)) {
 			entityptr->setHealth(0);
 		} else {
 			entityptr->setHealth(entityptr->getHealth() - this->getStrength());
-
 		}
 
 	}
@@ -51,18 +51,14 @@ void Bullet::stepY(int direction) {
 	if (travelDistance > 240) {
 		this->setHealth(0);
 	}
-	switch (direction) {
-	case 1:
-		position.Y += this->speed;
-		if (this->position.Y > 240) {
-			this->position.Y = 0;
+	int Y = this->getStart().Y;
+		if (direction == 1 && (Y + this->speed < 224)) {
+			this->position.Y += (int) speed;
+		} else if (direction == 1 && (Y + this->speed >= 224)) {
+			this->position.Y = 8;
+		} else if (direction == -1 && (Y -  this->speed <= -1)) {
+			this->position.Y = 230;
+		} else if (direction == -1 && (Y - this->speed > -1)) {
+			this->position.Y -= (int) speed;
 		}
-		break;
-	case -1:
-		this->position.Y -= this->speed;
-		if (this->position.Y > 240) {
-			position.Y = 240;
-		}
-		break;
-	}
 }
