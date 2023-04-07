@@ -66,3 +66,7 @@ void Bullet::stepY(int direction) {
 		break;
 	}
 }
+
+int Bullet::getTexture(){
+	return 8;
+}
