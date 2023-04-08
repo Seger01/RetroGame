@@ -74,7 +74,6 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 		//if(entities[1] != nullptr)
 		for (uint8_t i = 45; i < 50; i++) {
 			if (entities[i] == NULL) {
-
 				entities[i] = new Bullet(bulletStart.X, bulletStart.Y,playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());

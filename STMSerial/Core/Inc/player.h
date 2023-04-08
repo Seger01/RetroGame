@@ -16,7 +16,7 @@ class Player :
 {
 private:
     powerUpHandler PowerUpHandler;
-    bool invincible = false;
+    bool hit = false;
     pointVector direction = {1,0};
     uint8_t textureID = 2;
     uint8_t weapon = -1;
