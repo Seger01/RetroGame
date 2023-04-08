@@ -26,6 +26,10 @@ int HighscoreManager::getCurrentScore() {
 	return currentScore;
 }
 
+void HighscoreManager::setCurrentScore(int amount){
+	currentScore = amount;
+}
+
 int HighscoreManager::getAllTimeHighscore() {
 	allTimeHighscore = getHighscoreInFlash();
 	return allTimeHighscore;

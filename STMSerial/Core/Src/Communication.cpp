@@ -95,13 +95,27 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 	int score = highscoreManager.getCurrentScore();
 
 	int d1 = score % 10;
-	int d2 = ((score % 100) /10);
-	int d3 = ((score % 1000)/ 100);
+	int d2 = ((score % 100) / 10);
+	int d3 = ((score % 1000) / 100);
 
 	buffer[21] = converter.intToIndex(d3);
 	buffer[22] = converter.intToIndex(d2);
 	buffer[23] = converter.intToIndex(d1);
 
+	if (entities[0] != nullptr) {
+		buffer[61] = converter.characterToIndex('h');
+		buffer[62] = converter.characterToIndex('p');
+
+		int health = entities[0]->getHealth();
+
+		int d1 = health % 10;
+		int d2 = ((health % 100) / 10);
+		int d3 = ((health % 1000) / 100);
+
+		buffer[81] = converter.intToIndex(d3);
+		buffer[82] = converter.intToIndex(d2);
+		buffer[83] = converter.intToIndex(d1);
+	}
 
 	for (int j = 0; j < maxAmountOfEntities; j++) {
 		if (entities[j] == nullptr) {
@@ -121,10 +135,7 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 //	buffer[(1 * 3) + 1 + 1 + 300] = entities[1]->getStart().Y;
 //	buffer[(1 * 3) + 2 + 1 + 300] = entities[1]->getTexture();
 
-
-
 	buffer[451] = soundManager.getActiveSounds();
-
 
 	buffer[0] = 0xFF;
 

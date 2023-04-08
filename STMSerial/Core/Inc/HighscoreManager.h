@@ -17,6 +17,7 @@ public:
 	virtual ~HighscoreManager();
 
 	void addToScore(int amount);
+	void setCurrentScore(int amount);
 	int getCurrentScore();
 	int getAllTimeHighscore();
 	void setAllTimeHighscore(int score);
