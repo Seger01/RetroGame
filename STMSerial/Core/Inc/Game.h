@@ -38,6 +38,8 @@ public:
 
 	void run();
 
+	void checkForCheats(uint8_t inputs);
+
 private:
 	LevelManager levelManager;
 
@@ -46,8 +48,6 @@ private:
 	Communication *communication;
 
 	EntityManager *entityManager;
-
-
 
 private:
 
