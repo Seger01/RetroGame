@@ -128,6 +128,19 @@ void Communication::sendBoth(uint8_t *map, Entity **entities) {
 		buffer[(j * 3) + 2 + 1 + 300] = entities[j]->getTexture();
 	}
 
+	uint8_t *highscore = highscoreManager.getAllTimeHighscore();
+
+	buffer[261] = converter.characterToIndex(highscore[0] + 'a');
+	buffer[262] = converter.characterToIndex(highscore[1] + 'a');
+	buffer[263] = converter.characterToIndex(highscore[2] + 'a');
+
+	uint8_t highscoreD1 = (highscore[3] % 10);
+	uint8_t highscoreD2 = (highscore[3] % 100) / 10;
+	uint8_t highscoreD3 = (highscore[3] % 1000)/ 100;
+
+	buffer[281] = converter.intToIndex(highscoreD3);
+	buffer[282] = converter.intToIndex(highscoreD2);
+	buffer[283] = converter.intToIndex(highscoreD1);
 //	buffer[301] = 20;
 //	buffer[302] = 10;
 //	buffer[303] = 3;

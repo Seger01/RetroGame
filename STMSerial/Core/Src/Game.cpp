@@ -5,9 +5,13 @@
  *      Author: coole
  */
 
+#include <cstring>
+
 #include "config.h"
 
 #include "Game.h"
+
+#include "Converter.h"
 
 #include "HighscoreManager.h"
 
@@ -47,6 +51,18 @@ void Game::setup() {
 
 	//entityManager->spawnEntities(1, 1, 2);
 
+	uint8_t score[4] = { 23, 23, 23, 0 };
+
+//
+	highscoreManager.setAllTimeHighscore(score);
+//
+//	uint8_t *received = highscoreManager.getAllTimeHighscore();
+//
+//	uint8_t received1 = received[0];
+//	uint8_t received2 = received[1];
+//	uint8_t received3 = received[2];
+//	uint8_t received4 = received[3];
+
 }
 
 void Game::run() {
@@ -67,11 +83,13 @@ void Game::run() {
 
 	entities = entityManager->getEntities();
 
-	uint8_t inputs = 0;
+	uint8_t inputs = inputManager.readInput();
+
+	Converter converter;
 
 	switch (currentState) {
 	case Reset:
-		entities[0]->setHealth(5);
+		entities[0]->setHealth(startingHp);
 		lastPlayerHealth = entities[0]->getHealth();
 
 		highscoreManager.setCurrentScore(0);
@@ -82,9 +100,6 @@ void Game::run() {
 		levelManager.getCollidables(&collidableTiles);
 		entityManager->addTiles();
 		levelManager.getSpawnpoints(&spawnPoints);
-
-
-
 
 		currentState = MainMenu;
 		break;
@@ -118,17 +133,15 @@ void Game::run() {
 		}
 		break;
 	case ShowDeath:
-		static long long flashTimer = 0;
-		static bool flashState = false;
-
-		static long long currentTime = 0;
-
-		currentTime = xTaskGetTickCount();
 
 		if (xTaskGetTickCount() > timeOfDeath + 2000) {
-			if (entities[0]->getHealth() == 0) {
-				currentState = Reset;
-				//entityManager->clear();
+			if (entities[0]->getHealth() <= 0) {
+				if (highscoreManager.getCurrentScore() > highscoreManager.getAllTimeHighscore()[3]) {
+					currentState = GivingNameForHighscore;
+				} else {
+					currentState = Reset;
+				}
+				//entityManager->clear();///////////////////////////////////////----------------------------------------------------------------------
 			} else {
 				currentState = SwitchingLevels;
 				lastLevelSwitch = xTaskGetTickCount();
@@ -136,23 +149,74 @@ void Game::run() {
 
 			}
 		}
-
-		if (xTaskGetTickCount() > flashTimer + 100) {
+		{
 			Entity *entitiesCopy[50];
 			for (int i = 0; i < 50; i++) {
 				entitiesCopy[i] = entities[i];
-
 			}
-			flashTimer = xTaskGetTickCount();
-			if (flashState == false) {
-				flashState = true;
+
+			if (xTaskGetTickCount() % 200 > 100) {
 				entitiesCopy[0] = nullptr;
-			} else {
-				flashState = false;
-			}
-			communication->sendBoth(levelManager.getMap(), entitiesCopy);
 
+			}
+
+			communication->sendBoth(levelManager.getMap(), entitiesCopy);
 		}
+		return;
+	case GivingNameForHighscore:
+		static uint8_t screen[15][15] = { 0 };
+
+		static uint8_t chars[3] = { 0 };
+
+		static int gunIndex = 0;
+
+		static uint8_t lastInputs = 0;
+
+		std::memcpy(screen, highscoreScreen, 225 * sizeof(uint8_t));
+
+		if (inputs != lastInputs) {
+			if ((inputs & (1 << 0)) >> 0) {
+				if (gunIndex < 2) {
+					gunIndex++;
+				}
+			} else if ((inputs & (1 << 1)) >> 1) {
+				if (gunIndex > 0) {
+					gunIndex--;
+				}
+			} else if ((inputs & (1 << 4)) >> 4) {
+				chars[gunIndex]++;
+
+				if (chars[gunIndex] > 25) {
+					chars[gunIndex] = 0;
+				}
+			} else if ((inputs & (1 << 5)) >> 5) {
+				uint8_t score[4] = { chars[0], chars[1], chars[2], (uint8_t)highscoreManager.getCurrentScore() };
+
+				highscoreManager.setAllTimeHighscore(score);
+				currentState = Reset;
+				while(inputManager.readInput() != 0){
+
+				}
+				//highscoreManager.setAllTimeHighscore(score)
+			}
+		}
+		lastInputs = inputs;
+
+		screen[9][7] = converter.characterToIndex(chars[0] + 'a');
+		screen[10][7] = converter.characterToIndex(chars[1] + 'a');
+		screen[11][7] = converter.characterToIndex(chars[2] + 'a');
+
+		if ((xTaskGetTickCount() % 400) > 200) {
+			screen[gunIndex + 9][6] = 69;
+		}
+
+		Entity *entitiesCopy[50];
+		for (int i = 0; i < 50; i++) {
+			entitiesCopy[i] = nullptr;
+		}
+
+		communication->sendBoth(screen[0], entitiesCopy);
+
 		return;
 	case PlayingLevel:
 
@@ -214,7 +278,7 @@ void Game::run() {
 	case MainMenu:
 		inputs = inputManager.readInput();
 
-		if ((inputs & (1 << 4)) >> 4) {
+		if ((inputs & (1 << 5)) >> 5) {
 			currentState = SwitchingLevels;
 			currentLevel = 2;
 			levelManager.switchLevel(currentLevel);
@@ -224,7 +288,7 @@ void Game::run() {
 			levelManager.getSpawnpoints(&spawnPoints);
 			lastLevelSwitch = xTaskGetTickCount();
 
-		} else if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
+		} else if ((inputs & (1 << 4)) >> 4 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
 			currentState = Credits;
 			currentLevel = 0;
 
@@ -245,7 +309,7 @@ void Game::run() {
 
 	case Credits:
 		inputs = inputManager.readInput();
-		if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
+		if ((inputs & (1 << 4)) >> 4 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
 			currentState = MainMenu;
 			currentLevel = 1;
 			levelManager.setLevel(currentLevel);

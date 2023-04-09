@@ -21,7 +21,9 @@
 
 #define timeForLevelSwitch 3000.0
 
-#define timeBetweenMenuSwitch 500
+#define timeBetweenMenuSwitch 300
+
+#define startingHp 5
 
 #define speedPowerup 0
 #define healthPowerup 1
