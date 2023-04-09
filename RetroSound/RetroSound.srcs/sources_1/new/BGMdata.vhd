@@ -47,9 +47,9 @@ begin
         tempCLK <= not tempCLK after Clockperiod / 2;
 
         if rising_edge(clk) then
-            if(BGMcounter >= 100000000) then
+            if(BGMcounter >= 50000000) then
 
-                if(addressInt >= 9) then
+                if(addressInt >= 20) then
                     addressInt <= 0;
                 else
                     addressInt <= addressInt + 1;

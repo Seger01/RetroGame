@@ -41,13 +41,8 @@ begin
         address  <= std_logic_vector(to_unsigned(addressInt, address'length));
         if addressSwitch = '1' then
             if lastState = '0' then
-                addressSwitchCount <= addressSwitchCount + 1;
+                 addressInt <= addressInt + 1;
             end if;
-        end if;
-
-        if addressSwitchCount >= 5 then
-            addressSwitchCount <= 0;
-            addressInt <= addressInt + 1;
         end if;
 
         if addressInt >= 64 then

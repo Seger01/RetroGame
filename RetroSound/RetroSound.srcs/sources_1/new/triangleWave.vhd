@@ -48,45 +48,25 @@ begin
 
         if rising_edge(clk) then
             if toggle = '1' then
-                if soundTimer >= 5000000 then
-                    if lastSignal <= '0' then
-                        soundTimer <= 0;
-                    end if;
-                    soundToggle <= '0';
-                else
-                    soundToggle <= '1';
-                    soundTimer <= soundTimer + 1;
+
+                addressSwitch <= '0';
+                dataInt <= to_integer(unsigned(data));
+
+                if counter2 >= 127 then
+                    counter2 <= 0;
+                    addressSwitch <= '1';
+                    else 
+                    counter2 <= counter2 + 1;
                 end if;
 
-                if soundToggle = '1' then
-                    addressSwitch <= '0';
-
-
-
-                    dataInt <= to_integer(unsigned(data));
-
-                    if counter >= 50000000 then
-                        counter <= 0;
-                        counter2 <= counter2 + 1;
-                    else
-                        counter <= counter + 1;
-                    end if;
-
-                    if counter2 >= 127 then
-                        counter2 <= 0;
-                        addressSwitch <= '1';
-                    else
-
-                    end if;
-
-                    if counter2 > dataInt then
-                        pwm <= '1';
-                    else
-                        pwm <= '0';
-                    end if;
+                if counter2 > dataInt then
+                    pwm <= '1';
+                else
+                    pwm <= '0';
                 end if;
             end if;
-            lastSignal <= toggle;
+
+
         end if;
     end process;
 

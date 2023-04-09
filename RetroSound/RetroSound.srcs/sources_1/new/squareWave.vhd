@@ -11,29 +11,11 @@ end squareWave;
 
 architecture Behavioral of squareWave is
 
-
-    -- signals used in counters
-    signal counter : integer := 0;
-    signal counterLimit : integer := 2000; -- octave
-    signal noteIndicatorTest : std_logic_vector(5 downto 0) := "100000";
-    signal effectCounter : integer := 0; -- attack
-
-    signal pwmSignal : std_logic := '0';
+    signal pwmsignal : std_logic := '0';
 
     signal lastToggle : std_logic := '0';
 
-    signal tempCount : integer := 0;
-
-    signal soundTimer : integer := 0; -- indicates how long a sound lasts
-
-
     signal soundEnable : std_logic := '0';
-
-    signal subToggle : std_logic := '0';
-
-    signal octaveIncrease : integer := 0;
-
-    signal octaveLimit : integer := 0;
 
     signal invert : std_logic := '0';
 
@@ -52,54 +34,72 @@ architecture Behavioral of squareWave is
     signal timerLimit : integer := 0;
     signal setTimerLimit : integer := 0;
 
+    signal soundLength : integer := 0;
+
+    constant clockFrequency : integer := 100e6;
+    constant clockperiod : time := 100ms / clockFrequency;
+    signal tempCLK : std_Logic := '0';
+
+    signal tempCounter : integer := 0;
+
 begin
     --
     BGM : process(clk)
     begin
-        if rising_edge(clk) then
-            case noteIndicator is
-                when "100000" => effectCounter <= 5000000; -- player death
-                    normalizeCounterLimit <= 15000;
-                    soundTimer <= 750000000;
-                    octaveIncrease <= 100;
-                    octaveLimit <= 3000;
-                    invert <= '0';
+        tempCLK <= not tempCLK after Clockperiod / 2;
+        if rising_edge(clk ) then
+            if toggle = '1' and lastToggle = '0' then
+                if soundEnable = '0' then
+                    timeCounter <= 0;
+                    attack <= 0;
+                    attackRoof <= setAttackRoof;
+                end if;
 
-                    setAttackRoof <= 10000;
-                    attackGain <= 1000;
+
+            end if;
+            case noteIndicator is
+                    when "100000" => normalizeCounterLimit <= 150000; -- player death
+                    invert <= '0';
+                    setAttackRoof <= 50000;
+                    attackGain <= 5000;
                     attackFloor <= 1000;
-                    setTimerLimit <= 10000;
-                when "010000" => effectCounter <= 250000; -- shoot
-                    normalizeCounterLimit <= 3000;
-                    soundTimer <= 5000000;
-                    octaveIncrease <= 100;
-                    octaveLimit <= 3000;
+                    setTimerLimit <= 1500;
+                when "010000" =>  normalizeCounterLimit <= 2666; -- shoot
                     invert <= '0';
-                when "001000" => effectCounter <= 10000; -- walk
-                    normalizeCounterLimit <= 1500;
-                    soundTimer <= 50000;
-                    octaveLimit <= 5000;
-                    octaveIncrease <= 500;
+                    setAttackRoof <= 100000;
+                    attackGain <= 1000;
+                    attackFloor <= 50000;
+                    setTimerLimit <= 1000;
                     invert <= '0';
-                when "000100" => effectCounter <= 500000; -- powerup
-                    normalizeCounterLimit <= 4500;
+                when "001000" => normalizeCounterLimit <= 2000; -- walk
+                    invert <= '0';
+                    setAttackRoof <= 20000;
+                    attackGain <= 2000;
+                    attackFloor <= 5000;
+                    setTimerLimit <= 500;
+
+                when "000100" => normalizeCounterLimit <= 4500; -- powerup
                     invert <= '1';
-                    soundTimer <= 10000000;
-                    octaveIncrease <= 100;
-                    octaveLimit <= 3000;
-                when "000010" => effectCounter <= 500;
-                when others => effectCounter <= 0;
+                    setAttackRoof <= 50000;
+                    attackGain <= 100;
+                    attackFloor <= 1000;
+                    setTimerLimit <= 1000;
+                when "000010" => normalizeCounterLimit <= 1000; -- player death
+                    invert <= '0';
+                    setAttackRoof <= 50000;
+                    attackGain <= 5000;
+                    attackFloor <= 1000;
+                    setTimerLimit <= 50000;
+                when "000001" => normalizeCounterLimit <= 4500; -- hit
+                    invert <= '1';
+                    setAttackRoof <= 50000;
+                    attackGain <= 100;
+                    attackFloor <= 5000;
+                    setTimerLimit <= 1000;
+                when others => attack <= 0;
             end case;
 
             timerLimit <= setTimerLimit;
-
-            -- when new signal reset
-            if toggle = '1' and lastToggle = '0' then
-                --set all counters to 0
-                attack <= 0;
-                attackRoof <= setAttackRoof;
-                timeCounter <= 0;
-            end if;
 
             -- normalizes pwm to 5000
             if timeNormalizer >= normalizeCounterLimit then
@@ -117,22 +117,15 @@ begin
             end if;
 
             if soundEnable = '1' then
-                -- converts hertz for each component to 5000
-                if normalizeCounter >= normalizeCounterLimit then
-                    normalizeCounter <= 0;
-                    attack <= attack + 1;
-                else
-                    normalizeCounter <= normalizeCounter + 1;
-                end if;
-
                 -- rising square
                 if invert = '1' then
+
                     if attack >= attackRoof then
                         if attackRoof  <= attackFloor then
                             attackRoof <= setAttackRoof;
                         end if;
                         attack <= 0;
-                        attackRoof <= attackRoof + attackGain;
+                        attackRoof <= attackRoof - attackGain;
                     else
                         attack <= attack + 1;
                     end if;
@@ -167,6 +160,8 @@ begin
             end if;
             lastToggle <= toggle;
         end if;
+
+
 
 
     end process;
