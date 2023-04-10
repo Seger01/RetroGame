@@ -656,7 +656,7 @@ BEGIN
             );
             
         RetroSynth0 : RetroSynth Port map (
-                CLK => clk_25,
+                CLK => clk_100MHz,
                 SFXswitch => soundDataMixed(5 downto 0), --soundData(5 downto 0),
                 BGMswitch => soundDataMixed(8 downto 6),
                 PWM => PWMOut
