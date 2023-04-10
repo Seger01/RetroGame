@@ -29,6 +29,8 @@ private:
 	int currentScore = 0;
 
 	uint8_t allTimeHighscore[4] = {0};
+
+	uint8_t allHighscores[20] = {0};
 };
 
 extern HighscoreManager highscoreManager;

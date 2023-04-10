@@ -39,6 +39,7 @@ public:
 	void run();
 
 	void checkForCheats(uint8_t inputs);
+	void showAllHighscores();
 
 private:
 	LevelManager levelManager;
@@ -80,6 +81,8 @@ private:
 			{ 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73 },	//14
 			{ 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73, 73 } //15
 		};
+
+	Entity* emptyEntities[50];
 };
 
 #endif /* SRC_GAME_H_ */
