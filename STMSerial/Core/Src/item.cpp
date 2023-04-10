@@ -14,7 +14,7 @@ void Item::onCollide(CollidableObject *object) {
 
 }
 bool Item::checkEntities(CollidableObject *object) {
-	if (dynamic_cast<Item*>(object)) {
+	if (dynamic_cast<Bullet*>(object)) {
 		return false;
 	}
 	pointVector otherPosition;
