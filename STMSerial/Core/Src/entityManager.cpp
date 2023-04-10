@@ -41,6 +41,7 @@ uint8_t EntityManager::countEnemies(){
 			count++;
 		}
 	}
+	return count;
 }
 void EntityManager::removeTiles() {
 	center->removeTiles();
