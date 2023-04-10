@@ -1,7 +1,10 @@
 #include "bullet.h"
 #include "enemy.h"
-Bullet::Bullet(uint8_t x, uint8_t y, uint8_t width, uint8_t height, uint8_t health, uint8_t speed, uint8_t strength) : Entity(x, y, width, height, health, speed, strength) {
-	
+Bullet::Bullet(uint8_t x, uint8_t y,uint8_t strength) : Entity(x, y) {
+	setSpeed(5);
+	setWidth(4);
+	setHeight(4);
+	setStrength(strength);
 }
 void Bullet::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Entity*>(object);
@@ -62,4 +65,8 @@ void Bullet::stepY(int direction) {
 		}
 		break;
 	}
+}
+
+int Bullet::getTexture(){
+	return 8;
 }

@@ -24,6 +24,7 @@ public:
     std::vector<CollidableObject*>* query(Rectangle range, std::vector<CollidableObject*>* found);
     bool insert(CollidableObject*);
     void remove(CollidableObject*);
+    void removeTiles();
     void subdivide();
 };
 #endif /* INC_Quad_H_ */

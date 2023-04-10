@@ -15,6 +15,7 @@ public:
 	virtual ~EntityManager();
 	void updateTiles(std::vector<Tile*> *collidableTiles);
 	Entity** getEntities();
+	void removeTiles();
 	void playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight,bool playerShoot);
 	void spawnEntities(uint8_t currentLevel, uint8_t spawnDifficulty, uint8_t amountOfEnemies);
 	void clear();

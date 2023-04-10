@@ -50,6 +50,9 @@ void Simulator::loop() {
         case 'q':
             shoot = true;
             break;
+        case 'u':
+            em->removeTiles();
+            break;
         default:
             break;
     }
