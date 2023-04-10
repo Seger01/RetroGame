@@ -59,3 +59,7 @@ void Bullet::stepY(int direction) {
 			this->position.Y -= (int) speed;
 		}
 }
+
+int Bullet::getTexture(){
+	return 8;
+}

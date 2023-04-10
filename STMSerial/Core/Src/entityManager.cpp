@@ -208,6 +208,7 @@ void EntityManager::updateEntities() {
 		moveEntity(i, x, y);
 	}
 }
+
 void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
@@ -239,6 +240,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 	delete found;
 
 }
+
 void EntityManager::checkCollision() {
 
 }

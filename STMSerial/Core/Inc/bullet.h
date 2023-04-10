@@ -14,5 +14,6 @@ public:
     void onCollideWall();
     void setTravelDirection(pointVector);
     pointVector getTravelDirection();
+    int getTexture() override;
 };
 

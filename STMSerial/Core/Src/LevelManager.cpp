@@ -76,14 +76,33 @@ void LevelManager::getCollidables(std::vector<Tile*> *tileVector) {
 	}
 	tileVector->resize(0);
 
+//	uint8_t templevel[15][15] = { 0 };
+//
+//	std::memcpy(templevel, levels[(currentMapNumber * 2)], 225 * sizeof(uint8_t));
+
+//	// Transpose the matrix
+//	for (int i = 0; i < 15; i++)
+//		for (int j = i; j < 15; j++) {
+//			int temp = templevel[i][j];
+//			templevel[i][j] = templevel[j][i];
+//			templevel[j][i] = temp;
+//		}
+//
+//	// Reverse each row
+//	for (int i = 0; i < 15; i++)
+//		for (int j = 0, k = 15 - 1; j < k; j++, k--) {
+//			int temp = templevel[j][i];
+//			templevel[j][i] = templevel[k][i];
+//			templevel[k][i] = temp;
+//		}
+
 	for (int i = 0; i < mapSizeTilesX; i++) {
 		for (int j = 0; j < mapSizeTilesY; j++) {
-			if (levels[currentMapNumber * 2][i][j] >= 15 && levels[currentMapNumber * 2][i][j] < 31) {
-				tileVector->push_back(new Tile((i * 16) + 8, (j * 16) + 8, levels[currentMapNumber * 2][i][j], true, false));
+			if (levels[(currentMapNumber * 2)][i][j] >= 15 && levels[(currentMapNumber * 2)][i][j] < 31) {
+				tileVector->push_back(new Tile(((j * 16) + 8), ((i * 16) + 8), levels[(currentMapNumber * 2)][i][j], true, false));
 			}
 		}
 	}
-
 }
 
 void LevelManager::getSpawnpoints(std::vector<Tile*> *spawnpointVector) {

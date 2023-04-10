@@ -58,7 +58,7 @@ UART_HandleTypeDef huart2;
 osThreadId_t SerialSendHandle;
 const osThreadAttr_t SerialSend_attributes = {
   .name = "SerialSend",
-  .stack_size = 768 * 4,
+  .stack_size = 1024 * 4,
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
@@ -344,7 +344,7 @@ void fpgaReset() {
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_SET);
 	//HAL_Delay(100);
 	HAL_GPIO_WritePin(GPIOA, GPIO_PIN_8, GPIO_PIN_RESET);
-	HAL_Delay(10);
+	HAL_Delay(100);
 
 //	for (int i = 0; i < 17; i++) {
 //		serialClockWrite(1);
@@ -399,7 +399,7 @@ void startSend(void *argument) {
 	/* Infinite loop */
 
 	Game game(&hspi1);
-
+//
 	game.setup();
 
 	for (;;) {
