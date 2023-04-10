@@ -203,6 +203,7 @@ void EntityManager::updateEntities() {
 				int drop = rand() % 100;
 				if(drop < 90){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
+					center->insert(entities[36]);
 				}
 			}
 			center->remove(entities[i]);

@@ -41,8 +41,7 @@ pointVector Entity::getStart() {
 	return start;
 }
 void Entity::setHealth(uint8_t health) {
-	this->health = health;
-
+		this->health = health;
 }
 uint8_t Entity::getHealth() {
 	return health;

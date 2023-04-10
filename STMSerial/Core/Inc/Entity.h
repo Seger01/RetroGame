@@ -29,13 +29,14 @@ class Entity : public CollidableObject
 
 {
 private:
-	uint8_t health = 1;
+
 	uint8_t strength = 0;
 	uint8_t textureID = 0;
 	uint8_t width = 16;
 	uint8_t height = 16;
 protected:
 	pointVector position;
+	uint8_t health = 1;
 	uint8_t speed = 0;
 
 public: 
@@ -63,7 +64,7 @@ public:
 	void setSpeed(uint8_t);
 	void setStrength(uint8_t);
 	uint8_t getStrength();
-	void setHealth(uint8_t);
+	virtual void setHealth(uint8_t);
 	uint8_t getHealth();
 	pointVector getPosition();
 	virtual bool checkEntities(CollidableObject *object);
