@@ -5,6 +5,7 @@ entity SFXhit is
     Port(
         clk : in std_logic;
         toggleHit : in std_logic;
+        enableHit : out std_logic;
         PWM : out std_logic
     );
 end SFXhit;
@@ -14,6 +15,7 @@ architecture Behavioral of SFXhit is
         Port (CLK : in std_logic;
              noteIndicator : in std_logic_vector (5 downto 0);
              toggle : in std_logic;
+             enable : out std_logic;
              PWM : out std_logic
             );
     end component;
@@ -29,6 +31,7 @@ end process;
             clk => clk,
             noteIndicator => sound,
             toggle => toggleHit,
+            enable => enableHit,
             pwm => pwm
 
         );

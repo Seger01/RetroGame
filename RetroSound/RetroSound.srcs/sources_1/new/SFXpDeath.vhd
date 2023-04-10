@@ -6,6 +6,7 @@ entity SFXpDeath is
     Port(
         clk : in std_logic;
         togglepDeath : in std_logic;
+        enablePdeath : out std_logic;
         pwm : out std_logic
     );
 end SFXpDeath;
@@ -15,6 +16,7 @@ architecture Behavioral of SFXpDeath is
         Port (CLK : in std_logic;
              noteIndicator : in std_logic_vector (5 downto 0);
              toggle : in std_logic;
+             enable : out std_Logic;
              pwm : out std_logic
             );
     end component;
@@ -34,6 +36,7 @@ begin
             clk => clk ,
             noteIndicator => sound,
             toggle => togglepDeath,
+            enable => enablePdeath,
             pwm => pwm
         );
 
