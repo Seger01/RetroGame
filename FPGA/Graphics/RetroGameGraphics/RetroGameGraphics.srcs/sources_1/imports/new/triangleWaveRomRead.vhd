@@ -13,13 +13,13 @@ entity triangleWaveRomRead is
 end triangleWaveRomRead;
 
 architecture Behavioral of triangleWaveRomRead is
-    component triangleWaveRom is
-        PORT (
-            clka : IN STD_LOGIC;
-            ena : IN STD_LOGIC;
-            addra : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
-            douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
-        );
+    component triangleWaveRom1 is
+      Port ( 
+        clka : in STD_LOGIC;
+        ena : in STD_LOGIC;
+        addra : in STD_LOGIC_VECTOR ( 5 downto 0 );
+        douta : out STD_LOGIC_VECTOR ( 7 downto 0 )
+      );
     end component;
 
     signal addressInt : integer := 0;
@@ -41,13 +41,8 @@ begin
         address  <= std_logic_vector(to_unsigned(addressInt, address'length));
         if addressSwitch = '1' then
             if lastState = '0' then
-                addressSwitchCount <= addressSwitchCount + 1;
+                 addressInt <= addressInt + 1;
             end if;
-        end if;
-
-        if addressSwitchCount >= 5 then
-            addressSwitchCount <= 0;
-            addressInt <= addressInt + 1;
         end if;
 
         if addressInt >= 64 then
@@ -56,7 +51,7 @@ begin
         lastState <= addressSwitch;
     end process;
 
-    triangleData : triangleWaveRom port map(
+    triangleData : triangleWaveRom1 port map(
             clka => clk,
             ena => '1',
             addra => address,

@@ -15,13 +15,13 @@ end BGMdata;
 
 architecture Behavioral of BGMdata is
 
-    component BGMwestern is
-        Port(
-            clka : IN STD_LOGIC;
-            ena : IN STD_LOGIC;
-            addra : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-            douta : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
-        );
+    component BGMwestern1 is
+      Port ( 
+        clka : in STD_LOGIC;
+        ena : in STD_LOGIC;
+        addra : in STD_LOGIC_VECTOR ( 4 downto 0 );
+        douta : out STD_LOGIC_VECTOR ( 3 downto 0 )
+      );
     end component;
 
     component SynthBGM is
@@ -33,7 +33,7 @@ architecture Behavioral of BGMdata is
     end component;
     
     signal noteIndex : std_logic_vector (3 downto 0) := "0000";
-    signal romAddress : std_logic_vector (3 downto 0) := "0000";
+    signal romAddress : std_logic_vector (4 downto 0) := "00000";
     signal addressInt : integer := 0;
     signal BGMcounter : integer := 0;
 
@@ -47,9 +47,9 @@ begin
         tempCLK <= not tempCLK after Clockperiod / 2;
 
         if rising_edge(clk) then
-            if(BGMcounter >= 100000000) then
+            if(BGMcounter >= 50000000) then
 
-                if(addressInt >= 9) then
+                if(addressInt >= 20) then
                     addressInt <= 0;
                 else
                     addressInt <= addressInt + 1;
@@ -65,7 +65,7 @@ begin
     end process;
 
 
-    sound : BGMwestern port map(
+    sound : BGMwestern1 port map(
             clka => clk,
             ena => '1',
             addra => romAddress,
