@@ -153,11 +153,12 @@ void Enemy::onCollide(CollidableObject *object) {
 		Player *entityptr = dynamic_cast<Player*>(object);
 		entityptr->setHealth(entityptr->getHealth() - 1);
 		entityptr->setStar(true);
-	} else if (dynamic_cast<Enemy*>(object)) {
+	} else if (dynamic_cast<Enemy*>(object) || dynamic_cast<Tile*>(object)) {
 		// Generate a random direction
 		Enemy *entityptr = dynamic_cast<Enemy*>(object);
 		if (stepsRemaining == 0 && type != 4) {
 			randomSteps();
+			entityptr->setRemainingSteps(10);
 		}
 	}
 }
