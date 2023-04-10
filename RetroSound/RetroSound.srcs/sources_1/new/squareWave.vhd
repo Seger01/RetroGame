@@ -21,10 +21,10 @@ architecture Behavioral of squareWave is
     signal invert : std_logic := '0';
     signal normalizeCounterLimit : integer range 0 to 150000 := 0;
 
-    signal setAttackRoof : integer := 0;
+    signal setAttackRoof : integer range 0 to 150000 := 0;
 
-    signal attack : integer := 0;
-    signal attackRoof : integer := 0;
+    signal attack : integer range 0 to 150000 := 0;
+    signal attackRoof : integer range 0 to 150000 := 0;
     signal attackFloor : integer range 0 to 50000 := 0;
     signal attackGain : integer range 0 to 10000 := 0; -- the more you add 
 
