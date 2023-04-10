@@ -102,6 +102,8 @@ void EntityManager::clear() {
 		delete entities[i];
 		entities[i] = nullptr;
 	}
+	Player* playerPtr = dynamic_cast<Player*>(entities[0]);
+	playerPtr->setStar(false);
 }
 void EntityManager::spawnPlayer(int x, int y) {
 	entities[0] = new Player(x, y);
