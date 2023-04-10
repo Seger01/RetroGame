@@ -36,9 +36,8 @@ architecture Behavioral of squareWave is
 
     signal soundLength : integer := 0;
 
-    constant clockFrequency : integer := 100e6;
+    constant clockFrequency : integer := 25e6;
     constant clockperiod : time := 100ms / clockFrequency;
-    signal tempCLK : std_Logic := '0';
 
     signal tempCounter : integer := 0;
 
@@ -46,7 +45,6 @@ begin
     --
     BGM : process(clk)
     begin
-        tempCLK <= not tempCLK after Clockperiod / 2;
         if rising_edge(clk ) then
             if toggle = '1' and lastToggle = '0' then
                 if soundEnable = '0' then
@@ -58,44 +56,44 @@ begin
 
             end if;
             case noteIndicator is
-                    when "100000" => normalizeCounterLimit <= 150000; -- player death
+                    when "100000" => normalizeCounterLimit <= 150000/4; -- player death
                     invert <= '0';
-                    setAttackRoof <= 50000;
-                    attackGain <= 5000;
-                    attackFloor <= 1000;
-                    setTimerLimit <= 1500;
-                when "010000" =>  normalizeCounterLimit <= 2666; -- shoot
+                    setAttackRoof <= 50000/4;
+                    attackGain <= 5000/4;
+                    attackFloor <= 1000/4;
+                    setTimerLimit <= 1500/4;
+                when "010000" =>  normalizeCounterLimit <= 2666/4; -- shoot
                     invert <= '0';
-                    setAttackRoof <= 100000;
-                    attackGain <= 1000;
-                    attackFloor <= 50000;
-                    setTimerLimit <= 1000;
+                    setAttackRoof <= 100000/4;
+                    attackGain <= 1000/4;
+                    attackFloor <= 50000/4;
+                    setTimerLimit <= 1000/4;
                     invert <= '0';
-                when "001000" => normalizeCounterLimit <= 2000; -- walk
+                when "001000" => normalizeCounterLimit <= 2000/4; -- walk
                     invert <= '0';
-                    setAttackRoof <= 20000;
-                    attackGain <= 2000;
-                    attackFloor <= 5000;
-                    setTimerLimit <= 500;
+                    setAttackRoof <= 20000/4;
+                    attackGain <= 2000/4;
+                    attackFloor <= 5000/4;
+                    setTimerLimit <= 500/4;
 
-                when "000100" => normalizeCounterLimit <= 4500; -- powerup
+                when "000100" => normalizeCounterLimit <= 4500/4; -- powerup
                     invert <= '1';
-                    setAttackRoof <= 50000;
-                    attackGain <= 100;
-                    attackFloor <= 1000;
-                    setTimerLimit <= 1000;
-                when "000010" => normalizeCounterLimit <= 1000; -- player death
+                    setAttackRoof <= 50000/4;
+                    attackGain <= 100/4;
+                    attackFloor <= 1000/4;
+                    setTimerLimit <= 1000/4;
+                when "000010" => normalizeCounterLimit <= 1000/4; -- player death
                     invert <= '0';
-                    setAttackRoof <= 50000;
-                    attackGain <= 5000;
-                    attackFloor <= 1000;
-                    setTimerLimit <= 50000;
-                when "000001" => normalizeCounterLimit <= 4500; -- hit
+                    setAttackRoof <= 50000/4;
+                    attackGain <= 5000/4;
+                    attackFloor <= 1000/4;
+                    setTimerLimit <= 50000/4;
+                when "000001" => normalizeCounterLimit <= 4500/4; -- hit
                     invert <= '1';
-                    setAttackRoof <= 50000;
-                    attackGain <= 100;
-                    attackFloor <= 5000;
-                    setTimerLimit <= 1000;
+                    setAttackRoof <= 50000/4;
+                    attackGain <= 100/4;
+                    attackFloor <= 5000/4;
+                    setTimerLimit <= 1000/4;
                 when others => attack <= 0;
             end case;
 

@@ -31,9 +31,8 @@ architecture Behavioral of triangleWave is
 
     signal addressSwitch : std_logic := '1';
 
-    constant clockFrequency : integer := 100e6;
+    constant clockFrequency : integer := 25e6;
     constant clockperiod : time := 100ms / clockFrequency;
-    signal tempCLK : std_Logic := '0';
     signal frequencyCounter : integer := 0;
 
     signal soundTimer : integer := 0;
@@ -43,9 +42,6 @@ architecture Behavioral of triangleWave is
 begin
     waveTriangle : process(clk)
     begin
-        tempCLK <= not tempCLK after Clockperiod / 2;
-
-
         if rising_edge(clk) then
             if toggle = '1' then
 

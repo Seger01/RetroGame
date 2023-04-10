@@ -358,7 +358,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
     component RetroSynth is
         Port (
             CLK : in STD_LOGIC;
-            SFXswitch : std_logic_vector(5 downto 0);
+            SFXswitch : std_logic_vector(6 downto 0);
             PWM : out STD_LOGIC
         );
     end component;
@@ -411,7 +411,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
     signal hudData : unsigned (24 -1 downto 0);
     
     -- sound    
-    signal soundDataMixed : STD_LOGIC_VECTOR(5 downto 0);    
+    signal soundDataMixed : STD_LOGIC_VECTOR(6 downto 0);    
 
 BEGIN
 	clk_wiz_00: prescaler	PORT MAP(
@@ -638,14 +638,14 @@ BEGIN
 	serialReceiver : SerialRead Port map (
                 clkInExternal => serialClkIn,
                 dataInExternal => serialDataIn,
-                clk_100Mhz => clk_100Mhz,
+                clk_100Mhz => clk_25, --clk_100Mhz, 
                 sysReset => Reset,
                 serialData => serialData
             );
     
         serialBuffer : SerialDataBuffer Port map (
                 sysReset => reset,
-                clk100Mhz => clk_25,
+                clk100Mhz => clk_25, --clk_100Mhz, 
                 serialData => serialData,
                 Ycount => Ycount,
                 tileData => tileVector, --tileData => tileData,
@@ -656,13 +656,13 @@ BEGIN
             );
             
         RetroSynth0 : RetroSynth Port map (
-                CLK => clk_100Mhz,
+                CLK => clk_25,
                 SFXswitch => soundDataMixed, --soundData(5 downto 0),
                 PWM => PWMOut
             );
             
-        soundDataMixed <= std_logic_vector (soundData(5 downto 0)) when debugIn(0) = '0' else
-                          std_logic_vector (debugIn(6 downto 1));
+        soundDataMixed <= std_logic_vector (soundData(6 downto 0)) when debugIn(0) = '0' else
+                          std_logic_vector (debugIn(7 downto 1));
             
                               
 END Behavioral;

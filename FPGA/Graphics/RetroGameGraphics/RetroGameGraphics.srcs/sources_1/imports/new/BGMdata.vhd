@@ -8,7 +8,7 @@ USE UNISIM.Vcomponents.ALL;
 entity BGMdata is
     Port(
         clk : in std_logic;
-        toggle : in std_logic;
+        menuMusic : in std_Logic;
         BGMpwm : out std_Logic
     );
 end BGMdata;
@@ -27,41 +27,46 @@ architecture Behavioral of BGMdata is
     component SynthBGM is
         Port (clk : in std_logic;
              noteIndicator : in std_logic_vector (3 downto 0);
-             toggle : in std_logic;
              PWM : out std_logic
             );
     end component;
     
     signal noteIndex : std_logic_vector (3 downto 0) := "0000";
     signal romAddress : std_logic_vector (4 downto 0) := "00000";
-    signal addressInt : integer := 0;
+    signal addressInt : unsigned (4 downto 0) := "00000";
     signal BGMcounter : integer := 0;
 
-    constant clockFrequency : integer := 100e6;
+    constant clockFrequency : integer := 25e6;
     constant clockperiod : time := 100ms / clockFrequency;
-    signal tempCLK : std_Logic := '0';
 
 begin
+    romAddress <= std_logic_vector(addressInt);
+  
     soundProc : process(clk)
     begin
-        tempCLK <= not tempCLK after Clockperiod / 2;
-
         if rising_edge(clk) then
-            if(BGMcounter >= 50000000) then
-
-                if(addressInt >= 20) then
-                    addressInt <= 0;
+            if(BGMcounter >= 50000000/4) then
+                
+                if (menuMusic = '1') then
+                    if(addressInt >= 16) then
+                        addressInt <= (others => '0');
+                    else
+                        addressInt <= addressInt + 1;
+                    end if;
                 else
-                    addressInt <= addressInt + 1;
+                    if(addressInt <= 0) then
+                        addressInt <= "10000";
+                    else
+                        addressInt <= addressInt - 1;
+                    end if;             
                 end if;
-                BGMcounter <= 0;
-
+                
+                BGMcounter <= 0;  
             else
                 BGMcounter <= BGMcounter + 1;
             end if;
 
         end if;
-        romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
     end process;
 
 
@@ -75,7 +80,6 @@ begin
     BGMComp : SynthBGM port map(
             clk => clk,
             PWM => BGMpwm,
-            toggle => toggle,
             noteIndicator => noteIndex
         );
 

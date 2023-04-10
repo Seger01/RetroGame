@@ -9,7 +9,6 @@ USE UNISIM.Vcomponents.ALL;
 entity SFXdata is
     Port(
         clk : in std_logic;
-        toggle : in std_logic;
         sound : in std_logic_vector(5 downto 0);
         SFXpwm : out std_Logic
     );
@@ -110,7 +109,7 @@ architecture Behavioral of SFXdata is
     signal trianglePWM : std_logic;
 
     -- CLK USED FOR TESTING
-    constant clockFrequency : integer := 100e6;
+    constant clockFrequency : integer := 25e6;
     constant clockperiod : time := 100ms / clockFrequency;
     signal tempCLK : std_Logic := '0';
 
@@ -130,47 +129,46 @@ begin
             toggleWalk <= sound(2);
             togglePowerup <= sound(3);
             toggleMdeath <= sound(4);
+            toggleHit <= sound(5);
 
             SFXcounter <= SFXcounter + 1;
 
-            if SFXcounter <= 5000 then
+            if SFXcounter <= 5000/4 then
                 --if togglePdeath  = '1' then
                     SFXpwm <= pwmPdeath;
                 --end if;
 
-                if SFXcounter <= 750 then -- walk
+                if SFXcounter <= 750/4 then -- walk
                     if toggleWalk = '1' then
                         SFXpwm <= pwmWalk;
                     end if;
                 end if;
-                if SFXcounter <= 1750 and SFXcounter >= 750 then -- shoot
+                if SFXcounter <= 1750/4 and SFXcounter >= 750/4 then -- shoot
                     if toggleShoot  = '1' then
 
                         SFXpwm <= pwmShoot;
                     end if;
                 end if;
 
-                if SFXcounter <= 2750 and SFXcounter >= 1750 then -- hit
+                if SFXcounter <= 2750/4 and SFXcounter >= 1750/4 then -- hit
                     if toggleHit  = '1' then
                         SFXpwm <= pwmHit;
                     end if;
                 end if;
 
-                if SFXcounter <= 4250 and SFXcounter >= 2750 then -- powerup
+                if SFXcounter <= 4250/4 and SFXcounter >= 2750/4 then -- powerup
                     if togglePowerup  = '1' then
                         SFXpwm <= pwmPowerup;
                     end if;
                 end if;
 
-                if SFXcounter <= 5000 and SFXcounter >= 4250 then -- enemy death
+                if SFXcounter <= 5000/4 and SFXcounter >= 4250/4 then -- enemy death
                     if toggleMdeath = '1' then
                         SFXpwm <= pwmMdeath;
                     end if;
                 end if;
-
-                if SFXcounter >= 5000 then
-                    SFXcounter <= 0;
-                end if;
+            else                
+                SFXcounter <= 0;
             end if;
         end if;
     end process;

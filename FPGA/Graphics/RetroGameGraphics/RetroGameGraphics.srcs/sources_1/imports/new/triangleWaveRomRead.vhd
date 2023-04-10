@@ -22,7 +22,7 @@ architecture Behavioral of triangleWaveRomRead is
       );
     end component;
 
-    signal addressInt : integer := 0;
+    signal addressInt : unsigned (5 downto 0) := (others => '0');
 
     signal address : std_logic_vector (5 downto 0) := (others => '0');
     signal lastState : std_logic := '0';
@@ -36,19 +36,24 @@ architecture Behavioral of triangleWaveRomRead is
     constant clockperiod : time := 100ms / clockFrequency;
     signal tempCLK : std_Logic := '0';
 begin
+    address  <= std_logic_vector(addressInt);
+        
     read : process(clk)
     begin
-        address  <= std_logic_vector(to_unsigned(addressInt, address'length));
-        if addressSwitch = '1' then
-            if lastState = '0' then
-                 addressInt <= addressInt + 1;
+        if (rising_edge (clk))then
+            addressInt <= addressInt;
+            
+            if addressSwitch = '1' then
+                if lastState = '0' then
+                     addressInt <= addressInt + 1;
+                end if;
             end if;
+    
+            if addressInt >= 16 then
+                addressInt <= (others => '0');
+            end if;
+            lastState <= addressSwitch;
         end if;
-
-        if addressInt >= 64 then
-            addressInt <= 0;
-        end if;
-        lastState <= addressSwitch;
     end process;
 
     triangleData : triangleWaveRom1 port map(
