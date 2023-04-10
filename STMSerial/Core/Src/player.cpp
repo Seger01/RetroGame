@@ -18,6 +18,7 @@ void Player::onCollide(CollidableObject *object) {
 
 	} else if (dynamic_cast<Item*>(object)) {
 		entityptr->setHealth(0);
+		soundManager.setSoundActive(3);
 		//power up
 		//powerUphandler.setPowerUp()
 	}

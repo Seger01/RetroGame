@@ -5,7 +5,7 @@ Item::Item(int x,int y) : Entity(x,y){
 	// bullets 13
 
 	int randomType = rand() % 4;
-	texture = randomType + 8;
+	texture = randomType + 10;
 	setWidth(16);
 	setHeight(16);
 	itemType = randomType;
