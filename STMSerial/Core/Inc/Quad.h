@@ -22,6 +22,7 @@ public:
     virtual ~Quad();
     std::vector<CollidableObject*>* query(Rectangle range, std::vector<CollidableObject*> *found);
     bool insert(CollidableObject*);
+    void removeTiles();
     void remove(CollidableObject*);
     void subdivide();
 };

@@ -17,17 +17,18 @@ public:
 	virtual ~HighscoreManager();
 
 	void addToScore(int amount);
+	void setCurrentScore(int amount);
 	int getCurrentScore();
-	int getAllTimeHighscore();
-	void setAllTimeHighscore(int score);
+	uint8_t* getAllTimeHighscore();
+	void setAllTimeHighscore(uint8_t score[4]);
 
 private:
 	bool saveHighscoreInFlash();
-	int getHighscoreInFlash();
+	void getHighscoreInFlash();
 
 	int currentScore = 0;
 
-	uint8_t allTimeHighscore = 0;
+	uint8_t allTimeHighscore[4] = {0};
 };
 
 extern HighscoreManager highscoreManager;
