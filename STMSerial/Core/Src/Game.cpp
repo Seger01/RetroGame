@@ -147,6 +147,8 @@ void Game::run() {
 		break;
 	case SwitchingLevels:
 		//entities = entityManager->getEntities();
+		if (currentLevel == 2)
+			remainingEnemies = ((currentLevel - 2) * 5) + 10;
 
 		if (currentLevel <= 2) {
 			levelManager.switchLevel(currentLevel);
@@ -172,12 +174,9 @@ void Game::run() {
 			entityManager->addTiles();
 			levelManager.getSpawnpoints(&spawnPoints);
 
-			remainingEnemies = ((currentLevel - 2) * 5) + 10;
-
 		}
 		break;
 	case ShowDeath:
-
 		if (xTaskGetTickCount() > timeOfDeath + 2000) {
 			if (entities[0]->getHealth() <= 0) {
 				if (highscoreManager.getCurrentScore() > highscoreManager.getAllTimeHighscore()[3]) {
