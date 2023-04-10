@@ -6,6 +6,7 @@
  */
 
 #include <cstring>
+#include <cstdlib>
 
 #include "config.h"
 
@@ -87,7 +88,6 @@ void Game::setup() {
 //		highscores[i] = highscoresPointer[i];
 //	}
 
-
 //	uint8_t *received = highscoreManager.getAllTimeHighscore();
 //
 //	uint8_t received1 = received[0];
@@ -110,8 +110,6 @@ void Game::run() {
 	bool playerShoot = false;
 	static bool entityUpdate = false;
 
-	static int remainingEnemies = 0;
-
 	static int lastPlayerHealth = 0;
 
 	Entity **entities;
@@ -131,6 +129,9 @@ void Game::run() {
 
 		currentLevel = 1;
 		levelManager.switchLevel(currentLevel);
+
+		remainingEnemies = ((currentLevel - 2) * 15) + 10;
+
 		entityManager->removeTiles();
 		levelManager.getCollidables(&collidableTiles);
 		entityManager->addTiles();
@@ -142,11 +143,15 @@ void Game::run() {
 		entityManager->spawnPlayer(120, 120);
 		currentLevel = 1;
 		levelManager.setLevel(currentLevel);
-		currentState = GivingNameForHighscore;
+		currentState = Reset;
 		break;
 	case SwitchingLevels:
 //		entities = entityManager->getEntities();
-		levelManager.switchLevel(currentLevel);
+		if (currentLevel < 2) {
+			levelManager.switchLevel(currentLevel);
+		} else {
+			levelManager.switchLevel(((currentLevel - 2) % 6) + 2);
+		}
 		if (entities[0]->getPosX() < 120) {
 			entities[0]->moveX(1);
 		} else if (entities[0]->getPosX() > 120) {
@@ -160,6 +165,7 @@ void Game::run() {
 		}
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
+
 			currentState = PlayingLevel;
 			entityManager->removeTiles();
 			levelManager.getCollidables(&collidableTiles);
@@ -176,7 +182,7 @@ void Game::run() {
 				} else {
 					currentState = Reset;
 				}
-				entityManager->clear();///////////////////////////////////////----------------------------------------------------------------------
+				entityManager->clear();	///////////////////////////////////////----------------------------------------------------------------------
 			} else {
 				currentState = SwitchingLevels;
 				lastLevelSwitch = xTaskGetTickCount();
@@ -231,7 +237,6 @@ void Game::run() {
 				while (inputManager.readInput() != 0) {
 
 				}
-				//highscoreManager.setAllTimeHighscore(score)
 			}
 		}
 		lastInputs = inputs;
@@ -248,7 +253,6 @@ void Game::run() {
 	}
 		return;
 	case PlayingLevel:
-
 		static long long spawnTimer = 0;
 
 		inputs = inputManager.readInput();
@@ -260,7 +264,6 @@ void Game::run() {
 				playerShoot = true;
 				lastShot = xTaskGetTickCount();
 				//entities[0]->setHealth(entities[0]->getHealth() - 1);
-				highscoreManager.addToScore(1);
 			}
 		} else if ((inputs & (1 << 5)) >> 5) {
 			if (xTaskGetTickCount() >= lastLevelSwitch + 50) {
@@ -283,21 +286,46 @@ void Game::run() {
 		entityManager->updateEntities();
 		/*if (entityUpdate) {
 
-			//entityManager->spawnBoss();
-			entityUpdate = !entityUpdate;
-		} else {
-			entityUpdate = !entityUpdate;
-		}*/
+		 //entityManager->spawnBoss();
+		 entityUpdate = !entityUpdate;
+		 } else {
+		 entityUpdate = !entityUpdate;
+		 }*/
+
+		static bool bossSpawnEnemies = false;
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
-			//remainingEnemies += entityManager->spawnEntities(1, remainingEnemies);
-			entityManager->spawnEntities(1, 1);
-			remainingEnemies -= 5;
-			if (remainingEnemies < 0) {
-				remainingEnemies = 0;
+			if (remainingEnemies > 0) {
+				if ((currentLevel - 2) % 6 == 0) {
+					//entityManager.spawnboss ofzo
+					if(entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false){
+						bossSpawnEnemies = true;
+						entityManager->spawnEntities(1,8);
+					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0){
+						bossSpawnEnemies = false;
+					}
+				} else {
+					int amountOfEnemies = ((std::rand() % 5) + (currentLevel - 2));
+
+					if (amountOfEnemies > remainingEnemies)
+						amountOfEnemies = remainingEnemies;
+
+					entityManager->spawnEntities(1, amountOfEnemies);
+
+					remainingEnemies -= amountOfEnemies;
+				}
 
 			}
+		}
+
+		if (remainingEnemies <= 0 && entityManager->countEnemies() == 0) {
+			currentLevel++;
+
+			currentState = SwitchingLevels;
+			remainingEnemies = ((currentLevel - 2) * 15) + 10;
+
+			lastLevelSwitch = xTaskGetTickCount();
 		}
 
 		if (entities[0]->getHealth() < lastPlayerHealth) {
