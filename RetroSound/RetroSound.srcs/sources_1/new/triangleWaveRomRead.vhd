@@ -39,10 +39,8 @@ begin
     read : process(clk)
     begin
         address  <= std_logic_vector(to_unsigned(addressInt, address'length));
-        if addressSwitch = '1' then
-            if lastState = '0' then
-                 addressInt <= addressInt + 1;
-            end if;
+        if addressSwitch = '1' and lastState = '0' then
+            addressInt <= addressInt + 1;
         end if;
 
         if addressInt >= 64 then

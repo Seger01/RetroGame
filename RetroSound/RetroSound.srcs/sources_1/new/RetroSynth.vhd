@@ -9,6 +9,7 @@ entity RetroSynth is
     Port (
         CLK : in STD_LOGIC;
         SFXswitch : std_logic_vector(5 downto 0);
+        BGMswitch : std_logic_vector(2 downto 0);
         PWM : out STD_LOGIC
     );
 end RetroSynth;
@@ -19,6 +20,7 @@ architecture Behavioral of RetroSynth is
         Port(
             clk : in std_logic;
             toggle : in std_logic;
+            BGMsound : in std_logic_vector (2 downto 0);
             BGMpwm : out std_Logic
         );
     end component;
@@ -66,6 +68,7 @@ begin
     BGMcomp : BGMdata port map(
             clk => clk,
             toggle => BGMtoggle,
+            BGMsound => BGMswitch,
             BGMpwm => BGMpwmcombine
         );
 

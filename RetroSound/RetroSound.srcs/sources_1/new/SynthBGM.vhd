@@ -25,18 +25,20 @@ begin
     BGM : process(clk)
     begin
         if rising_edge(clk) then
-           
+
             if toggle = '1' then
-             if normalizer >= 25 then
-             counter <= counter + 1;
-                normalizer <= 0;
-            else
-                normalizer <= normalizer + 1;
-            end if;
-            
+                if normalizer >= 25 then
+                    counter <= counter + 1;
+                    normalizer <= 0;
+                else
+                    normalizer <= normalizer + 1;
+                end if;
+
                 if ( tempToggle = '0' ) then
                     counter2 <= counter2 + 1;
                 end if;
+
+
                 -- chooses tone depending on signal
                 case noteIndicator is
                     when "0000" => counterLimit <= 0;
@@ -60,8 +62,8 @@ begin
                 end if;
 
                 -- sub loop counter
-                if counter2 >= counterLimit then
-                    counter2 <= 0;
+                if counter >= counterLimit then
+                    counter <= 0;
                     if pwmSignal = '1' then
                         pwmSignal <= '0';
                     else

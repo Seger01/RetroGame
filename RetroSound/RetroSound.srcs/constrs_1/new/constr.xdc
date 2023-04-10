@@ -33,3 +33,10 @@ set_property IOSTANDARD LVCMOS33 [get_ports {SFXswitch[0]}]
 
 set_property PACKAGE_PIN W15 [get_ports {SFXswitch[4]}]
 set_property PACKAGE_PIN V15 [get_ports {SFXswitch[5]}]
+
+set_property PACKAGE_PIN R2 [get_ports {BGMswitch[0]}]
+set_property PACKAGE_PIN T1 [get_ports {BGMswitch[1]}]
+set_property PACKAGE_PIN U1 [get_ports {BGMswitch[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {BGMswitch[2]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {BGMswitch[1]}]
+set_property IOSTANDARD LVCMOS33 [get_ports {BGMswitch[0]}]
