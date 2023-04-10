@@ -2,6 +2,7 @@
 #include <cstdlib>
 #include "enemy.h"
 #include "player.h"
+#include "boss.h"
 #include "bullet.h"
 #include "entity.h"
 #include "Rectangle.h"
@@ -36,7 +37,7 @@ Entity** EntityManager::getEntities() {
 void EntityManager::removeTiles() {
 	center->removeTiles();
 }
-void EntityManager::addTiles(){
+void EntityManager::addTiles() {
 	for (int i = 0; i < collidableTiles->size(); i++) {
 		center->insert(collidableTiles->at(i));
 	}
@@ -58,24 +59,25 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 
 	}
 	if (x != 0 || y != 0) {
-		pointVector direction = { x,y };
+		pointVector direction = { x, y };
 		playerPtr->setDirection(direction);
 	}
-	
+
 	moveEntity(0, x, y);
 	if (playerShoot) {
-		pointVector playerPosition = entities[0]->getPosition();
-		pointVector playerHalf = entities[0]->getHalfSize();
+		pointVector playerPosition = playerPtr->getPosition();
+		pointVector playerHalf = playerPtr->getHalfSize();
 		pointVector bulletStart;
 		pointVector playerDirection = playerPtr->getDirection();
 		bulletStart.X = (playerPosition.X + playerDirection.X * 9);
 		bulletStart.Y = (playerPosition.Y + playerDirection.Y * 9);
 		uint8_t bullets = 5;
 		//if(entities[1] != nullptr)
-		for (uint8_t i = 45; i < 50; i++) {
+		for (uint8_t i = 37; i < 42; i++) {
 			if (entities[i] == NULL) {
-				entities[i] = new Bullet(bulletStart.X, bulletStart.Y,playerPtr->getStrength());
+				entities[i] = new Bullet(bulletStart.X, bulletStart.Y, playerPtr->getStrength());
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
+				center->insert(bulletPtr);
 				bulletPtr->setTravelDirection(playerPtr->getDirection());
 				break;
 			}
@@ -124,9 +126,9 @@ void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 				}
 			}
 			if (!spawn_occupied) {
-				Enemy *e = new Enemy(p.X, p.Y,enemyType);
+				Enemy *e = new Enemy(p.X, p.Y, enemyType);
 
-				for (uint8_t i = 2; i < 45; i++) {
+				for (uint8_t i = 2; i < 35; i++) {
 					if (entities[i] == nullptr) {
 
 						entities[i] = e;
@@ -140,22 +142,55 @@ void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 	}
 
 }
+void EntityManager::updateBoss(pointVector playerPos) {
+	bool bossShoot = false;
+	if(entities[1] == NULL){
+		return;
+	}
+	Boss *bossPtr = dynamic_cast<Boss*>(entities[1]);
+	pointVector movement =  bossPtr->loop(playerPos);
+
+	if(bossShoot){
+	pointVector shootDirection = bossPtr->shoot(playerPos);
+	pointVector bossPosition = bossPtr->getPosition();
+	pointVector bossHalf = bossPtr->getHalfSize();
+	pointVector bulletStart;
+	bulletStart.X = (shootDirection.X + shootDirection.X * 7);
+	bulletStart.Y = (shootDirection.Y + shootDirection.Y * 7);
+	//uint8_t bullets = 5;
+	//if(entities[1] != nullptr)
+	for (uint8_t i = 43; i < 50; i++) {
+		if (entities[i] == NULL) {
+			entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 1);
+			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
+			center->insert(bulletPtr);
+			bulletPtr->setTravelDirection(shootDirection);
+			break;
+		}
+	}
+	}
+	moveEntity(1,movement.X,movement.Y);
+}
+void EntityManager::spawnBoss(){
+	entities[1] = new Boss(112,8);
+	center->insert(entities[1]);
+}
 void EntityManager::updateEntities() {
 
 	pointVector playerPos = entities[0]->getPosition();
+	updateBoss(playerPos);
 	for (uint8_t i = 1; i < 50; i++) {
 		int x = 0;
 		int y = 0;
 		if (entities[i] == nullptr) {
 			continue;
 		}
-			if (entities[i]->getHealth() <= 0) {
-				center->remove(entities[i]);
-				delete entities[i];
-				entities[i] = nullptr;
-				continue;
-			}
-
+		if (entities[i]->getHealth() <= 0) {
+			center->remove(entities[i]);
+			delete entities[i];
+			entities[i] = nullptr;
+			continue;
+		}
 
 		if (dynamic_cast<Enemy*>(entities[i])) {
 			Enemy *enemyPtr = dynamic_cast<Enemy*>(entities[i]);
@@ -177,9 +212,14 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 	center->remove(entities[toBeMoved]);
 	entities[toBeMoved]->stepX(x);
 	entities[toBeMoved]->stepY(y);
-	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 15, 15);
-	std::vector<CollidableObject*>* found = new std::vector<CollidableObject*>;
+	Rectangle box(entities[toBeMoved]->getPosX(), entities[toBeMoved]->getPosY(), 20, 20);
+	std::vector<CollidableObject*> *found = new std::vector<CollidableObject*>;
 	center->query(box, found);
+//	for(int i = 0; i < found->size();i++){
+//		if(Tile* wall = dynamic_cast<Tile*>(found->at(i))){
+//
+//		}
+//	}
 	for (uint8_t j = 0; j < found->size(); j++) {
 		if (found->at(j) == entities[toBeMoved]) {
 			continue;

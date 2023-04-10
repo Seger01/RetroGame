@@ -6,12 +6,20 @@ extern "C" {
 #include "FreeRTOS.h"
 #include "task.h"
 }
-class Boss : public Entity
-{
-	public:
-		Boss(int x, int y) : Entity(x,y) {};
-		void onCollide(CollidableObject *object) override;
-		void onDeath() override;
-	    int getTexture() override;
+class Boss: public Entity {
+private:
+	pointVector shotDirection = { 1, 0 };
+	pointVector walkDirection = {1,0};
+	uint8_t stepsRemaining = 0;
+	uint8_t stage = 0;
+public:
+	Boss(uint8_t x, uint8_t y);
+	pointVector shoot(pointVector playerPos);
+	void onCollide(CollidableObject *object) override;
+	void onDeath() override;
+	int getTexture() override;
+	void setRemainingSteps(uint8_t steps);
+	pointVector loop(pointVector playerPos);
+	pointVector flee(pointVector playerPos);
 };
 

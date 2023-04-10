@@ -1,7 +1,7 @@
 #include "bullet.h"
 #include "enemy.h"
 Bullet::Bullet(uint8_t x, uint8_t y,uint8_t strength) : Entity(x, y) {
-	setSpeed(10);
+	setSpeed(50);
 	setWidth(4);
 	setHeight(4);
 	setTexture(8);
@@ -29,36 +29,33 @@ pointVector Bullet::getTravelDirection() {
 }
 void Bullet::stepX(int direction) {
 	travelDistance += speed;
-	if (travelDistance > 240) {
+	if (travelDistance > 2000) {
 		this->setHealth(0);
 	}
-	if (direction == 1 && (this->position.X + this->speed < 240)) {
-		this->position.X += (int)speed;
-	}
-	else if (direction == 1 && (this->position.X + this->speed >= 240))
-	{
-		this->position.X = 0;
-	}
-	else if (direction == -1 && (this->position.X - this->speed > 0)) {
-		this->position.X -= (int)speed;
-	}
-	else if (direction == -1 && (this->position.X - this->speed <= 0)) {
-		this->position.X = 240;
-	}
+	int X = this->getStart().X;
+			if (direction == 1 && (X + this->speed < 235)) {
+				this->position.X += (int) speed;
+			} else if (direction == 1 && (X + this->speed >= 235)) {
+				this->position.X = 80;
+			} else if (direction == -1 && (X -  this->speed <= -10)) {
+				this->position.X = 2320;
+			} else if (direction == -1 && (X - this->speed > -10)) {
+				this->position.X -= (int) speed;
+			}
 }
 void Bullet::stepY(int direction) {
 	travelDistance += speed;
-	if (travelDistance > 240) {
+	if (travelDistance > 2000) {
 		this->setHealth(0);
 	}
 	int Y = this->getStart().Y;
-		if (direction == 1 && (Y + this->speed < 224)) {
+		if (direction == 1 && (Y + this->speed < 235)) {
 			this->position.Y += (int) speed;
-		} else if (direction == 1 && (Y + this->speed >= 224)) {
-			this->position.Y = 8;
-		} else if (direction == -1 && (Y -  this->speed <= -1)) {
-			this->position.Y = 230;
-		} else if (direction == -1 && (Y - this->speed > -1)) {
+		} else if (direction == 1 && (Y + this->speed >= 235)) {
+			this->position.Y = 80;
+		} else if (direction == -1 && (Y -  this->speed <= -11)) {
+			this->position.Y = 2300;
+		} else if (direction == -1 && (Y - this->speed > -11)) {
 			this->position.Y -= (int) speed;
 		}
 }

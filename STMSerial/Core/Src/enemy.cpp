@@ -10,39 +10,41 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 	setWidth(16);
 	setHeight(16);
 	this->type = type;
-	if (position.X < 25) {
-			direction.X = 1;
-		} else if (position.X > 220) {
-			direction.X = -1;
-		} else if (position.Y < 25) {
-			direction.Y = 1;
-		} else if (position.Y) {
-			direction.Y = -1;
-		}
-		stepsRemaining = 12;
+	uint8_t posX = this->getPosX();
+	uint8_t posY = this->getPosY();
+	if (posX < 25) {
+		direction.X = 1;
+	} else if (posX > 220) {
+		direction.X = -1;
+	} else if (posY < 250) {
+		direction.Y = 1;
+	} else {
+		direction.Y = -1;
+	}
+	stepsRemaining = 12;
 	switch (type) {
 	case 1:
 		//regular enemy
-		setSpeed(2);
+		setSpeed(20);
 		setHealth(1);
 		setTexture(0);
 		break;
 	case 2:
 		// speedy boi
-		setSpeed(3);
+		setSpeed(30);
 		setHealth(1);
 		setTexture(2);
 		stepsRemaining = 50;
 		break;
 	case 3:
 		// butterfly
-		setSpeed(1);
+		setSpeed(10);
 		setHealth(1);
 		setTexture(4);
 		break;
 	case 4:
 		//heavy boi
-		setSpeed(1);
+		setSpeed(10);
 		setHealth(4);
 		setTexture(6);
 		break;
@@ -52,17 +54,18 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 ;
 pointVector Enemy::update(pointVector playerPos) {
 	pointVector newMovement;
-	pointVector enemyPos = this->position;
-	int deltaX = playerPos.X - this->position.X;
-	int deltaY = playerPos.Y - this->position.Y;
-	if (abs(deltaX) < 65 && abs(deltaY) < 65) {
+	pointVector enemyPos = this->getPosition();
+	int deltaX = playerPos.Y - this->getPosX();
+	int deltaY = playerPos.Y - this->getPosY();
+	if (stepsRemaining > 0) {
+			newMovement.X = direction.X;
+			newMovement.Y = direction.Y;
+			stepsRemaining--;
+			return newMovement;
+	}
+	else if (abs(deltaX) < 100 && abs(deltaY) < 100) {
 		newMovement = followPlayer(playerPos);
-	} else if (stepsRemaining > 0) {
-		newMovement.X = direction.X;
-		newMovement.Y = direction.Y;
-		stepsRemaining--;
-		return newMovement;
-	} else {
+	}  else {
 		switch (type) {
 		case 1:
 			randomSteps();
@@ -103,11 +106,11 @@ pointVector Enemy::update(pointVector playerPos) {
 }
 pointVector Enemy::followPlayer(pointVector playerPos) {
 	pointVector newMovement;
-	pointVector enemyPos = this->position;
-	int offsetX = rand() %	31 - 15; // Random number between -20 and 20
-	int offsetY = rand() % 31 - 15;
-	    playerPos.X += offsetX;
-	    playerPos.Y += offsetY;
+	pointVector enemyPos = this->getPosition();
+	int offsetX = rand() % 25 - 15; // Random number between -20 and 20
+	int offsetY = rand() % 25 - 15;
+	playerPos.X += offsetX;
+	playerPos.Y += offsetY;
 	if (playerPos.X < enemyPos.X) {
 		newMovement.X = -1;
 	} else if (playerPos.X > enemyPos.X) {
@@ -120,7 +123,8 @@ pointVector Enemy::followPlayer(pointVector playerPos) {
 	}
 	return newMovement;
 }
-;
+pointVector moveNear(pointVector playerPos) {
+}
 void Enemy::randomSteps() {
 	srand(xTaskGetTickCount());
 	direction.X = rand() % 3 - 1; // Random integer between -1 and 1
@@ -168,7 +172,9 @@ bool Enemy::checkEntities(CollidableObject *object) {
 	otherPosition.X = object->getPosX();
 	otherPosition.Y = object->getPosY();
 	pointVector otherHalfsize = object->getHalfSize();
-	pointVector thisPosition = this->getPosition();
+	pointVector thisPosition;
+	thisPosition.X = this->getPosX();
+	thisPosition.Y = this->getPosY();
 	pointVector thisHalfsize = this->getHalfSize();
 	int deltaX = otherPosition.X - thisPosition.X;
 	int deltaY = otherPosition.Y - thisPosition.Y;

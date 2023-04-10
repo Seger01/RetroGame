@@ -129,6 +129,7 @@ void Game::run() {
 
 		if (entityUpdate) {
 			entityManager->updateEntities();
+			//entityManager->spawnBoss();
 			entityUpdate = !entityUpdate;
 		} else {
 			entityUpdate = !entityUpdate;
@@ -138,7 +139,7 @@ void Game::run() {
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			//remainingEnemies += entityManager->spawnEntities(1, remainingEnemies);
-			entityManager->spawnEntities(2, 1);
+			entityManager->spawnEntities(1, 1);
 			remainingEnemies -= 5;
 			if (remainingEnemies < 0) {
 				remainingEnemies = 0;

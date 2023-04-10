@@ -6,7 +6,7 @@ Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
 	setHeight(16);
 	//setTexture(2);
 	setStrength(1);
-	setSpeed(2);
+	setSpeed(10);
 	setHealth(4);
 
 }
