@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -21,20 +20,10 @@ architecture Behavioral of SFXpDeath is
             );
     end component;
 
-    signal toggle : std_logic;
-    signal sound : std_logic_vector(5 downto 0) := "100000";
-
-    constant clockFrequency : integer := 100e6;
-    constant clockperiod : time := 100ms / clockFrequency;
-    signal tempCLK : std_Logic := '0';
 begin
-    pDeath : process(clk)
-    begin
-        sound <= "100000";
-    end process;
     squareDeath : squareWave port map(
             clk => clk ,
-            noteIndicator => sound,
+            noteIndicator => "100000",
             toggle => togglepDeath,
             enable => enablePdeath,
             pwm => pwm

@@ -1,10 +1,10 @@
 -- Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2022.1 (win64) Build 3526262 Mon Apr 18 15:48:16 MDT 2022
--- Date        : Mon Apr 10 14:27:22 2023
--- Host        : 63807-villa1 running 64-bit major release  (build 9200)
+-- Date        : Mon Apr 10 15:37:14 2023
+-- Host        : Big-Chinese-Export-Toaster running 64-bit major release  (build 9200)
 -- Command     : write_vhdl -force -mode synth_stub
---               d:/RetroProject/RetroGame/RetroSound/RetroSound.gen/sources_1/ip/transitionROM/transitionROM_stub.vhdl
+--               d:/GitHub/RetroGame/RetroSound/RetroSound.gen/sources_1/ip/transitionROM/transitionROM_stub.vhdl
 -- Design      : transitionROM
 -- Purpose     : Stub declaration of top-level module interface
 -- Device      : xc7a35tcpg236-1

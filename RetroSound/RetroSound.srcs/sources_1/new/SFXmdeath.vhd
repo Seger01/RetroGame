@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -21,17 +20,10 @@ architecture Behavioral of SFXmDeath is
             );
     end component;
 
-    signal sound : std_logic_vector (5 downto 0);
 begin
-    mdeath : process (clk)
-    begin
-        sound <= "110000";
-    end process;
-
-
     squareMdeath : squareWave port map(
             clk => clk,
-            noteIndicator => sound,
+            noteIndicator => "110000",
             toggle => toggleMdeath,
             enable => enableMdeath,
             pwm => PWM

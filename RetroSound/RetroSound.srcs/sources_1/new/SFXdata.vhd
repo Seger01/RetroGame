@@ -1,15 +1,11 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-use IEEE.std_logic_unsigned.all;
-LIBRARY UNISIM;
-USE UNISIM.Vcomponents.ALL;
 
 
 entity SFXdata is
     Port(
         clk : in std_logic;
-        toggle : in std_logic;
         sound : in std_logic_vector(5 downto 0);
         SFXpwm : out std_Logic
     );
@@ -77,14 +73,6 @@ architecture Behavioral of SFXdata is
         );
     end component;
 
-    component squareWave is
-        Port (CLK : in std_logic;
-             noteIndicator : in std_logic_vector (5 downto 0);
-             toggle : in std_logic;
-             PWM : out std_logic
-            );
-    end component;
-
     -- TOGGLES FOR SFX COMPONENTS
     signal toggleShoot : std_logic;
     signal toggleWalk : std_logic;
@@ -93,10 +81,6 @@ architecture Behavioral of SFXdata is
     signal togglePowerup : std_logic;
     signal toggleMdeath : std_logic;
 
-    -- TEMPORARY TOGGLES
-    signal triangleToggle : std_Logic := '1';
-    signal squareToggle : std_logic := '0';
-
     -- PWM SIGNALS FOR COMPONENTS
     signal pwmShoot : std_logic;
     signal pwmWalk : std_logic;
@@ -104,7 +88,7 @@ architecture Behavioral of SFXdata is
     signal pwmPdeath : std_logic;
     signal pwmPowerup : std_logic;
     signal pwmMdeath : std_logic;
-    
+
     -- ENABLES
     signal enableShoot : std_logic;
     signal enableWalk : std_logic;
@@ -113,19 +97,8 @@ architecture Behavioral of SFXdata is
     signal enablePowerup : std_logic;
     signal enableMdeath : std_logic;
 
-    -- TEMPORARY PWM
-    signal temppwm : std_logic;
-    signal trianglePWM : std_logic;
-
-    -- CLK USED FOR TESTING
-    constant clockFrequency : integer := 100e6;
-    constant clockperiod : time := 100ms / clockFrequency;
-    signal tempCLK : std_Logic := '0';
-
-    signal toneRiseInt : integer := 0;
-    signal countTemp : integer := 0;
-
-    signal SFXcounter : integer := 0;
+    -- COUNTER USED TO SWITCH BETWEEN SFX
+    signal SFXcounter : integer range 0 to 5000 := 0;
 
 begin
 
@@ -147,20 +120,19 @@ begin
                 if enablePdeath   = '1' then
                     SFXpwm <= pwmPdeath;
                 end if;
-                
+
                 if enablePowerup  = '1' then
                     SFXpwm <= pwmPowerup;
                 end if;
-         
-                
+
                 if SFXcounter <= 750 then -- walk
                     if enableWalk = '1' then
                         SFXpwm <= pwmWalk;
                     end if;
                 end if;
+                
                 if SFXcounter <= 2250 and SFXcounter >= 750 then -- shoot
                     if enableShoot  = '1' then
-
                         SFXpwm <= pwmShoot;
                     end if;
                 end if;
@@ -170,12 +142,6 @@ begin
                         SFXpwm <= pwmHit;
                     end if;
                 end if;
-
-                --                if SFXcounter <= 4250 and SFXcounter >= 2750 then -- powerup
-                --                    if togglePowerup  = '1' then
-
-                --                    end if;
-                --                end if;
 
                 if SFXcounter <= 5000 and SFXcounter >= 3500 then -- enemy death
                     if enableMdeath = '1' then
@@ -232,12 +198,4 @@ begin
             enableMdeath => enableMdeath,
             pwm => pwmMdeath
         );
-
-    square : squareWave port map(
-            clk => clk,
-            noteIndicator => sound,
-            toggle => squareToggle,
-            pwm =>  temppwm
-        );
-
 end Behavioral;

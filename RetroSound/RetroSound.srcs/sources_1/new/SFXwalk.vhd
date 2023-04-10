@@ -1,4 +1,3 @@
-
 library IEEE;
 use IEEE.STD_LOGIC_1164.ALL;
 
@@ -20,18 +19,11 @@ architecture Behavioral of SFXwalk is
              PWM : out std_logic
             );
     end component;
-
-    signal sound : std_logic_vector (5 downto 0) := "001000";
+    
 begin
-
-    walk : process(clk)
-    begin
-        sound <= "001000";
-    end process;
-
     squareWalk : squareWave port map(
             clk => clk,
-            noteIndicator => sound,
+            noteIndicator => "001000",
             toggle => toggleWalk,
             enable => enableWalk,
             pwm => pwm

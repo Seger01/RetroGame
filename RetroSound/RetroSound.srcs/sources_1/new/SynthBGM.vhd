@@ -11,15 +11,12 @@ end SynthBGM;
 
 architecture Behavioral of SynthBGM is
     -- signals used in counters
-    signal counter : integer  := 0;
-    signal counter2 : integer := 0;
-    signal counterLimit : integer := 0;
+    signal counter : integer range 0 to 5000  := 0;
+    signal counterLimit : integer range 0 to 5000 := 0;
 
     signal pwmSignal : std_logic := '0';
 
-    signal tempToggle : std_logic := '0';
-
-    signal normalizer : integer := 0;
+    signal normalizer : integer range 0 to 30 := 0;
 
 begin
     BGM : process(clk)
@@ -33,11 +30,6 @@ begin
                 else
                     normalizer <= normalizer + 1;
                 end if;
-
-                if ( tempToggle = '0' ) then
-                    counter2 <= counter2 + 1;
-                end if;
-
 
                 -- chooses tone depending on signal
                 case noteIndicator is
@@ -72,7 +64,6 @@ begin
                 end if;
 
             end if;
-            tempToggle <= toggle;
         end if;
     end process;
 end Behavioral;
