@@ -358,7 +358,8 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
     component RetroSynth is
         Port (
             CLK : in STD_LOGIC;
-            SFXswitch : std_logic_vector(6 downto 0);
+            SFXswitch : std_logic_vector(5 downto 0);
+            BGMswitch : std_logic_vector(2 downto 0);
             PWM : out STD_LOGIC
         );
     end component;
@@ -411,8 +412,7 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
     signal hudData : unsigned (24 -1 downto 0);
     
     -- sound    
-    signal soundDataMixed : STD_LOGIC_VECTOR(6 downto 0);    
-
+    signal soundDataMixed : STD_LOGIC_VECTOR(8 downto 0);    
 BEGIN
 	clk_wiz_00: prescaler	PORT MAP(
 		clk_25MHz     => clk_25,
@@ -657,12 +657,14 @@ BEGIN
             
         RetroSynth0 : RetroSynth Port map (
                 CLK => clk_25,
-                SFXswitch => soundDataMixed, --soundData(5 downto 0),
+                SFXswitch => soundDataMixed(5 downto 0), --soundData(5 downto 0),
+                BGMswitch => soundDataMixed(8 downto 6),
                 PWM => PWMOut
             );
             
-        soundDataMixed <= std_logic_vector (soundData(6 downto 0)) when debugIn(0) = '0' else
-                          std_logic_vector (debugIn(7 downto 1));
+            -- todo: sound data +1 bit
+        soundDataMixed <= std_logic_vector ('0' & soundData(7 downto 0)) when debugIn(0) = '0' else
+                          std_logic_vector (debugIn(9 downto 1));
             
                               
 END Behavioral;

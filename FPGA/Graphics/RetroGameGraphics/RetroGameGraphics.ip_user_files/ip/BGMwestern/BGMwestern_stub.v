@@ -1,11 +1,11 @@
 // Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2022.1 (win64) Build 3526262 Mon Apr 18 15:48:16 MDT 2022
-// Date        : Mon Apr 10 11:13:27 2023
+// Date        : Mon Apr 10 16:05:50 2023
 // Host        : Big-Chinese-Export-Toaster running 64-bit major release  (build 9200)
-// Command     : write_verilog -force -mode synth_stub -rename_top BGMwestern -prefix
-//               BGMwestern_ BGMwestern1_stub.v
-// Design      : BGMwestern1
+// Command     : write_verilog -force -mode synth_stub
+//               D:/GitHub/RetroGame/FPGA/Graphics/RetroGameGraphics/RetroGameGraphics.runs/BGMwestern_synth_1/BGMwestern_stub.v
+// Design      : BGMwestern
 // Purpose     : Stub declaration of top-level module interface
 // Device      : xc7a35tcpg236-1
 // --------------------------------------------------------------------------------
