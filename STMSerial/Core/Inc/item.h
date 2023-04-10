@@ -8,5 +8,6 @@ private:
 public:
     Item(int x,int y);
     void onCollide(CollidableObject *object) override;
+    bool checkEntities(CollidableObject *object) override;
 };
 
