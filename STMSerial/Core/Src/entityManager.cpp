@@ -201,7 +201,7 @@ void EntityManager::updateEntities() {
 		if (entities[i]->getHealth() <= 0) {
 			if(dynamic_cast<Enemy*>(entities[i]) && entities[36] == NULL){
 				int drop = rand() % 100;
-				if(drop < 90){
+				if(drop < 5){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
 					center->insert(entities[36]);
 				}

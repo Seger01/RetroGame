@@ -190,7 +190,7 @@ void Game::run() {
 				currentState = SwitchingLevels;
 				lastLevelSwitch = xTaskGetTickCount();
 				entityManager->clear();
-
+				//entityManager->getEntities()[0]
 			}
 		}
 		{
@@ -264,11 +264,11 @@ void Game::run() {
 
 		highscoreManager.setCurrentScore(currentLevel - 1);
 
-
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
 				playerShoot = true;
 				lastShot = xTaskGetTickCount();
+				soundManager.setSoundActive(1);
 				//entities[0]->setHealth(entities[0]->getHealth() - 1);
 			}
 		} else if ((inputs & (1 << 5)) >> 5) {
@@ -400,7 +400,7 @@ void Game::run() {
 
 				levelManager.setLevel(currentLevel);
 
-				soundManager.setSoundActive(0);
+				soundManager.setSoundActive(2);
 				//levelManager.getCollidables(&collidableTiles);
 				//levelManager.getSpawnpoints(&spawnPoints);
 				//entitymanager.updateTiles ofzxo
@@ -431,12 +431,9 @@ void Game::run() {
 			//entitymanager.updateTiles ofzxo
 
 			lastLevelSwitch = xTaskGetTickCount();
-		} else {
-			entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2,
-					(inputs & (1 << 3)) >> 3, playerShoot);
 		}
-
-		break;
+		communication->sendBoth(levelManager.getMap(), emptyEntities);
+		return;
 	default:
 
 		break;
@@ -513,7 +510,7 @@ void Game::showAllHighscores() {
 
 	}
 	HAL_Delay(200);
-	while(inputManager.readInput() != 0){
+	while (inputManager.readInput() != 0) {
 
 	}
 }

@@ -1,5 +1,7 @@
 #include "player.h"
 #include "boss.h"
+
+#include "SoundManager.h"
 Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
 {
 	setWidth(16);
@@ -61,6 +63,7 @@ int Player::getTexture() {
 		offset = 1;
 	} else if (abs(lastSpriteUpdate.X - position.X) >= 1 || abs(lastSpriteUpdate.Y - position.Y) >= 1) {
 		if (xTaskGetTickCount() > lastFrameUpdate + 100) {
+			soundManager.setSoundActive(2);
 			lastFrameUpdate = xTaskGetTickCount();
 
 			lastSpriteUpdate = position;
