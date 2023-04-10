@@ -8,7 +8,7 @@ extern "C" {
 }
 class Boss: public Entity {
 private:
-	pointVector shotDirection = { 1, 0 };
+
 	pointVector walkDirection = {1,0};
 	uint8_t stepsRemaining = 0;
 	uint8_t stage = 0;
@@ -19,9 +19,12 @@ public:
 	pointVector shoot(pointVector playerPos);
 	void onCollide(CollidableObject *object) override;
 	void onDeath() override;
+	pointVector lerp(pointVector start, pointVector end, double t);
 	int getTexture() override;
 	void setRemainingSteps(uint8_t steps);
-	pointVector moveToPoint(pointVector point);
+	void setDestination(pointVector point);
+	pointVector followPlayer(pointVector playerPos);
+	pointVector moveToPoint();
 	pointVector loop(pointVector playerPos);
 	pointVector flee(pointVector playerPos);
 };
