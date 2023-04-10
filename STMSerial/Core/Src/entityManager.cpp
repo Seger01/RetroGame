@@ -18,7 +18,7 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 		entities[i] = nullptr;
 	}
 
-	Rectangle map(120, 120, 140, 140);
+	Rectangle map(120, 120, 180, 180);
 	center = new Quad(map);
 	removeTiles();
 	addTiles();
@@ -34,6 +34,7 @@ EntityManager::~EntityManager() {
 Entity** EntityManager::getEntities() {
 	return entities;
 }
+
 void EntityManager::removeTiles() {
 	center->removeTiles();
 }

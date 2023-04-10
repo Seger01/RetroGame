@@ -25,7 +25,7 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 	switch (type) {
 	case 1:
 		//regular enemy
-		setSpeed(5);
+		setSpeed(10);
 		setHealth(1);
 		setTexture(0);
 		break;
