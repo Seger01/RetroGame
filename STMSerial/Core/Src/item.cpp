@@ -6,6 +6,8 @@ Item::Item(int x,int y) : Entity(x,y){
 
 	int randomType = rand() % 4;
 	setTexture(randomType + 8);
+	setWidth(16);
+	setHeight(16);
 	itemType = randomType;
 }
 void Item::onCollide(CollidableObject *object) {

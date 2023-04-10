@@ -203,6 +203,7 @@ void EntityManager::updateEntities() {
 				int drop = rand() % 100;
 				if(drop < 5){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
+					center->insert(entities[36]);
 				}
 			}
 			center->remove(entities[i]);
@@ -252,6 +253,7 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 			}else if(dynamic_cast<Player*>(entities[toBeMoved])){
 				Player* playerPtr = dynamic_cast<Player*>(entities[toBeMoved]);
 				playerPtr->onCollide(found->at(j));
+				break;
 			}
 			// if wall get where it touches and make it move along side it
 			entities[toBeMoved]->onCollide(found->at(j));
