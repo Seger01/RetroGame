@@ -149,11 +149,13 @@ uint8_t Enemy::getRemainingSteps() {
 	return stepsRemaining;
 }
 void Enemy::onCollide(CollidableObject *object) {
-	Entity *entityptr = dynamic_cast<Player*>(object);
-	if (dynamic_cast<Player*>(entityptr)) {
+	if (dynamic_cast<Player*>(object)) {
+		Player *entityptr = dynamic_cast<Player*>(object);
 		entityptr->setHealth(entityptr->getHealth() - 1);
+		entityptr->setStar(true);
 	} else if (dynamic_cast<Enemy*>(object)) {
 		// Generate a random direction
+		Enemy *entityptr = dynamic_cast<Enemy*>(object);
 		if (stepsRemaining == 0 && type != 4) {
 			randomSteps();
 		}
