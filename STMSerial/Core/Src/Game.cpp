@@ -17,6 +17,14 @@
 
 #include "SoundManager.h"
 
+#define joystickLeft   	0b00000100
+#define joystickRight 	0b00001000
+#define joystickUp 		0b00000010
+#define joystickDown 	0b00000001
+
+#define buttonB 		0b00010000
+#define buttonA 		0b00100000
+
 SoundManager soundManager;
 
 HighscoreManager highscoreManager;
@@ -50,18 +58,45 @@ void Game::setup() {
 	//currentLevel = highscoreManager.getAllTimeHighscore();
 
 	//entityManager->spawnEntities(1, 1, 2);
-
-	uint8_t score[4] = { 23, 23, 23, 0 };
-
+	//while(1){
+//	{
+//		uint8_t score[4] = { 23, 23, 23, 0 };
 //
-	highscoreManager.setAllTimeHighscore(score);
+//		//for (int i = 0; i < 5; i++)
+//		highscoreManager.setAllTimeHighscore(score);
+//	}
+//	{
+//		uint8_t score[4] = { 21, 23, 23, 0 };
 //
+//		//for (int i = 0; i < 5; i++)
+//		highscoreManager.setAllTimeHighscore(score);
+//	}
+//	{
+//		uint8_t score[4] = { 0, 10, 7, 8 };
+//
+//		//for (int i = 0; i < 5; i++)
+//		highscoreManager.setAllTimeHighscore(score);
+//	}
+//
+//	//}
+//	uint8_t* highscoresPointer = highscoreManager.getAllTimeHighscore();
+//
+//	uint8_t highscores[20] = {0};
+//
+//	for (int i = 0; i < 20; i++){
+//		highscores[i] = highscoresPointer[i];
+//	}
+
+
 //	uint8_t *received = highscoreManager.getAllTimeHighscore();
 //
 //	uint8_t received1 = received[0];
 //	uint8_t received2 = received[1];
 //	uint8_t received3 = received[2];
 //	uint8_t received4 = received[3];
+	for (int i = 0; i < 50; i++) {
+		emptyEntities[i] = nullptr;
+	}
 
 }
 
@@ -104,10 +139,10 @@ void Game::run() {
 		currentState = MainMenu;
 		break;
 	case Startup:
-		entityManager->spawnPlayer(112, 100);
+		entityManager->spawnPlayer(120, 120);
 		currentLevel = 1;
 		levelManager.setLevel(currentLevel);
-		currentState = Reset;
+		currentState = GivingNameForHighscore;
 		break;
 	case SwitchingLevels:
 //		entities = entityManager->getEntities();
@@ -157,13 +192,12 @@ void Game::run() {
 
 			if (xTaskGetTickCount() % 200 > 100) {
 				entitiesCopy[0] = nullptr;
-
 			}
 
 			communication->sendBoth(levelManager.getMap(), entitiesCopy);
 		}
 		return;
-	case GivingNameForHighscore:
+	case GivingNameForHighscore: {
 		static uint8_t screen[15][15] = { 0 };
 
 		static uint8_t chars[3] = { 0 };
@@ -190,11 +224,11 @@ void Game::run() {
 					chars[gunIndex] = 0;
 				}
 			} else if ((inputs & (1 << 5)) >> 5) {
-				uint8_t score[4] = { chars[0], chars[1], chars[2], (uint8_t)highscoreManager.getCurrentScore() };
+				uint8_t score[4] = { chars[0], chars[1], chars[2], (uint8_t) highscoreManager.getCurrentScore() };
 
 				highscoreManager.setAllTimeHighscore(score);
 				currentState = Reset;
-				while(inputManager.readInput() != 0){
+				while (inputManager.readInput() != 0) {
 
 				}
 				//highscoreManager.setAllTimeHighscore(score)
@@ -210,19 +244,16 @@ void Game::run() {
 			screen[gunIndex + 9][6] = 69;
 		}
 
-		Entity *entitiesCopy[50];
-		for (int i = 0; i < 50; i++) {
-			entitiesCopy[i] = nullptr;
-		}
-
-		communication->sendBoth(screen[0], entitiesCopy);
-
+		communication->sendBoth(screen[0], emptyEntities);
+	}
 		return;
 	case PlayingLevel:
 
 		static long long spawnTimer = 0;
 
 		inputs = inputManager.readInput();
+
+		checkForCheats(inputs);
 
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
@@ -233,17 +264,17 @@ void Game::run() {
 			}
 		} else if ((inputs & (1 << 5)) >> 5) {
 			if (xTaskGetTickCount() >= lastLevelSwitch + 50) {
-				if (currentLevel == 2) {
-					currentLevel = 3;
-				} else if (currentLevel == 3) {
-					currentLevel = 2;
-				}
-
-				//entities[1] = new Boss(40, 40, 16, 16, 10, 1, 1);
-				//entityManager->spawnEntities(1, 1, 1);
-				currentState = SwitchingLevels;
-
-				lastLevelSwitch = xTaskGetTickCount();
+//				if (currentLevel == 2) {
+//					currentLevel = 3;
+//				} else if (currentLevel == 3) {
+//					currentLevel = 2;
+//				}
+//
+//				//entities[1] = new Boss(40, 40, 16, 16, 10, 1, 1);
+//				//entityManager->spawnEntities(1, 1, 1);
+//				currentState = SwitchingLevels;
+//
+//				lastLevelSwitch = xTaskGetTickCount();
 			}
 		}
 
@@ -269,7 +300,7 @@ void Game::run() {
 			}
 		}
 
-		if (entities[0]->getHealth() != lastPlayerHealth) {
+		if (entities[0]->getHealth() < lastPlayerHealth) {
 			currentState = ShowDeath;
 			timeOfDeath = xTaskGetTickCount();
 		}
@@ -277,40 +308,88 @@ void Game::run() {
 
 		break;
 	case MainMenu:
+		static uint8_t lastInputs = 0;
+		static int gunIndex = 0;
+
 		inputs = inputManager.readInput();
 
-		if ((inputs & (1 << 5)) >> 5) {
-			currentState = SwitchingLevels;
-			currentLevel = 2;
-			levelManager.switchLevel(currentLevel);
-			entityManager->removeTiles();
-			levelManager.getCollidables(&collidableTiles);
-			entityManager->addTiles();
-			levelManager.getSpawnpoints(&spawnPoints);
-			lastLevelSwitch = xTaskGetTickCount();
+//		if ((inputs & (1 << 5)) >> 5) {
+//			currentState = SwitchingLevels;
+//			currentLevel = 2;
+//			levelManager.switchLevel(currentLevel);
+//			entityManager->removeTiles();
+//			levelManager.getCollidables(&collidableTiles);
+//			entityManager->addTiles();
+//			levelManager.getSpawnpoints(&spawnPoints);
+//			lastLevelSwitch = xTaskGetTickCount();
+//
+//		} else if ((inputs & (1 << 4)) >> 4 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
+//			currentState = Credits;
+//			currentLevel = 0;
+//
+//			levelManager.setLevel(currentLevel);
+//
+//			soundManager.setSoundActive(0);
+//			//levelManager.getCollidables(&collidableTiles);
+//			//levelManager.getSpawnpoints(&spawnPoints);
+//			//entitymanager.updateTiles ofzxo
+//
+//			lastLevelSwitch = xTaskGetTickCount();
+//		}
 
-		} else if ((inputs & (1 << 4)) >> 4 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
-			currentState = Credits;
-			currentLevel = 0;
+		static uint8_t menuScreen[15][15] = { 0 };
 
-			levelManager.setLevel(currentLevel);
+		std::memcpy(menuScreen, levelManager.getMap(), 225 * sizeof(uint8_t));
 
-			soundManager.setSoundActive(1);
-			//levelManager.getCollidables(&collidableTiles);
-			//levelManager.getSpawnpoints(&spawnPoints);
-			//entitymanager.updateTiles ofzxo
+		if (inputs != lastInputs) {
+			if ((inputs & (1 << 0)) >> 0) {
+				if (gunIndex < 2) {
+					gunIndex++;
+				}
+			} else if ((inputs & (1 << 1)) >> 1) {
+				if (gunIndex > 0) {
+					gunIndex--;
+				}
+			}
+		} else if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
+			if (gunIndex == 0) {
+				currentState = SwitchingLevels;
+				currentLevel = 2;
+				levelManager.switchLevel(currentLevel);
+				entityManager->removeTiles();
+				levelManager.getCollidables(&collidableTiles);
+				entityManager->addTiles();
+				levelManager.getSpawnpoints(&spawnPoints);
+				lastLevelSwitch = xTaskGetTickCount();
+			} else if (gunIndex == 1) {
+				currentState = Credits;
+				currentLevel = 0;
 
-			lastLevelSwitch = xTaskGetTickCount();
-		} else {
-			entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2,
-					(inputs & (1 << 3)) >> 3, playerShoot);
+				levelManager.setLevel(currentLevel);
+
+				soundManager.setSoundActive(0);
+				//levelManager.getCollidables(&collidableTiles);
+				//levelManager.getSpawnpoints(&spawnPoints);
+				//entitymanager.updateTiles ofzxo
+
+				lastLevelSwitch = xTaskGetTickCount();
+			} else if (gunIndex == 2) {
+				showAllHighscores();
+			}
 		}
 
-		break;
+		if ((xTaskGetTickCount() % 400) > 200) {
+			menuScreen[(gunIndex * 2) + 6][2] = 69;
+		}
 
+		communication->sendBoth(menuScreen[0], emptyEntities);
+
+		lastInputs = inputs;
+
+		return;
 	case Credits:
 		inputs = inputManager.readInput();
-		if ((inputs & (1 << 4)) >> 4 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
+		if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
 			currentState = MainMenu;
 			currentLevel = 1;
 			levelManager.setLevel(currentLevel);
@@ -332,6 +411,74 @@ void Game::run() {
 
 	communication->sendBoth(levelManager.getMap(), entityManager->getEntities());
 
-	//levelManager.switchLevel(currentLevel);
+//levelManager.switchLevel(currentLevel);
+}
+
+void Game::checkForCheats(uint8_t inputs) {
+	static uint8_t lastInputsBuffer[8] = { 0 };
+	static uint8_t lastInputs = 0;
+
+	uint8_t healthCheat[8] = { buttonB, buttonA, joystickLeft, joystickRight, joystickUp, joystickDown };
+
+	if (inputs != 0) {
+		if (inputs != lastInputs) {
+			for (int i = 7; i > 0; i--) {
+				lastInputsBuffer[i] = lastInputsBuffer[i - 1];
+			}
+
+			lastInputsBuffer[0] = inputs;
+
+			for (int i = 0; i < 4; i++) {
+				if (healthCheat[i] == lastInputsBuffer[i]) {
+					if (i == 3) {
+						entityManager->getEntities()[0]->setHealth(entityManager->getEntities()[0]->getHealth() + 10);
+					}
+				} else {
+					break;
+				}
+			}
+		}
+		lastInputs = inputs;
+	}
 
 }
+
+void Game::showAllHighscores() {
+	uint8_t highscoresScreen[15][15] = { 0 };
+	Converter converter;
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < 15; j++) {
+			highscoresScreen[i][j] = 73;
+		}
+	}
+
+	uint8_t *highscores = highscoreManager.getAllTimeHighscore();
+
+	for (int i = 0; i < 5; i++) {
+		highscoresScreen[(i * 2) + 1][2] = converter.intToIndex(i + 1);
+
+		highscoresScreen[(i * 2) + 1][4] = converter.characterToIndex(highscores[(i * 4)] + 'a');
+		highscoresScreen[(i * 2) + 1][5] = converter.characterToIndex(highscores[(i * 4) + 1] + 'a');
+		highscoresScreen[(i * 2) + 1][6] = converter.characterToIndex(highscores[(i * 4) + 2] + 'a');
+
+		int d1 = highscores[(i * 4) + 3] % 10;
+		int d2 = ((highscores[(i * 4) + 3] % 100) / 10);
+		int d3 = ((highscores[(i * 4) + 3] % 1000) / 100);
+
+		highscoresScreen[(i * 2) + 1][8] = 69;
+
+		highscoresScreen[(i * 2) + 1][10] = converter.intToIndex(d3);
+		highscoresScreen[(i * 2) + 1][11] = converter.intToIndex(d2);
+		highscoresScreen[(i * 2) + 1][12] = converter.intToIndex(d1);
+	}
+
+	communication->sendBoth(highscoresScreen[0], emptyEntities);
+
+	HAL_Delay(500);
+
+	while (inputManager.readInput() != buttonA) {
+
+	}
+	HAL_Delay(100);
+}
+
