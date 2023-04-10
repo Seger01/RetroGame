@@ -21,11 +21,11 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 	} else {
 		direction.Y = -1;
 	}
-	stepsRemaining = 12;
+	stepsRemaining = 15;
 	switch (type) {
 	case 1:
 		//regular enemy
-		setSpeed(20);
+		setSpeed(5);
 		setHealth(1);
 		setTexture(0);
 		break;
@@ -63,13 +63,13 @@ pointVector Enemy::update(pointVector playerPos) {
 			stepsRemaining--;
 			return newMovement;
 	}
-	else if (abs(deltaX) < 100 && abs(deltaY) < 100) {
+	else if (abs(deltaX) < 140 && abs(deltaY) < 140) {
 		newMovement = followPlayer(playerPos);
 	}  else {
 		switch (type) {
 		case 1:
 			randomSteps();
-			stepsRemaining = 5;
+			stepsRemaining = 10;
 			break;
 		case 2:
 			randomSteps();
@@ -144,7 +144,7 @@ uint8_t Enemy::getRemainingSteps() {
 void Enemy::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Player*>(object);
 	if (dynamic_cast<Player*>(entityptr)) {
-		entityptr->setHealth(entityptr->getHealth() - this->getStrength());
+		entityptr->setHealth(entityptr->getHealth() - 1);
 	} else if (dynamic_cast<Enemy*>(object)) {
 		// Generate a random direction
 		if (stepsRemaining == 0 && type != 4) {

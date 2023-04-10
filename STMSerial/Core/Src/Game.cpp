@@ -141,11 +141,11 @@ void Game::run() {
 				} else {
 					currentState = Reset;
 				}
-				//entityManager->clear();///////////////////////////////////////----------------------------------------------------------------------
+				entityManager->clear();///////////////////////////////////////----------------------------------------------------------------------
 			} else {
 				currentState = SwitchingLevels;
 				lastLevelSwitch = xTaskGetTickCount();
-				//entityManager->clear();
+				entityManager->clear();
 
 			}
 		}
@@ -226,9 +226,9 @@ void Game::run() {
 
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
-				//playerShoot = true;
+				playerShoot = true;
 				lastShot = xTaskGetTickCount();
-				entities[0]->setHealth(entities[0]->getHealth() - 1);
+				//entities[0]->setHealth(entities[0]->getHealth() - 1);
 				highscoreManager.addToScore(1);
 			}
 		} else if ((inputs & (1 << 5)) >> 5) {
@@ -249,14 +249,14 @@ void Game::run() {
 
 		entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2, (inputs & (1 << 3)) >> 3,
 				playerShoot);
+		entityManager->updateEntities();
+		/*if (entityUpdate) {
 
-		if (entityUpdate) {
-			entityManager->updateEntities();
 			//entityManager->spawnBoss();
 			entityUpdate = !entityUpdate;
 		} else {
 			entityUpdate = !entityUpdate;
-		}
+		}*/
 
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
