@@ -315,7 +315,6 @@ void Game::run() {
 
 					remainingEnemies -= amountOfEnemies;
 				}
-
 			}
 		}
 

@@ -4,6 +4,10 @@
 #include "enemy.h"
 #include "player.h"
 #include "bullet.h"
+extern "C" {
+#include "FreeRTOS.h"
+#include "task.h"
+}
 class EntityManager
 {
 private:

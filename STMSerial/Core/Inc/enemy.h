@@ -18,6 +18,7 @@ public:
 	pointVector getDirection();
 	void setDirection(pointVector);
 	void decrementRemainingSteps();
+	uint8_t getType();
 	void setRemainingSteps(uint8_t steps);
 	bool checkEntities(CollidableObject *object) override;
 	pointVector update(pointVector playerPos);

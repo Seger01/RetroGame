@@ -26,15 +26,15 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 	case 1:
 		//regular enemy
 		setSpeed(10);
-		setHealth(1);
+		setHealth(2);
 		setTexture(0);
 		break;
 	case 2:
-		// speedy boi
-		setSpeed(30);
+		// butterfly
+		setSpeed(5);
 		setHealth(1);
 		setTexture(2);
-		stepsRemaining = 50;
+		stepsRemaining = 5;
 		break;
 	case 3:
 		// butterfly
@@ -52,6 +52,9 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 
 }
 ;
+uint8_t Enemy::getType(){
+	return type;
+}
 pointVector Enemy::update(pointVector playerPos) {
 	pointVector newMovement;
 	pointVector enemyPos = this->getPosition();
@@ -63,42 +66,46 @@ pointVector Enemy::update(pointVector playerPos) {
 			stepsRemaining--;
 			return newMovement;
 	}
-	else if (abs(deltaX) < 140 && abs(deltaY) < 140) {
+	else{
 		newMovement = followPlayer(playerPos);
-	}  else {
-		switch (type) {
-		case 1:
-			randomSteps();
-			stepsRemaining = 10;
-			break;
-		case 2:
-			randomSteps();
-			stepsRemaining = 15;
-			break;
-		case 3:
-
-			break;
-		case 4:
-			if (locationLoc.X != 0 && locationLoc.Y != 0) {
-				if (locationLoc.X == enemyPos.X && locationLoc.Y == enemyPos.Y) {
-					locationLoc = playerPos;
-				}
-				if (locationLoc.X < enemyPos.X) {
-					newMovement.X = -1;
-				} else if (locationLoc.X > enemyPos.X) {
-					newMovement.X = 1;
-				}
-				if (locationLoc.Y < enemyPos.Y) {
-					newMovement.Y = -1;
-				} else if (locationLoc.Y > enemyPos.Y) {
-					newMovement.Y = 1;
-				}
-			} else {
-				locationLoc = playerPos;
-			}
-			break;
-		}
 	}
+//	if (abs(deltaX) < 140 && abs(deltaY) < 140) {
+//		newMovement = followPlayer(playerPos);
+//	}
+//	else {
+//		switch (type) {
+//		case 1:
+//			randomSteps();
+//			stepsRemaining = 10;
+//			break;
+//		case 2:
+//			randomSteps();
+//			stepsRemaining = 15;
+//			break;
+//		case 3:
+//
+//			break;
+//		case 4:
+//			if (locationLoc.X != 0 && locationLoc.Y != 0) {
+//				if (locationLoc.X == enemyPos.X && locationLoc.Y == enemyPos.Y) {
+//					locationLoc = playerPos;
+//				}
+//				if (locationLoc.X < enemyPos.X) {
+//					newMovement.X = -1;
+//				} else if (locationLoc.X > enemyPos.X) {
+//					newMovement.X = 1;
+//				}
+//				if (locationLoc.Y < enemyPos.Y) {
+//					newMovement.Y = -1;
+//				} else if (locationLoc.Y > enemyPos.Y) {
+//					newMovement.Y = 1;
+//				}
+//			} else {
+//				locationLoc = playerPos;
+//			}
+//			break;
+//		}
+//	}
 
 	return newMovement;
 	//return followPlayer(playerPos);
@@ -166,6 +173,9 @@ void Enemy::decrementRemainingSteps() {
 }
 bool Enemy::checkEntities(CollidableObject *object) {
 	if (dynamic_cast<Item*>(object)) {
+		return false;
+	}
+	if(dynamic_cast<Tile*>(object) && type == 2){
 		return false;
 	}
 	pointVector otherPosition;

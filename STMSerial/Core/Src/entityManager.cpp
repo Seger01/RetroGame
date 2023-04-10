@@ -152,36 +152,40 @@ void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 
 }
 void EntityManager::updateBoss(pointVector playerPos) {
+	static long long shootTimer = 0;
 	bool bossShoot = false;
 	if(entities[1] == NULL){
 		return;
 	}
 	Boss *bossPtr = dynamic_cast<Boss*>(entities[1]);
 	pointVector movement =  bossPtr->loop(playerPos);
-
-	if(bossShoot){
-	pointVector shootDirection = bossPtr->shoot(playerPos);
-	pointVector bossPosition = bossPtr->getPosition();
-	pointVector bossHalf = bossPtr->getHalfSize();
-	pointVector bulletStart;
-	bulletStart.X = (shootDirection.X + shootDirection.X * 7);
-	bulletStart.Y = (shootDirection.Y + shootDirection.Y * 7);
-	//uint8_t bullets = 5;
-	//if(entities[1] != nullptr)
-	for (uint8_t i = 43; i < 50; i++) {
-		if (entities[i] == NULL) {
-			entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 1);
-			Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
-			center->insert(bulletPtr);
-			bulletPtr->setTravelDirection(shootDirection);
-			break;
-		}
-	}
+	if(xTaskGetTickCount() > shootTimer + 200){
+		pointVector shootDirection = bossPtr->shoot(playerPos);
+			pointVector bossPosition = bossPtr->getPosition();
+			pointVector bossHalf = bossPtr->getHalfSize();
+			pointVector bulletStart;
+			bulletStart.X = (bossPosition.X + shootDirection.X * 10);
+			bulletStart.Y = (bossPosition.Y + shootDirection.Y * 10);
+			//uint8_t bullets = 5;
+			//if(entities[1] != nullptr)
+			for (uint8_t i = 43; i < 50; i++) {
+				if (entities[i] == NULL) {
+					entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 1);
+					Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
+					center->insert(bulletPtr);
+					bulletPtr->setTravelDirection(shootDirection);
+					break;
+				}
+			}
+			shootTimer = xTaskGetTickCount();
 	}
 	moveEntity(1,movement.X,movement.Y);
 }
 void EntityManager::spawnBoss(){
-	entities[1] = new Boss(112,8);
+	if(entities[1] != NULL){
+		return;
+	}
+	entities[1] = new Boss(120,8);
 	center->insert(entities[1]);
 }
 void EntityManager::updateEntities() {
@@ -195,6 +199,12 @@ void EntityManager::updateEntities() {
 			continue;
 		}
 		if (entities[i]->getHealth() <= 0) {
+			if(dynamic_cast<Enemy*>(entities[i]) && entities[36] == NULL){
+				int drop = rand() % 100;
+				if(drop < 5){
+					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
+				}
+			}
 			center->remove(entities[i]);
 			delete entities[i];
 			entities[i] = nullptr;
