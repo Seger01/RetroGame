@@ -75,15 +75,17 @@ ENTITY Bouncing_Object IS
     );
     PORT
 (
-		debugIn       : IN  unsigned(15 DOWNTO 0); -- Debug switches
-		debugOut      : OUT unsigned(15 DOWNTO 0); -- Debug Leds
+		debugIn          : IN  unsigned(15 DOWNTO 0); -- Debug switches
+		debugOut         : OUT unsigned(15 DOWNTO 0); -- Debug Leds
         reset            : IN  STD_LOGIC;
         clk_100MHz       : IN  STD_LOGIC;
 		RGBout           : OUT unsigned (RGB_BIT_AMOUNT-1 DOWNTO 0);
         hsync, vsync     : OUT STD_LOGIC;
 
-        serialClkIn : in STD_LOGIC;
-        serialDataIn : in STD_LOGIC
+        serialClkIn      : in STD_LOGIC;
+        serialDataIn     : in STD_LOGIC;
+        
+        PWMOut           : OUT STD_LOGIC
     );
 END Bouncing_Object;
 ARCHITECTURE Behavioral OF Bouncing_Object IS
@@ -338,21 +340,28 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
             dataInExternal : IN STD_LOGIC;
             clk_100Mhz : IN STD_LOGIC;
             sysReset : IN STD_LOGIC;
-		    serialData : OUT STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0)
+		    serialData : OUT unsigned (1240+ 2400 - 1 downto 0)
         );
     END component SerialRead;
 
     component SerialDataBuffer is
         Port ( clk100Mhz : in STD_LOGIC;
              sysReset : in STD_LOGIC;
-		     serialData : in  STD_LOGIC_VECTOR (1240+ 2400 - 1 downto 0);
-		     Ycount   : IN  STD_LOGIC_VECTOR(9 DOWNTO 0);
-             tileData : out STD_LOGIC_VECTOR (2400 -1 downto 0);
-             entityData : out STD_LOGIC_VECTOR (1200 -1 downto 0);
-             soundData : out STD_LOGIC_VECTOR (8 -1 downto 0);
-             hudData : out STD_LOGIC_VECTOR (24 -1 downto 0));
+		     serialData : in  unsigned (1240+ 2400 - 1 downto 0);
+		     Ycount   : IN  unsigned(9 DOWNTO 0);
+             tileData : out unsigned (2400 -1 downto 0);
+             entityData : out unsigned (1200 -1 downto 0);
+             soundData : out unsigned (8 -1 downto 0);
+             hudData : out unsigned (24 -1 downto 0));
     end component SerialDataBuffer;
 
+    component RetroSynth is
+        Port (
+            CLK : in STD_LOGIC;
+            SFXswitch : std_logic_vector(5 downto 0);
+            PWM : out STD_LOGIC
+        );
+    end component;
 
     --clk
     SIGNAL clk_25             : std_logic;
@@ -387,21 +396,22 @@ ARCHITECTURE Behavioral OF Bouncing_Object IS
 	-- VGA
 	SIGNAL Xcount, Ycount        : unsigned(9 DOWNTO 0); -- VGA current pixel number
 	-- Communication                                 entity + player + boss
-	SIGNAL EntityData            : STD_LOGIC_VECTOR(((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
+	SIGNAL EntityData            : unsigned(((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO 0);
 
     -- background
     -- vector with map tile numbers		-- tile number starting top left going left to richt and down
-    SIGNAL tileVector  : STD_LOGIC_VECTOR((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
+    SIGNAL tileVector  : unsigned((TILE_AMOUNT * (TILE_NUMBER_SIZE)) - 1 DOWNTO 0);		
     
 
 --    signal syncClk : std_logic;
 --    signal syncData : std_logic;
-    signal serialData : STD_LOGIC_VECTOR(1240 + 2400 -1 downto 0);
+    signal serialData : unsigned(1240 + 2400 -1 downto 0);
     
---    signal tileData : STD_LOGIC_VECTOR(1800 -1 downto 0);
---    signal entityData : STD_LOGIC_VECTOR (1200 -1 downto 0);
-    signal soundData : STD_LOGIC_VECTOR(8 -1 downto 0);
-    signal hudData : STD_LOGIC_VECTOR (24 -1 downto 0);
+    signal soundData : unsigned(8 -1 downto 0);
+    signal hudData : unsigned (24 -1 downto 0);
+    
+    -- sound    
+    signal soundDataMixed : STD_LOGIC_VECTOR(5 downto 0);    
 
 BEGIN
 	clk_wiz_00: prescaler	PORT MAP(
@@ -467,7 +477,7 @@ BEGIN
 		debugOut     => debugOutP,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		dataVector   => (EntityData(((1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (0 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Player_COE_Color
@@ -502,7 +512,7 @@ BEGIN
 		debugOut     => debugOutB,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData(((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		dataVector   => (EntityData(((2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (1 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Boss_COE_Color
@@ -543,7 +553,7 @@ BEGIN
 		debugOut     => debugOutBG,
 		reset        => reset,
 		clk          => clk_25,
-		tileNumberVector   => unsigned(tileVector),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO ....,
+		tileNumberVector   => (tileVector),--TODO: TileData((number of tiles * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1 DOWNTO ....,
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Background_COE_Color
@@ -579,7 +589,7 @@ BEGIN
 		debugOut     => debugOutE,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
+		dataVector   => (EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO (2 * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)))),
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => Entity_COE_Color
@@ -614,7 +624,7 @@ BEGIN
 		debugOut     => debugOutH,
 		reset        => reset,
 		clk          => clk_25,
-		dataVector   => unsigned(EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - HUD_VECTOR_BIT_SIZE))),--TODO:  real hud
+		dataVector   => (EntityData((((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE)) - 1) DOWNTO ((ENTITY_AMOUNT + 2) * (ENTITY_X_BIT_SIZE + ENTITY_Y_BIT_SIZE + ENTITY_NUMMER_BIT_SIZE) - HUD_VECTOR_BIT_SIZE))),--TODO:  real hud
 		Xcount       => Xcount,
 		Ycount       => Ycount,
 		RGBOut       => HUD_COE_Color
@@ -635,9 +645,9 @@ BEGIN
     
         serialBuffer : SerialDataBuffer Port map (
                 sysReset => reset,
-                clk100Mhz => clk_100Mhz,
+                clk100Mhz => clk_25,
                 serialData => serialData,
-                Ycount => std_logic_vector (Ycount),
+                Ycount => Ycount,
                 tileData => tileVector, --tileData => tileData,
                 entityData => EntityData, -- entityData => entityData
                 soundData => soundData,
@@ -645,11 +655,14 @@ BEGIN
                 
             );
             
+        RetroSynth0 : RetroSynth Port map (
+                CLK => clk_100Mhz,
+                SFXswitch => soundDataMixed, --soundData(5 downto 0),
+                PWM => PWMOut
+            );
             
---				-- read tiles
---				tileData       <= serialData(2408 - 1 downto 8);
---				-- read entity
---				entityData       <= serialData(2400+ 1208 - 1 downto 2400+ 8);
---				soundData        <= serialData(2400+ 1216 - 1 downto 2400+ 1208);
---				hudData          <= serialData(2400+ 1240 - 1 downto 2400+ 1216);
+        soundDataMixed <= std_logic_vector (soundData(5 downto 0)) when debugIn(0) = '0' else
+                          std_logic_vector (debugIn(6 downto 1));
+            
+                              
 END Behavioral;

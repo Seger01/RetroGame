@@ -90,13 +90,13 @@ BEGIN
 		RGBOut   => RGBOut
 	);
 
-	PROCESS (reset, clk)
+	PROCESS (clk)
 	BEGIN
-		IF (reset = '1') THEN
-			AdressOut <= (OTHERS => '0');
-			PalletNr  <= (OTHERS => '0');
-
-		ELSIF (rising_edge (clk)) THEN
+--	REQP #1 Warning The RAMB18E1 DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM18.ram has an input control pin DEVICE_7SERIES.NO_BMM_INFO.SP.SIMPLE_PRIM18.ram.ADDRARDADDR[10] (net: addra[7]) which is driven by a register (AdressOut_reg[7]) that has an active asychronous set or reset. This may cause corruption of the memory contents and/or read values when the set/reset is asserted and is not analyzed by the default static timing analysis. It is suggested to eliminate the use of a set/reset to registers driving this RAMB pin or else use a synchronous reset in which the assertion of the reset is timed by default. 
+--		IF (reset = '1') THEN
+--			AdressOut <= (OTHERS => '0');
+--			PalletNr  <= (OTHERS => '0');
+		IF (rising_edge (clk)) THEN
 			AdressOut <= AdressIn( Background_ROM_ADRESS_BIT_SIZE - 1 DOWNTO 0);
 			PalletNr  <= (OTHERS => '0'); --todo add
 		END IF;
