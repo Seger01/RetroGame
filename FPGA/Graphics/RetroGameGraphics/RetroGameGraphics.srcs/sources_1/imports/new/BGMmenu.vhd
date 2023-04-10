@@ -36,7 +36,6 @@ begin
     menu : process(clk)
     begin
         if rising_edge(clk) then
-            romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
 
             if(BGMcounter >= 50000000) then
 
@@ -50,10 +49,10 @@ begin
             else
                 BGMcounter <= BGMcounter + 1;
             end if;
+
         end if;
+        romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
     end process;
-    
-    
 
     BGMComp : SynthBGM port map(
             clk => clk,

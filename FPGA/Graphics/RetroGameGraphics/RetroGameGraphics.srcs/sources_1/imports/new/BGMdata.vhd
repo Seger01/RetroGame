@@ -5,6 +5,7 @@ USE ieee.numeric_std.ALL;
 entity BGMdata is
     Port(
         clk : in std_logic;
+        toggle : in std_logic;
         BGMsound : in std_logic_vector (2 downto 0);
         BGMpwm : out std_Logic
     );
@@ -32,6 +33,10 @@ architecture Behavioral of BGMdata is
             );
     end component;
 
+
+    signal addressInt : integer := 0;
+    signal BGMcounter : integer := 0;
+
     signal pwmMenu : std_logic := '0';
     signal pwmGame : std_logic := '0';
     signal pwmTransition : std_logic := '0';
@@ -39,7 +44,10 @@ architecture Behavioral of BGMdata is
     signal toggleMenu : std_Logic := '0';
     signal toggleGame : std_logic := '0';
     signal toggleTransition : std_logic := '0';
-    
+
+    constant clockFrequency : integer := 100e6;
+    constant clockperiod : time := 100ms / clockFrequency;
+    signal tempCLK : std_Logic := '0';
 
 begin
     soundProc : process(clk)

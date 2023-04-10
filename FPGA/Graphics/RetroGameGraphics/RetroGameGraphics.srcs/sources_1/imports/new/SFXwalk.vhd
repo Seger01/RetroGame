@@ -19,11 +19,18 @@ architecture Behavioral of SFXwalk is
              PWM : out std_logic
             );
     end component;
-    
+
+    signal sound : std_logic_vector (5 downto 0) := "001000";
 begin
+
+    walk : process(clk)
+    begin
+        sound <= "001000";
+    end process;
+
     squareWalk : squareWave port map(
             clk => clk,
-            noteIndicator => "001000",
+            noteIndicator => sound,
             toggle => toggleWalk,
             enable => enableWalk,
             pwm => pwm

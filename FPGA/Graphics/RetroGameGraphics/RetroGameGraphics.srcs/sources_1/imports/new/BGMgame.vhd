@@ -37,7 +37,6 @@ begin
     playGame : process(clk)
     begin
         if rising_edge(clk) then
-            romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
 
             if(BGMcounter >= 25000000) then
 
@@ -53,6 +52,7 @@ begin
             end if;
 
         end if;
+        romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
     end process;
 
 

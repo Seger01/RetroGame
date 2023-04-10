@@ -21,10 +21,16 @@ architecture Behavioral of SFXshoot is
             );
     end component;
 
+    signal note : std_logic_vector(5 downto 0);
 begin
+    shoot : process(clk)
+    begin
+        note <= "010000";
+    end process;
+
     squareShoot : squareWave port map(
             clk => clk,
-            noteIndicator => "010000",
+            noteIndicator => note,
             toggle => toggleShoot,
             enable => enableShoot,
             pwm => pwm

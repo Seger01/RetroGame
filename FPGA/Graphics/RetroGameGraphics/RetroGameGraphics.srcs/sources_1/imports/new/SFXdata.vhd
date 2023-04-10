@@ -6,6 +6,7 @@ USE ieee.numeric_std.ALL;
 entity SFXdata is
     Port(
         clk : in std_logic;
+        toggle : in std_logic;
         sound : in std_logic_vector(5 downto 0);
         SFXpwm : out std_Logic
     );
@@ -74,31 +75,31 @@ architecture Behavioral of SFXdata is
     end component;
 
     -- TOGGLES FOR SFX COMPONENTS
-    signal toggleShoot : std_logic;
-    signal toggleWalk : std_logic;
-    signal toggleHit : std_logic;
-    signal togglePdeath : std_logic;
-    signal togglePowerup : std_logic;
-    signal toggleMdeath : std_logic;
+    signal toggleShoot : std_logic := '0';
+    signal toggleWalk : std_logic := '0';
+    signal toggleHit : std_logic  := '0';
+    signal togglePdeath : std_logic := '0';
+    signal togglePowerup : std_logic := '0';
+    signal toggleMdeath : std_logic := '0';
 
     -- PWM SIGNALS FOR COMPONENTS
-    signal pwmShoot : std_logic;
-    signal pwmWalk : std_logic;
-    signal pwmHit : std_logic;
-    signal pwmPdeath : std_logic;
-    signal pwmPowerup : std_logic;
-    signal pwmMdeath : std_logic;
+    signal pwmShoot : std_logic := '0';
+    signal pwmWalk : std_logic := '0';
+    signal pwmHit : std_logic := '0';
+    signal pwmPdeath : std_logic := '0';
+    signal pwmPowerup : std_logic := '0';
+    signal pwmMdeath : std_logic := '0';
 
     -- ENABLES
-    signal enableShoot : std_logic;
-    signal enableWalk : std_logic;
-    signal enableHit : std_logic;
-    signal enablePdeath : std_logic;
-    signal enablePowerup : std_logic;
-    signal enableMdeath : std_logic;
+    signal enableShoot : std_logic := '0';
+    signal enableWalk : std_logic := '0';
+    signal enableHit : std_logic := '0';
+    signal enablePdeath : std_logic := '0';
+    signal enablePowerup : std_logic := '0';
+    signal enableMdeath : std_logic := '0';
 
     -- COUNTER USED TO SWITCH BETWEEN SFX
-    signal SFXcounter : integer range 0 to 5000 := 0;
+    signal SFXcounter : integer range 0 to 10000 := 0;
 
 begin
 
@@ -112,11 +113,18 @@ begin
             togglePowerup <= sound(3);
             toggleMdeath <= sound(4);
             toggleHit <= sound(5);
-            SFXpwm <= '0';
 
             SFXcounter <= SFXcounter + 1;
 
             if SFXcounter <= 5000 then
+
+                if enablePdeath   = '1' then
+                    SFXpwm <= pwmPdeath;
+                end if;
+
+                if enablePowerup  = '1' then
+                    SFXpwm <= pwmPowerup;
+                end if;
 
                 if SFXcounter <= 750 then -- walk
                     if enableWalk = '1' then
@@ -142,15 +150,9 @@ begin
                     end if;
                 end if;
 
-                if enablePdeath   = '1' then
-                    SFXpwm <= pwmPdeath;
+                if SFXcounter >= 5000 then
+                    SFXcounter <= 0;
                 end if;
-
-                if enablePowerup  = '1' then
-                    SFXpwm <= pwmPowerup;
-                end if;
-            else
-                SFXcounter <= 0;
             end if;
         end if;
     end process;

@@ -20,10 +20,17 @@ architecture Behavioral of SFXmDeath is
             );
     end component;
 
+    signal sound : std_logic_vector (5 downto 0);
 begin
+    mdeath : process (clk)
+    
+    begin
+        sound <= "110000";
+    end process;
+
     squareMdeath : squareWave port map(
             clk => clk,
-            noteIndicator => "110000",
+            noteIndicator => sound,
             toggle => toggleMdeath,
             enable => enableMdeath,
             pwm => PWM
