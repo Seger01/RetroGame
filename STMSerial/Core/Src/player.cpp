@@ -15,6 +15,7 @@ void Player::onCollide(CollidableObject *object) {
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
 
 	} else if (dynamic_cast<Item*>(object)) {
+		entityptr->setHealth(0);
 		//power up
 		//powerUphandler.setPowerUp()
 	}

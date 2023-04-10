@@ -146,11 +146,12 @@ void Game::run() {
 		currentState = Reset;
 		break;
 	case SwitchingLevels:
-//		entities = entityManager->getEntities();
-		if (currentLevel < 2) {
+		//entities = entityManager->getEntities();
+
+		if (currentLevel <= 2) {
 			levelManager.switchLevel(currentLevel);
 		} else {
-			levelManager.switchLevel(((currentLevel - 2) % 6) + 2);
+			levelManager.switchLevel(((currentLevel - 2) % 5) + 2);
 		}
 		if (entities[0]->getPosX() < 120) {
 			entities[0]->moveX(1);
@@ -165,12 +166,14 @@ void Game::run() {
 		}
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
-
 			currentState = PlayingLevel;
 			entityManager->removeTiles();
 			levelManager.getCollidables(&collidableTiles);
 			entityManager->addTiles();
 			levelManager.getSpawnpoints(&spawnPoints);
+
+			remainingEnemies = ((currentLevel - 2) * 5) + 10;
+
 		}
 		break;
 	case ShowDeath:
@@ -259,6 +262,9 @@ void Game::run() {
 
 		checkForCheats(inputs);
 
+		highscoreManager.setCurrentScore(currentLevel - 1);
+
+
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
 				playerShoot = true;
@@ -297,14 +303,14 @@ void Game::run() {
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			if (remainingEnemies > 0) {
-				if ((currentLevel - 2) % 6 == 0) {
-					//entityManager.spawnboss ofzo
-					if(entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false){
-						bossSpawnEnemies = true;
-						entityManager->spawnEntities(1,8);
-					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0){
-						bossSpawnEnemies = false;
-					}
+				if ((currentLevel - 2) % 5 == 0 && currentLevel != 2) {
+//					//entityManager.spawnboss ofzo
+//					if(entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false){
+//						bossSpawnEnemies = true;
+//						entityManager->spawnEntities(1,8);
+//					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0){
+//						bossSpawnEnemies = false;
+//					}
 				} else {
 					int amountOfEnemies = ((std::rand() % 5) + (currentLevel - 2));
 
@@ -501,11 +507,14 @@ void Game::showAllHighscores() {
 
 	communication->sendBoth(highscoresScreen[0], emptyEntities);
 
-	HAL_Delay(500);
+	HAL_Delay(200);
 
 	while (inputManager.readInput() != buttonA) {
 
 	}
-	HAL_Delay(100);
+	HAL_Delay(200);
+	while(inputManager.readInput() != 0){
+
+	}
 }
 

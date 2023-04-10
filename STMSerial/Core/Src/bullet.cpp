@@ -64,5 +64,5 @@ void Bullet::stepY(int direction) {
 }
 
 int Bullet::getTexture(){
-	return 13;
+	return 15;
 }

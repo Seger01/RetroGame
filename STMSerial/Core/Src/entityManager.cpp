@@ -201,7 +201,7 @@ void EntityManager::updateEntities() {
 		if (entities[i]->getHealth() <= 0) {
 			if(dynamic_cast<Enemy*>(entities[i]) && entities[36] == NULL){
 				int drop = rand() % 100;
-				if(drop < 5){
+				if(drop < 90){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
 				}
 			}
@@ -249,8 +249,12 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
 				bulletPtr->onCollide(found->at(j));
 				break;
+			}else if(dynamic_cast<Player*>(entities[toBeMoved])){
+				Player* playerPtr = dynamic_cast<Player*>(entities[toBeMoved]);
+				playerPtr->onCollide(found->at(j));
+				break;
 			}
-
+			// if wall get where it touches and make it move along side it
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
 
