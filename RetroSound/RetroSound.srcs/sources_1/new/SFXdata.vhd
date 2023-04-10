@@ -107,6 +107,7 @@ architecture Behavioral of SFXdata is
 
     -- TEMPORARY PWM
     signal temppwm : std_logic;
+    signal trianglePWM : std_logic;
 
     -- CLK USED FOR TESTING
     constant clockFrequency : integer := 100e6;
@@ -115,7 +116,7 @@ architecture Behavioral of SFXdata is
 
     signal toneRiseInt : integer := 0;
     signal countTemp : integer := 0;
-    
+
     signal SFXcounter : integer := 0;
 
 begin
@@ -128,24 +129,52 @@ begin
             toggleShoot <= sound(1);
             toggleWalk <= sound(2);
             togglePowerup <= sound(3);
-            
-            if togglePdeath = '1' then
-                SFXpwm <= pwmPdeath;
-            end if;
-            
-            if toggleShoot = '1' then
-                SFXpwm <= pwmShoot;
-            end if;
-            
-            if toggleWalk = '1' then
-                SFXpwm <= pwmWalk;
-            end if;
-            
-            if togglePowerup = '1' then
-                SFXpwm <= pwmPowerup;
+            toggleMdeath <= sound(4);
+
+            SFXcounter <= SFXcounter + 1;
+
+            if SFXcounter <= 5000 then
+                --if togglePdeath  = '1' then
+                    SFXpwm <= pwmPdeath;
+                --end if;
+
+                if SFXcounter <= 750 then -- walk
+                    if toggleWalk = '1' then
+                        SFXpwm <= pwmWalk;
+                    end if;
+                end if;
+                if SFXcounter <= 1750 and SFXcounter >= 750 then -- shoot
+                    if toggleShoot  = '1' then
+
+                        SFXpwm <= pwmShoot;
+                    end if;
+                end if;
+
+                if SFXcounter <= 2750 and SFXcounter >= 1750 then -- hit
+                    if toggleHit  = '1' then
+                        SFXpwm <= pwmHit;
+                    end if;
+                end if;
+
+                if SFXcounter <= 4250 and SFXcounter >= 2750 then -- powerup
+                    if togglePowerup  = '1' then
+                        SFXpwm <= pwmPowerup;
+                    end if;
+                end if;
+
+                if SFXcounter <= 5000 and SFXcounter >= 4250 then -- enemy death
+                    if toggleMdeath = '1' then
+                        SFXpwm <= pwmMdeath;
+                    end if;
+                end if;
+
+                if SFXcounter >= 5000 then
+                    SFXcounter <= 0;
+                end if;
             end if;
         end if;
     end process;
+
 
     shoot : SFXshoot port map(
             clk => clk,
@@ -177,11 +206,10 @@ begin
             pwm => pwmPowerup
         );
 
-
     triangle : triangleWave  port map(
             clk => clk,
-            toggle => toggle,
-            pwm => temppwm
+            toggle => triangleToggle,
+            pwm => trianglePWM
         );
 
     mDeath : SFXmDeath port map(

@@ -19,25 +19,35 @@ architecture Behavioral of SynthBGM is
 
     signal tempToggle : std_logic := '0';
 
+    signal normalizer : integer := 0;
+
 begin
     BGM : process(clk)
     begin
         if rising_edge(clk) then
+           
             if toggle = '1' then
+             if normalizer >= 25 then
+             counter <= counter + 1;
+                normalizer <= 0;
+            else
+                normalizer <= normalizer + 1;
+            end if;
+            
                 if ( tempToggle = '0' ) then
                     counter2 <= counter2 + 1;
                 end if;
                 -- chooses tone depending on signal
                 case noteIndicator is
                     when "0000" => counterLimit <= 0;
-                    when "0001" => counterLimit <= 2255; -- f
-                    when "0010" => counterLimit <= 2009; -- g
-                    when "0011" => counterLimit <= 1790; -- a
-                    when "0100" => counterLimit <= 1595;  -- b
-                    when "0101" => counterLimit <= 1505;  -- c
-                    when "0110" => counterLimit <= 1341;  -- d
-                    when "0111" => counterLimit <= 1194;  -- e
-                    when "1000" => counterLimit <= 1127;  -- f
+                    when "0001" => counterLimit <= 4545; -- a 1
+                    when "0010" => counterLimit <= 4050; -- b 2
+                    when "0011" => counterLimit <= 3822; -- c 3
+                    when "0100" => counterLimit <= 3405;  -- d 4
+                    when "0101" => counterLimit <= 3034;  -- e 5
+                    when "0110" => counterLimit <= 2863;  -- f 6
+                    when "0111" => counterLimit <= 2551;  -- g 7
+                    when "1000" => counterLimit <= 2273;  -- a 8
                     when "1111" => counterLimit <= 800;
                     when others => counterLimit <= 0;
                 end case;
