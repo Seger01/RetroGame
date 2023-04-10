@@ -19,20 +19,18 @@ pointVector Boss::moveToPoint(pointVector point) {
 	pointVector newMovement;
 	pointVector enemyPos = getPosition();
 	destination = point;
-	traveling = true;
-	if (locationLoc.X < enemyPos.X) {
+
+	if (destination.X < enemyPos.X) {
 		newMovement.X = -1;
-	} else if (locationLoc.X > enemyPos.X) {
+	} else if (destination.X > enemyPos.X) {
 		newMovement.X = 1;
 	}
-	if (locationLoc.Y < enemyPos.Y) {
+	if (destination.Y < enemyPos.Y) {
 		newMovement.Y = -1;
-	} else if (locationLoc.Y > enemyPos.Y) {
+	} else if (destination.Y > enemyPos.Y) {
 		newMovement.Y = 1;
 	}
-}
-el
-pointVector newMovement;
+return newMovement;
 }
 
 void Boss::setRemainingSteps(uint8_t steps) {
