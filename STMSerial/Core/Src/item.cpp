@@ -5,11 +5,15 @@ Item::Item(int x,int y) : Entity(x,y){
 	// bullets 13
 
 	int randomType = rand() % 4;
-	setTexture(randomType + 8);
+	texture = randomType + 8;
 	setWidth(16);
 	setHeight(16);
 	itemType = randomType;
 }
 void Item::onCollide(CollidableObject *object) {
 
+}
+
+int Item::getTexture(){
+	return texture;
 }

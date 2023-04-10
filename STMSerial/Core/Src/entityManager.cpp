@@ -8,6 +8,7 @@
 #include "Rectangle.h"
 #include <vector>
 
+
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
 	//collidableTiles->clear();
 	//collidableTiles->push_back(new	Tile(50, 50, 3, true, false));
@@ -203,7 +204,7 @@ void EntityManager::updateEntities() {
 		if (entities[i]->getHealth() <= 0) {
 			if(dynamic_cast<Enemy*>(entities[i]) && entities[36] == NULL){
 				int drop = rand() % 100;
-				if(drop < 5){
+				if(drop < 90){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
 					center->insert(entities[36]);
 				}

@@ -335,6 +335,9 @@ void Game::run() {
 
 		if (entities[0]->getHealth() < lastPlayerHealth) {
 			currentState = ShowDeath;
+
+			soundManager.setSoundActive(4);
+
 			timeOfDeath = xTaskGetTickCount();
 		}
 		lastPlayerHealth = entities[0]->getHealth();

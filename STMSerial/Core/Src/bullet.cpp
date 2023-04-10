@@ -1,6 +1,8 @@
 #include "bullet.h"
 #include "enemy.h"
 #include "player.h"
+
+#include "SoundManager.h"
 Bullet::Bullet(uint8_t x, uint8_t y,uint8_t strength) : Entity(x, y) {
 	setSpeed(70);
 	setWidth(4);
@@ -11,7 +13,10 @@ Bullet::Bullet(uint8_t x, uint8_t y,uint8_t strength) : Entity(x, y) {
 void Bullet::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Entity*>(object);
 	this->setHealth(0);
+	soundManager.setSoundActive(5);
 if(dynamic_cast<Enemy*>(entityptr)) {
+
+
 		if(this->getStrength() > entityptr->getHealth()){
 			entityptr->setHealth(0);
 		} else {
