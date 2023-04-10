@@ -6,7 +6,7 @@ class Item :
 private:
     int itemType;
 public:
-
+    Item(int x,int y);
     void onCollide(CollidableObject *object) override;
 };
 

@@ -1,10 +1,11 @@
 #include "bullet.h"
 #include "enemy.h"
+#include "player.h"
 Bullet::Bullet(uint8_t x, uint8_t y,uint8_t strength) : Entity(x, y) {
 	setSpeed(70);
 	setWidth(4);
 	setHeight(4);
-	setTexture(8);
+	setTexture(13);
 	setStrength(strength);
 }
 void Bullet::onCollide(CollidableObject *object) {
@@ -17,6 +18,8 @@ if(dynamic_cast<Enemy*>(entityptr)) {
 			entityptr->setHealth(entityptr->getHealth() - this->getStrength());
 		}
 
+	}else if(dynamic_cast<Player*>(entityptr)){
+		entityptr->setHealth(entityptr->getHealth() - 1);
 	}
 }
 void Bullet::onCollideWall() {
@@ -61,5 +64,5 @@ void Bullet::stepY(int direction) {
 }
 
 int Bullet::getTexture(){
-	return 8;
+	return 13;
 }
