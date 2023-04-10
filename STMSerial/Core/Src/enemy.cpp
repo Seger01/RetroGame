@@ -16,9 +16,9 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 		direction.X = 1;
 	} else if (posX > 220) {
 		direction.X = -1;
-	} else if (posY < 250) {
+	} else if (posY < 25) {
 		direction.Y = 1;
-	} else {
+	} else if(posY > 220){
 		direction.Y = -1;
 	}
 	stepsRemaining = 15;
