@@ -125,15 +125,15 @@ BEGIN
                 
                 -- convert 16*16 to 1*16 for 4*4 bullit
                 -- if start bulled address
-                if (vTemp >= 3328) then
+                if (vTemp >= 3840) then
                     -- get bullet 16*16
-                    vTemp := (vTemp - 3328);
+                    vTemp := (vTemp - 3840);
                     -- if visible part bullit
                     if ((vTemp mod 16) < 4 and (vTemp/16) < 4 ) then
                         -- get target x position 
                         vTemp := (vTemp mod 4) + ((vTemp / 16)*4);   
                         
-                        entityAdress <= (to_unsigned (vTemp + 3328, entityAdress'length));   
+                        entityAdress <= (to_unsigned (vTemp + 3840, entityAdress'length));   
                     else
                         --set addres to transparent
                         entityAdress <= (others => '1');              

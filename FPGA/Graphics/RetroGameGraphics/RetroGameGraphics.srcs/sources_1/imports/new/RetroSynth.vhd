@@ -5,8 +5,8 @@ USE ieee.numeric_std.ALL;
 entity RetroSynth is
     Port (
         CLK : in STD_LOGIC;
-        SFXswitch : std_logic_vector(5 downto 0);
-        BGMswitch : std_logic_vector(2 downto 0);
+        SFXswitch : in std_logic_vector(5 downto 0);
+        BGMswitch : in std_logic_vector(2 downto 0);
         PWM : out STD_LOGIC
     );
 end RetroSynth;
@@ -40,7 +40,9 @@ begin
     toggle: process(clk)
     begin
         if rising_edge (clk) then
+            pwm <= '0';
             counterToggle <= counterToggle + 1;
+            
             -- toggle is used to switch between sfx and bgm to "combine" the pwm signals
             if(counterToggle >= 30) then
                 pwm <= BGMpwmcombine;

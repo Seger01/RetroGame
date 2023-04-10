@@ -112,18 +112,11 @@ begin
             togglePowerup <= sound(3);
             toggleMdeath <= sound(4);
             toggleHit <= sound(5);
+            SFXpwm <= '0';
 
             SFXcounter <= SFXcounter + 1;
 
             if SFXcounter <= 5000 then
-
-                if enablePdeath   = '1' then
-                    SFXpwm <= pwmPdeath;
-                end if;
-
-                if enablePowerup  = '1' then
-                    SFXpwm <= pwmPowerup;
-                end if;
 
                 if SFXcounter <= 750 then -- walk
                     if enableWalk = '1' then
@@ -149,9 +142,15 @@ begin
                     end if;
                 end if;
 
-                if SFXcounter >= 5000 then
-                    SFXcounter <= 0;
+                if enablePdeath   = '1' then
+                    SFXpwm <= pwmPdeath;
                 end if;
+
+                if enablePowerup  = '1' then
+                    SFXpwm <= pwmPowerup;
+                end if;
+            else
+                SFXcounter <= 0;
             end if;
         end if;
     end process;
