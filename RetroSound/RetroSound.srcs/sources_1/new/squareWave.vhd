@@ -65,9 +65,9 @@ begin
                 when "001000" => normalizeCounterLimit <= 4000; -- walk
                     invert <= '0';
                     setAttackRoof <= 20000;
-                    attackGain <= 2000;
-                    attackFloor <= 5000;
-                    setTimerLimit <= 500;
+                    attackGain <= 5000;
+                    attackFloor <= 10000;
+                    setTimerLimit <= 250;
 
                 when "000100" => normalizeCounterLimit <= 4500; -- powerup
                     invert <= '1';

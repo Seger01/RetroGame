@@ -125,13 +125,13 @@ begin
                     SFXpwm <= pwmPowerup;
                 end if;
 
-                if SFXcounter <= 750 then -- walk
+                if SFXcounter <= 250 then -- walk
                     if enableWalk = '1' then
                         SFXpwm <= pwmWalk;
                     end if;
                 end if;
                 
-                if SFXcounter <= 2250 and SFXcounter >= 750 then -- shoot
+                if SFXcounter <= 2250 and SFXcounter >= 250 then -- shoot
                     if enableShoot  = '1' then
                         SFXpwm <= pwmShoot;
                     end if;
