@@ -44,9 +44,9 @@ begin
     playGame : process(clk)
     begin
         if rising_edge(clk) then
-            if(BGMcounter >= 50000000) then
+            if(BGMcounter >= 10000000) then
 
-                if(addressInt >= 20) then
+                if(addressInt >= 17) then
                     addressInt <= 0;
                 else
                     addressInt <= addressInt + 1;

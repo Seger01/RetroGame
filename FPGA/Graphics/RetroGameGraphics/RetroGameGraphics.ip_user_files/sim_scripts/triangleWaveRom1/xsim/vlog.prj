@@ -1,6 +1,0 @@
-verilog xil_defaultlib  \
-"../../../ip/triangleWaveRom1/sim/triangleWaveRom1.v" \
-
-verilog xil_defaultlib "glbl.v"
-
-nosort
