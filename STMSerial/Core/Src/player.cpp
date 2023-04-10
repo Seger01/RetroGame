@@ -6,15 +6,14 @@ Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
 	setHeight(16);
 	//setTexture(2);
 	setStrength(1);
-	setSpeed(2);
+	setSpeed(15);
 	setHealth(4);
 
 }
 void Player::onCollide(CollidableObject *object) {
-	Entity *entityptr = dynamic_cast<Enemy*>(object);
+	Entity *entityptr = dynamic_cast<Entity*>(object);
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
-		this->setHealth(this->getHealth() - entityptr->getStrength());
-		this->invincible = true;
+
 	} else if (dynamic_cast<Item*>(object)) {
 		//power up
 		//powerUphandler.setPowerUp()

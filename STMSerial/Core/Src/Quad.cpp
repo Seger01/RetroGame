@@ -147,7 +147,6 @@ std::vector<CollidableObject*>* Quad::query(Rectangle range, std::vector<Collida
 			stack.push(current->botLeftTree);
 		}
 	}
-
 	return found;
 }
 

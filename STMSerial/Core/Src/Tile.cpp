@@ -19,9 +19,9 @@ Tile::~Tile() {
 bool Tile::isCollidable() {
 	return isCollidable_;
 }
-Tile::Tile(uint8_t posX, uint8_t posY, uint8_t tileType, bool isCollidable, bool isSpawnpoint) {
-	this->posX = posX;
-	this->posY = posY;
+Tile::Tile(uint16_t posX, uint16_t posY, uint8_t tileType, bool isCollidable, bool isSpawnpoint) {
+	this->posX = posX  * 10;
+	this->posY = posY  * 10;
 
 	this->tileType = tileType;
 
@@ -51,10 +51,10 @@ bool Tile::getIsSpawnpoint(){
 	return this->isSpawnpoint;
 }
 
-uint8_t Tile::getPosX() {
-	return posX;
+uint16_t Tile::getPosX() {
+	return posX / 10;
 }
-uint8_t Tile::getPosY(){
-	return posY;
+uint16_t Tile::getPosY(){
+	return posY / 10;
 }
 

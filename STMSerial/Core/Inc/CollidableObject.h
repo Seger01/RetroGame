@@ -12,8 +12,8 @@ struct pointVector {
 class CollidableObject
 {
 public:
-    virtual uint8_t getPosX() = 0;
-    virtual uint8_t getPosY() = 0;
+    virtual uint16_t getPosX() = 0;
+    virtual uint16_t getPosY() = 0;
     virtual bool isCollidable() = 0;
     virtual pointVector getHalfSize() = 0;
 };

@@ -53,8 +53,8 @@ public:
 	void setY(int);
 	//void newLocation(uint8_t, uint8_t);
 	pointVector getStart();
-	uint8_t getPosX() override;
-	uint8_t getPosY() override;
+	uint16_t getPosX() override;
+	uint16_t getPosY() override;
 	uint8_t getWidth();
 	uint8_t getHeight();
 	uint8_t getSpeed();
