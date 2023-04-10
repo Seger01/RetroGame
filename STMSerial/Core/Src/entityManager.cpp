@@ -249,8 +249,11 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
 				bulletPtr->onCollide(found->at(j));
 				break;
+			}else if(dynamic_cast<Player*>(entities[toBeMoved])){
+				Player* playerPtr = dynamic_cast<Player*>(entities[toBeMoved]);
+				playerPtr->onCollide(found->at(j));
 			}
-
+			// if wall get where it touches and make it move along side it
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
 
