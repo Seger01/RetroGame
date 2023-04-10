@@ -40,7 +40,7 @@ begin
 
             if(BGMcounter >= 50000000) then
 
-                if(addressInt >= 20) then
+                if(addressInt >= 16) then
                     addressInt <= 0;
                 else
                     addressInt <= addressInt + 1;
