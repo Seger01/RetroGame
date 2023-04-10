@@ -34,6 +34,7 @@ EntityManager::~EntityManager() {
 Entity** EntityManager::getEntities() {
 	return entities;
 }
+
 void EntityManager::removeTiles() {
 	center->removeTiles();
 }

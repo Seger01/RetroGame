@@ -54,7 +54,7 @@ void Bullet::stepY(int direction) {
 		} else if (direction == 1 && (Y + (this->speed / 10) >= 235)) {
 			this->position.Y = 80;
 		} else if (direction == -1 && (Y -  (this->speed / 10) <= -11)) {
-			this->position.Y = 2300;
+			this->position.Y = 2320;
 		} else if (direction == -1 && (Y - (this->speed / 10) > -11)) {
 			this->position.Y -= (int) speed;
 		}
