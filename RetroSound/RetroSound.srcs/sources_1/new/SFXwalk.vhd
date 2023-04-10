@@ -6,6 +6,7 @@ entity SFXwalk is
     Port(
         clk : in std_logic;
         toggleWalk : in std_logic;
+        enableWalk : out std_logic;
         PWM : out std_logic
     );
 end SFXwalk;
@@ -15,6 +16,7 @@ architecture Behavioral of SFXwalk is
         Port (CLK : in std_logic;
              noteIndicator : in std_logic_vector (5 downto 0);
              toggle : in std_logic;
+             enable : out std_logic;
              PWM : out std_logic
             );
     end component;
@@ -31,6 +33,7 @@ begin
             clk => clk,
             noteIndicator => sound,
             toggle => toggleWalk,
+            enable => enableWalk,
             pwm => pwm
 
         );

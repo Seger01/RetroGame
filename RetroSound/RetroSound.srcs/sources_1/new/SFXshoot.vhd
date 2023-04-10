@@ -9,6 +9,7 @@ entity SFXshoot is
     Port(
         clk : in std_logic;
         toggleShoot : in std_logic;
+        enableShoot : out std_logic;
         pwm : out std_logic
     );
 end SFXshoot;
@@ -18,6 +19,7 @@ architecture Behavioral of SFXshoot is
         Port (CLK : in std_logic;
              noteIndicator : in std_logic_vector (5 downto 0);
              toggle : in std_logic;
+             enable : out std_logic;
              PWM : out std_logic
             );
     end component;
@@ -33,6 +35,7 @@ end process;
             clk => clk,
             noteIndicator => note,
             toggle => toggleShoot,
+            enable => enableShoot,
             pwm => pwm
         );
 

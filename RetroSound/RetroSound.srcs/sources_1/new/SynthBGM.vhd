@@ -11,7 +11,7 @@ end SynthBGM;
 
 architecture Behavioral of SynthBGM is
     -- signals used in counters
-    signal counter : integer  range 0 to 255 := 0;
+    signal counter : integer  := 0;
     signal counter2 : integer := 0;
     signal counterLimit : integer := 0;
 

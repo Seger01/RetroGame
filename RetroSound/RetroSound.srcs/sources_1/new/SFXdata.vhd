@@ -22,6 +22,7 @@ architecture Behavioral of SFXdata is
         Port(
             clk : in std_logic;
             toggleShoot : in std_logic;
+            enableShoot : out std_logic;
             pwm : out std_logic
         );
     end component;
@@ -31,6 +32,7 @@ architecture Behavioral of SFXdata is
         Port(
             clk : in std_logic;
             toggleWalk : in std_logic;
+            enableWalk : out std_logic;
             PWM : out std_logic
         );
     end component;
@@ -40,6 +42,7 @@ architecture Behavioral of SFXdata is
         Port(
             clk : in std_logic;
             toggleHit : in std_logic;
+            enableHit : out std_logic;
             PWM : out std_logic
         );
     end component;
@@ -49,6 +52,7 @@ architecture Behavioral of SFXdata is
         Port(
             clk : in std_logic;
             toggleMdeath : in std_logic;
+            enableMdeath : out std_logic;
             PWM : out std_logic
         );
     end component;
@@ -58,6 +62,7 @@ architecture Behavioral of SFXdata is
         Port(
             clk : in std_logic;
             togglePdeath : in std_logic;
+            enablePdeath : out std_logic;
             PWM : out std_logic
         );
     end component;
@@ -67,14 +72,9 @@ architecture Behavioral of SFXdata is
         Port(
             clk : in std_logic;
             togglePowerup : in std_logic;
+            enablePowerup : out std_logic;
             PWM : out std_logic
         );
-    end component;
-
-    component triangleWave is
-        Port ( clk : in STD_LOGIC;
-             toggle : in STD_LOGIC;
-             pwm : out STD_LOGIC);
     end component;
 
     component squareWave is
@@ -104,6 +104,14 @@ architecture Behavioral of SFXdata is
     signal pwmPdeath : std_logic;
     signal pwmPowerup : std_logic;
     signal pwmMdeath : std_logic;
+    
+    -- ENABLES
+    signal enableShoot : std_logic;
+    signal enableWalk : std_logic;
+    signal enableHit : std_logic;
+    signal enablePdeath : std_logic;
+    signal enablePowerup : std_logic;
+    signal enableMdeath : std_logic;
 
     -- TEMPORARY PWM
     signal temppwm : std_logic;
@@ -136,29 +144,29 @@ begin
 
             if SFXcounter <= 5000 then
 
-                if togglePdeath  = '1' then
+                if enablePdeath   = '1' then
                     SFXpwm <= pwmPdeath;
                 end if;
                 
-                if togglePowerup = '1' then
+                if enablePowerup  = '1' then
                     SFXpwm <= pwmPowerup;
                 end if;
          
                 
                 if SFXcounter <= 750 then -- walk
-                    if toggleWalk = '1' then
+                    if enableWalk = '1' then
                         SFXpwm <= pwmWalk;
                     end if;
                 end if;
                 if SFXcounter <= 2250 and SFXcounter >= 750 then -- shoot
-                    if toggleShoot  = '1' then
+                    if enableShoot  = '1' then
 
                         SFXpwm <= pwmShoot;
                     end if;
                 end if;
 
                 if SFXcounter <= 3500 and SFXcounter >= 2250 then -- hit
-                    if toggleHit  = '1' then
+                    if enableHit  = '1' then
                         SFXpwm <= pwmHit;
                     end if;
                 end if;
@@ -170,7 +178,7 @@ begin
                 --                end if;
 
                 if SFXcounter <= 5000 and SFXcounter >= 3500 then -- enemy death
-                    if toggleMdeath = '1' then
+                    if enableMdeath = '1' then
                         SFXpwm <= pwmMdeath;
                     end if;
                 end if;
@@ -186,42 +194,42 @@ begin
     shoot : SFXshoot port map(
             clk => clk,
             toggleShoot => toggleShoot,
+            enableShoot => enableShoot,
             pwm => pwmShoot
         );
 
     walk : SFXwalk  port map(
             clk => clk,
             toggleWalk => toggleWalk,
+            enableWalk => enableWalk,
             pwm => pwmWalk
         );
 
     hit : SFXhit port map(
             clk => clk,
             toggleHit => toggleHit,
+            enableHit => enableHit,
             pwm => pwmHit
         );
 
     pDeath : SFXpDeath port map(
             clk => clk,
             togglePdeath => togglePdeath,
+            enablePdeath => enablePdeath,
             pwm => pwmPdeath
         );
 
     powerup : SFXpowerup port map(
             clk => clk,
             togglePowerup => togglePowerup,
+            enablePowerup => enablePowerup,
             pwm => pwmPowerup
-        );
-
-    triangle : triangleWave  port map(
-            clk => clk,
-            toggle => triangleToggle,
-            pwm => trianglePWM
         );
 
     mDeath : SFXmDeath port map(
             clk => clk,
             toggleMdeath => toggleMdeath,
+            enableMdeath => enableMdeath,
             pwm => pwmMdeath
         );
 

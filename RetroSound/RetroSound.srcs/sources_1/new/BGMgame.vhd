@@ -38,30 +38,30 @@ architecture Behavioral of BGMgame is
 
     signal BGMpwm : std_logic := '0';
     signal toggle : std_logic := '0';
-    
+
     signal BGMcounter : integer := 0;
     signal addressInt : integer := 0;
-    
+
 begin
     playGame : process(clk)
     begin
         if rising_edge(clk) then
-        tempIndex <= "1000";
---            if(BGMcounter >= 500000000) then
 
---                if(addressInt >= 20) then
---                    addressInt <= 0;
---                else
---                    addressInt <= addressInt + 1;
---                end if;
---                BGMcounter <= 0;
+            if(BGMcounter >= 25000000) then
 
---            else
---                BGMcounter <= BGMcounter + 1;
---            end if;
+                if(addressInt >= 20) then
+                    addressInt <= 0;
+                else
+                    addressInt <= addressInt + 1;
+                end if;
+                BGMcounter <= 0;
+
+            else
+                BGMcounter <= BGMcounter + 1;
+            end if;
 
         end if;
-      --  romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
+        romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
     end process;
 
 
@@ -76,7 +76,7 @@ begin
             clk => clk,
             PWM => pwmGame,
             toggle => toggleGame,
-            noteIndicator => tempIndex 
+            noteIndicator => noteIndex
         );
 
 end Behavioral;

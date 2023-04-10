@@ -5,6 +5,7 @@ entity squareWave is
     Port (CLK : in std_logic;
          noteIndicator : in std_logic_vector (5 downto 0);
          toggle : in std_logic;
+         enable : out std_logic;
          PWM : out std_logic
         );
 end squareWave;
@@ -36,6 +37,7 @@ begin
     BGM : process(clk)
     begin
         if rising_edge(clk ) then
+            enable <= soundEnable;
             if toggle = '1' and lastToggle = '0' then
                 if soundEnable = '0' then
                     timeCounter <= 0;
