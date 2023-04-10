@@ -12,6 +12,8 @@ private:
 	pointVector walkDirection = {1,0};
 	uint8_t stepsRemaining = 0;
 	uint8_t stage = 0;
+	bool travelling = false;
+	pointVector destination;
 public:
 	Boss(uint8_t x, uint8_t y);
 	pointVector shoot(pointVector playerPos);
@@ -19,6 +21,7 @@ public:
 	void onDeath() override;
 	int getTexture() override;
 	void setRemainingSteps(uint8_t steps);
+	pointVector moveToPoint(pointVector point);
 	pointVector loop(pointVector playerPos);
 	pointVector flee(pointVector playerPos);
 };

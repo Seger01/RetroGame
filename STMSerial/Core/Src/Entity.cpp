@@ -108,13 +108,13 @@ uint8_t Entity::getStrength() {
 }
 void Entity::stepX(int direction) {
 		int X = this->getStart().X;
-		if (direction == 1 && (X + this->speed / 10 < 235)) {
+		if (direction == 1 && (X + this->speed / 10 < 226)) {
 			this->position.X += (int) speed;
-		} else if (direction == 1 && (X + this->speed / 10 >= 235)) {
+		} else if (direction == 1 && (X + this->speed / 10 >= 226)) {
 			this->position.X = 80;
-		} else if (direction == -1 && (X -  this->speed / 10 <= -10)) {
+		} else if (direction == -1 && (X -  this->speed / 10 <= -1)) {
 			this->position.X = 2320;
-		} else if (direction == -1 && (X - this->speed / 10 > -10)) {
+		} else if (direction == -1 && (X - this->speed / 10 > -1)) {
 			this->position.X -= (int) speed;
 		}
 }
@@ -130,13 +130,13 @@ void Entity::setY(int newY){
 void Entity::stepY(int direction) {
 
 	int Y = this->getStart().Y;
-	if (direction == 1 && (Y + this->speed / 10 < 235)) {
+	if (direction == 1 && (Y + this->speed / 10 < 226)) {
 		this->position.Y += (int) speed;
-	} else if (direction == 1 && (Y + this->speed / 10 >= 235)) {
+	} else if (direction == 1 && (Y + this->speed / 10 >= 226)) {
 		this->position.Y = 80;
-	} else if (direction == -1 && (Y -  this->speed / 10 <= -11)) {
+	} else if (direction == -1 && (Y -  this->speed / 10 <= -1)) {
 		this->position.Y = 2300;
-	} else if (direction == -1 && (Y - this->speed / 10 > -11)) {
+	} else if (direction == -1 && (Y - this->speed / 10 > -1)) {
 		this->position.Y -= (int) speed;
 	}
 }
