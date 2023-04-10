@@ -6,7 +6,6 @@ USE ieee.numeric_std.ALL;
 entity SFXdata is
     Port(
         clk : in std_logic;
-        toggle : in std_logic;
         sound : in std_logic_vector(5 downto 0);
         SFXpwm : out std_Logic
     );

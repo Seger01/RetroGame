@@ -21,7 +21,8 @@ architecture Behavioral of squareWave is
     signal invert : std_logic := '0';
     signal normalizeCounterLimit : integer:= 0;
 
-    signal setAttackRoof : integer := 0;
+    signal setAttackRoof : integer range 0 to 150000 := 0;
+
 
     signal attack : integer := 0;
     signal attackRoof : integer := 0;

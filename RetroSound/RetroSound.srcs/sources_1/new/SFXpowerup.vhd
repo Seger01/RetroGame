@@ -20,17 +20,10 @@ architecture Behavioral of SFXpowerup is
             );
     end component;
 
-    signal sound : std_logic_vector(5 downto 0);
 begin
-    powerup : process(clk)
-    
-    begin
-        sound <= "000100";
-    end process;
-    
     squarePower : squareWave port map(
             clk => clk,
-            noteIndicator => sound,
+            noteIndicator => "000100",
             toggle => togglePowerup,
             enable => enablePowerup,
             pwm => PWM

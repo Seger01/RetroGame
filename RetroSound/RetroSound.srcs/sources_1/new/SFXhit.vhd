@@ -20,16 +20,10 @@ architecture Behavioral of SFXhit is
             );
     end component;
     
-    signal sound : std_logic_vector (5 downto 0);
 begin
-data : process (clk)
-begin
-    sound <= "000001";
-end process;
-
     squareWalk : squareWave port map(
             clk => clk,
-            noteIndicator => sound,
+            noteIndicator => "000001",
             toggle => toggleHit,
             enable => enableHit,
             pwm => pwm
