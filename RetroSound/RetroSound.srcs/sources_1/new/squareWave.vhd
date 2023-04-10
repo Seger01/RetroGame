@@ -19,19 +19,19 @@ architecture Behavioral of squareWave is
     signal soundEnable : std_logic := '0';
 
     signal invert : std_logic := '0';
-    signal normalizeCounterLimit : integer := 0;
+    signal normalizeCounterLimit : integer range 0 to 150000 := 0;
 
     signal setAttackRoof : integer := 0;
 
     signal attack : integer := 0;
     signal attackRoof : integer := 0;
-    signal attackFloor : integer := 0;
-    signal attackGain : integer := 0; -- the more you add 
+    signal attackFloor : integer range 0 to 50000 := 0;
+    signal attackGain : integer range 0 to 10000 := 0; -- the more you add 
 
-    signal timeNormalizer : integer := 0;
-    signal timeCounter : integer := 0;
-    signal timerLimit : integer := 0;
-    signal setTimerLimit : integer := 0;
+    signal timeNormalizer : integer range 0 to 150000:= 0;
+    signal timeCounter : integer range 0 to 50000 := 0;
+    signal timerLimit : integer range 0 to 50000 := 0;
+    signal setTimerLimit : integer range 0 to 50000 := 0;
 begin
     --
     BGM : process(clk)

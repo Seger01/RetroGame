@@ -1,10 +1,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-use IEEE.std_logic_unsigned.all;
-LIBRARY UNISIM;
-USE UNISIM.Vcomponents.ALL;
-
 
 entity BGMmenu is
     Port (clk : in std_logic;
@@ -27,18 +23,15 @@ architecture Behavioral of BGMmenu is
         Port(
             clka : IN STD_LOGIC;
             ena : IN STD_LOGIC;
-            addra : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
+            addra : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
             douta : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
         );
     end component;
     signal noteIndex : std_logic_vector (3 downto 0) := "0000";
-    signal romAddress : std_logic_vector (3 downto 0) := "0000";
+    signal romAddress : std_logic_vector (4 downto 0) := "00000";
 
-    signal BMGpwm : std_logic := '0';
-    signal toggle : std_logic := '0';
-
-    signal BGMcounter : integer := 0;
-    signal addressInt : integer := 0;
+    signal BGMcounter : integer range 0 to 50000000 := 0;
+    signal addressInt : integer range 0 to 20 := 0;
 begin
     menu : process(clk)
     begin

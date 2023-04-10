@@ -1,9 +1,6 @@
 LIBRARY ieee;
 USE ieee.std_logic_1164.ALL;
 USE ieee.numeric_std.ALL;
-use IEEE.std_logic_unsigned.all;
-LIBRARY UNISIM;
-USE UNISIM.Vcomponents.ALL;
 
 entity BGMdata is
     Port(
