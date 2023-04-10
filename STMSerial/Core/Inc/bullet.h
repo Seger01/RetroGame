@@ -13,7 +13,7 @@ public:
     void stepY(int) override;
     void onCollide(CollidableObject*object) override;
     void onCollideWall();
-
+    bool checkEntities(CollidableObject *object);
     void setTravelDirection(pointVector);
     pointVector getTravelDirection();
     int getTexture() override;
