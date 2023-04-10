@@ -13,16 +13,16 @@ entity triangleWaveRomRead is
 end triangleWaveRomRead;
 
 architecture Behavioral of triangleWaveRomRead is
-    component triangleWaveRom1 is
-      Port ( 
-        clka : in STD_LOGIC;
-        ena : in STD_LOGIC;
-        addra : in STD_LOGIC_VECTOR ( 5 downto 0 );
-        douta : out STD_LOGIC_VECTOR ( 7 downto 0 )
-      );
+    component triangleWaveRom is
+        PORT (
+            clka : IN STD_LOGIC;
+            ena : IN STD_LOGIC;
+            addra : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
+            douta : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
+        );
     end component;
 
-    signal addressInt : unsigned (5 downto 0) := (others => '0');
+    signal addressInt : integer := 0;
 
     signal address : std_logic_vector (5 downto 0) := (others => '0');
     signal lastState : std_logic := '0';
@@ -36,27 +36,20 @@ architecture Behavioral of triangleWaveRomRead is
     constant clockperiod : time := 100ms / clockFrequency;
     signal tempCLK : std_Logic := '0';
 begin
-    address  <= std_logic_vector(addressInt);
-        
     read : process(clk)
     begin
-        if (rising_edge (clk))then
-            addressInt <= addressInt;
-            
-            if addressSwitch = '1' then
-                if lastState = '0' then
-                     addressInt <= addressInt + 1;
-                end if;
-            end if;
-    
-            if addressInt >= 16 then
-                addressInt <= (others => '0');
-            end if;
-            lastState <= addressSwitch;
+        address  <= std_logic_vector(to_unsigned(addressInt, address'length));
+        if addressSwitch = '1' and lastState = '0' then
+            addressInt <= addressInt + 1;
         end if;
+
+        if addressInt >= 64 then
+            addressInt <= 0;
+        end if;
+        lastState <= addressSwitch;
     end process;
 
-    triangleData : triangleWaveRom1 port map(
+    triangleData : triangleWaveRom port map(
             clka => clk,
             ena => '1',
             addra => address,
