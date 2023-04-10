@@ -34,7 +34,14 @@ EntityManager::~EntityManager() {
 Entity** EntityManager::getEntities() {
 	return entities;
 }
-
+uint8_t EntityManager::countEnemies(){
+	uint8_t count = 0;
+	for(int i = 2; i < 37;i++){
+		if(entities[i] != NULL){
+			count++;
+		}
+	}
+}
 void EntityManager::removeTiles() {
 	center->removeTiles();
 }

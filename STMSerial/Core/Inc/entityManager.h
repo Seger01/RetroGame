@@ -18,6 +18,7 @@ public:
 	void removeTiles();
 	void addTiles();
 	Entity** getEntities();
+	uint8_t countEnemies();
 	void playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight,bool playerShoot);
 	void spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies);
 	void updateBoss(pointVector);
