@@ -9,33 +9,44 @@ entity BGMdata is
     Port(
         clk : in std_logic;
         toggle : in std_logic;
+        BGMsound : in std_logic_vector (2 downto 0);
         BGMpwm : out std_Logic
     );
 end BGMdata;
 
 architecture Behavioral of BGMdata is
-
-    component BGMwestern is
-        Port(
-            clka : IN STD_LOGIC;
-            ena : IN STD_LOGIC;
-            addra : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-            douta : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
-        );
-    end component;
-
-    component SynthBGM is
+    component BGMgame is
         Port (clk : in std_logic;
-             noteIndicator : in std_logic_vector (3 downto 0);
-             toggle : in std_logic;
-             PWM : out std_logic
+             toggleGame : in std_Logic;
+             pwmGame : out std_logic
             );
     end component;
-    
-    signal noteIndex : std_logic_vector (3 downto 0) := "0000";
-    signal romAddress : std_logic_vector (3 downto 0) := "0000";
+
+    component BGMmenu is
+        Port (clk : in std_logic;
+             toggleMenu : in std_Logic;
+             pwmMenu : out std_logic
+            );
+    end component;
+
+    component BGMtransition is
+        Port (clk : in std_logic;
+             toggleTransition : in std_Logic;
+             pwmTransition : out std_logic
+            );
+    end component;
+
+
     signal addressInt : integer := 0;
     signal BGMcounter : integer := 0;
+
+    signal pwmMenu : std_logic := '0';
+    signal pwmGame : std_logic := '0';
+    signal pwmTransition : std_logic := '0';
+
+    signal toggleMenu : std_Logic := '0';
+    signal toggleGame : std_logic := '0';
+    signal toggleTransition : std_logic := '0';
 
     constant clockFrequency : integer := 100e6;
     constant clockperiod : time := 100ms / clockFrequency;
@@ -44,39 +55,41 @@ architecture Behavioral of BGMdata is
 begin
     soundProc : process(clk)
     begin
-        tempCLK <= not tempCLK after Clockperiod / 2;
+        if rising_edge (clk) then
+            toggleMenu <= BGMsound(0);
+            toggleGame <= BGMsound(1);
+            toggleTransition <= BGMsound(2);
 
-        if rising_edge(clk) then
-            if(BGMcounter >= 50000000) then
-
-                if(addressInt >= 20) then
-                    addressInt <= 0;
-                else
-                    addressInt <= addressInt + 1;
-                end if;
-                BGMcounter <= 0;
-
-            else
-                BGMcounter <= BGMcounter + 1;
+            if toggleMenu  = '1' then
+                BGMpwm <= pwmMenu;
             end if;
 
+            if toggleGame = '1' then
+                BGMpwm <= pwmGame;
+            end if;
+
+            if toggleTransition = '1' then
+                BGMpwm <= pwmTransition;
+            end if;
         end if;
-        romAddress <= std_logic_vector(to_unsigned(addressInt, romAddress'length));
     end process;
 
-
-    sound : BGMwestern port map(
-            clka => clk,
-            ena => '1',
-            addra => romAddress,
-            douta => noteIndex
+    menu : BGMmenu port map(
+            clk => clk,
+            toggleMenu => toggleMenu,
+            pwmMenu => pwmMenu
         );
 
-    BGMComp : SynthBGM port map(
+    game : BGMgame port map(
             clk => clk,
-            PWM => BGMpwm,
-            toggle => toggle,
-            noteIndicator => noteIndex
+            toggleGame => toggleGame,
+            pwmGame => pwmGame
+        );
+
+    transition : BGMtransition port map(
+            clk => clk,
+            toggleTransition => toggleTransition,
+            pwmTransition => pwmTransition
         );
 
 end Behavioral;

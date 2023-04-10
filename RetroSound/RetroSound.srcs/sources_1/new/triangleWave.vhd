@@ -41,13 +41,13 @@ architecture Behavioral of triangleWave is
 
     signal lastSignal : std_logic := '0';
 begin
-    waveTriangle : process(clk)
+    waveTriangle : process(clk )
     begin
         tempCLK <= not tempCLK after Clockperiod / 2;
 
 
         if rising_edge(clk) then
-            if toggle = '1' then
+           -- if toggle = '1' then
 
                 addressSwitch <= '0';
                 dataInt <= to_integer(unsigned(data));
@@ -59,12 +59,12 @@ begin
                     counter2 <= counter2 + 1;
                 end if;
 
-                if counter2 > dataInt then
+                if counter2 < dataInt then
                     pwm <= '1';
                 else
                     pwm <= '0';
                 end if;
-            end if;
+           -- end if;
 
 
         end if;

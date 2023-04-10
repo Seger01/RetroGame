@@ -11,19 +11,27 @@ entity SFXmDeath is
 end SFXmDeath;
 
 architecture Behavioral of SFXmDeath is
-    component triangleWave is
-        Port ( clk : in STD_LOGIC;
-             toggle : in STD_LOGIC;
-             pwm : out STD_LOGIC);
+    component squareWave is
+        Port (CLK : in std_logic;
+             noteIndicator : in std_logic_vector (5 downto 0);
+             toggle : in std_logic;
+             PWM : out std_logic
+            );
     end component;
+
+    signal sound : std_logic_vector (5 downto 0);
 begin
+    mdeath : process (clk)
+    begin
+        sound <= "110000";
+    end process;
 
 
-
-triangleMdeath : triangleWave port map(
-    clk => clk,
-    toggle => toggleMdeath,
-    PWM => PWM 
-);
+    squareMdeath : squareWave port map(
+            clk => clk,
+            noteIndicator => sound,
+            toggle => toggleMdeath,
+            pwm => PWM
+        );
 
 end Behavioral;

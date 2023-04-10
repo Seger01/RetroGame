@@ -130,39 +130,46 @@ begin
             toggleWalk <= sound(2);
             togglePowerup <= sound(3);
             toggleMdeath <= sound(4);
+            toggleHit <= sound(5);
 
             SFXcounter <= SFXcounter + 1;
 
             if SFXcounter <= 5000 then
-                --if togglePdeath  = '1' then
-                    SFXpwm <= pwmPdeath;
-                --end if;
 
+                if togglePdeath  = '1' then
+                    SFXpwm <= pwmPdeath;
+                end if;
+                
+                if togglePowerup = '1' then
+                    SFXpwm <= pwmPowerup;
+                end if;
+         
+                
                 if SFXcounter <= 750 then -- walk
                     if toggleWalk = '1' then
                         SFXpwm <= pwmWalk;
                     end if;
                 end if;
-                if SFXcounter <= 1750 and SFXcounter >= 750 then -- shoot
+                if SFXcounter <= 2250 and SFXcounter >= 750 then -- shoot
                     if toggleShoot  = '1' then
 
                         SFXpwm <= pwmShoot;
                     end if;
                 end if;
 
-                if SFXcounter <= 2750 and SFXcounter >= 1750 then -- hit
+                if SFXcounter <= 3500 and SFXcounter >= 2250 then -- hit
                     if toggleHit  = '1' then
                         SFXpwm <= pwmHit;
                     end if;
                 end if;
 
-                if SFXcounter <= 4250 and SFXcounter >= 2750 then -- powerup
-                    if togglePowerup  = '1' then
-                        SFXpwm <= pwmPowerup;
-                    end if;
-                end if;
+                --                if SFXcounter <= 4250 and SFXcounter >= 2750 then -- powerup
+                --                    if togglePowerup  = '1' then
 
-                if SFXcounter <= 5000 and SFXcounter >= 4250 then -- enemy death
+                --                    end if;
+                --                end if;
+
+                if SFXcounter <= 5000 and SFXcounter >= 3500 then -- enemy death
                     if toggleMdeath = '1' then
                         SFXpwm <= pwmMdeath;
                     end if;
