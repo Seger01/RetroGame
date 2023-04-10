@@ -134,7 +134,5 @@ set_output_delay -clock [get_clocks VIRTUAL_clk_25MHz_prescaler] -min -add_delay
 set_output_delay -clock [get_clocks VIRTUAL_clk_25MHz_prescaler] -max -add_delay 5.000 [get_ports hsync]
 set_output_delay -clock [get_clocks VIRTUAL_clk_25MHz_prescaler] -min -add_delay 0.000 [get_ports vsync]
 set_output_delay -clock [get_clocks VIRTUAL_clk_25MHz_prescaler] -max -add_delay 5.000 [get_ports vsync]
-
-
-
-
+set_output_delay -clock [get_clocks VIRTUAL_clk_25MHz_prescaler] -min -add_delay 0.000 [get_ports {{debugOut[0]} {debugOut[1]} {debugOut[2]} {debugOut[3]} {debugOut[4]} {debugOut[5]} {debugOut[6]} {debugOut[7]} {debugOut[8]} {debugOut[9]} {debugOut[10]} {debugOut[11]} {debugOut[12]} {debugOut[13]} {debugOut[14]} {debugOut[15]}}]
+set_output_delay -clock [get_clocks VIRTUAL_clk_25MHz_prescaler] -max -add_delay 5.000 [get_ports {{debugOut[0]} {debugOut[1]} {debugOut[2]} {debugOut[3]} {debugOut[4]} {debugOut[5]} {debugOut[6]} {debugOut[7]} {debugOut[8]} {debugOut[9]} {debugOut[10]} {debugOut[11]} {debugOut[12]} {debugOut[13]} {debugOut[14]} {debugOut[15]}}]
