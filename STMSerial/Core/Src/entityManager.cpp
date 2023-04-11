@@ -167,7 +167,7 @@ void EntityManager::updateBoss(pointVector playerPos) {
 	Boss *bossPtr = dynamic_cast<Boss*>(entities[1]);
 	pointVector movement =  bossPtr->loop(playerPos);
 	if(xTaskGetTickCount() > shootTimer + shotDelay){
-		shotDelay = (rand() % 150) + 300;
+		shotDelay = (rand() % 250) + 400;
 		pointVector shootDirection = bossPtr->shoot(playerPos);
 			pointVector bossPosition = bossPtr->getPosition();
 			pointVector bulletStart;
@@ -209,7 +209,7 @@ void EntityManager::updateEntities() {
 		if (entities[i]->getHealth() <= 0) {
 			if(dynamic_cast<Enemy*>(entities[i]) && entities[36] == NULL){
 				int drop = rand() % 100;
-				if(drop < 90){
+				if(drop < 10){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
 					center->insert(entities[36]);
 				}

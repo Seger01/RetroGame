@@ -14,9 +14,7 @@ void Bullet::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Entity*>(object);
 	this->setHealth(0);
 	soundManager.setSoundActive(5);
-if(dynamic_cast<Enemy*>(entityptr)) {
-
-
+if(dynamic_cast<Enemy*>(entityptr) || dynamic_cast<Boss*>(entityptr)) {
 		if(this->getStrength() > entityptr->getHealth()){
 			entityptr->setHealth(0);
 		} else {
