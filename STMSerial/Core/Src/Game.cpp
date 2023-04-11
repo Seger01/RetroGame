@@ -60,12 +60,12 @@ void Game::setup() {
 
 	//entityManager->spawnEntities(1, 1, 2);
 	//while(1){
-	{
-		uint8_t score[4] = { 23, 23, 23, 0 };
-
-		for (int i = 0; i < 5; i++)
-			highscoreManager.setAllTimeHighscore(score);
-	}
+//	{
+//		uint8_t score[4] = { 23, 23, 23, 0 };
+//
+//		for (int i = 0; i < 5; i++)
+//			highscoreManager.setAllTimeHighscore(score);
+//	}
 //	{
 //		uint8_t score[4] = { 21, 23, 23, 0 };
 //
