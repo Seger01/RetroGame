@@ -153,7 +153,7 @@ void Game::run() {
 		if (currentLevel <= 2) {
 			levelManager.switchLevel(currentLevel);
 		} else {
-			levelManager.switchLevel(((currentLevel - 2) % 5) + 2);
+			levelManager.switchLevel(((currentLevel - 2) % 6) + 2);
 		}
 		if (entities[0]->getPosX() < 120) {
 			entities[0]->moveX(1);
