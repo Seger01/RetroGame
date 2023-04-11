@@ -1,6 +1,4 @@
 #pragma once
-#ifndef SRC_ENTITYMANAGER_H_
-#define SRC_ENTITYMANAGER_H_
 #include "entity.h"
 #include "Quad.h"
 #include "enemy.h"
@@ -13,7 +11,6 @@ extern "C" {
 class EntityManager
 {
 private:
-
 	Entity *entities[50];
 	//soundManager: SoundManager;
 	Quad* center;
@@ -39,5 +36,3 @@ public:
 	void spawnPlayer(int x,int y);
 	void checkCollision();
 };
-
-#endif
