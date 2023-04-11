@@ -7,7 +7,7 @@
 
 #include <cstring>
 #include <cstdlib>
-
+#include <math.h>
 #include "config.h"
 
 #include "Game.h"
@@ -320,7 +320,7 @@ void Game::run() {
 					if (amountOfEnemies > remainingEnemies)
 						amountOfEnemies = remainingEnemies;
 
-					entityManager->spawnEntities(1, amountOfEnemies);
+					entityManager->spawnEntities(1, ceilf((float)amountOfEnemies / 2.0));
 
 					remainingEnemies -= amountOfEnemies;
 				}

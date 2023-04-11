@@ -22,7 +22,6 @@ void Player::updatePowerups(){
 	powerupManager->updatePowerups();
 }
 
-
 void Player::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Entity*>(object);
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
