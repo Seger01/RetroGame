@@ -35,7 +35,7 @@ pointVector Bullet::getTravelDirection() {
 }
 void Bullet::stepX(int direction) {
 	travelDistance += speed;
-	if (travelDistance >= 3400) {
+	if (travelDistance >= 2900) {
 		this->setHealth(0);
 	}
 	int X = this->getStart().X;
@@ -51,7 +51,7 @@ void Bullet::stepX(int direction) {
 }
 void Bullet::stepY(int direction) {
 	travelDistance += speed;
-	if (travelDistance >= 3400) {
+	if (travelDistance >= 2900) {
 		this->setHealth(0);
 	}
 	int Y = this->getStart().Y;
