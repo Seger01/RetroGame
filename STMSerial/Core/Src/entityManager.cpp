@@ -18,7 +18,6 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 	for (uint8_t i = 1; i < 50; i++) {
 		entities[i] = nullptr;
 	}
-
 	Rectangle map(120, 120, 180, 180);
 	center = new Quad(map);
 	removeTiles();
@@ -105,7 +104,7 @@ void EntityManager::clear() {
 	playerPtr->setStar(false);
 }
 void EntityManager::spawnPlayer(int x, int y) {
-	entities[0] = new Player(x, y);
+	entities[0] = new Player(x, y, this->getEntities());
 	center->insert(entities[0]);
 }
 

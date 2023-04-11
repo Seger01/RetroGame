@@ -1,15 +1,20 @@
 #include "player.h"
 #include "boss.h"
 
+
 #include "SoundManager.h"
-Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
+Player::Player(uint8_t x, uint8_t y, Entity** entities) : Entity(x,y)
 {
 	setWidth(16);
 	setHeight(16);
 	//setTexture(2);
 	setStrength(1);
-	setSpeed(15);
+	setSpeed(playerSpeed);
 	setHealth(4);
+
+	this->entities = entities;
+
+	powerupManager = new PowerupManager(entities);
 
 }
 void Player::onCollide(CollidableObject *object) {
@@ -17,8 +22,11 @@ void Player::onCollide(CollidableObject *object) {
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
 
 	} else if (dynamic_cast<Item*>(object)) {
+		Item* itemptr = dynamic_cast<Item*>(object);
 		entityptr->setHealth(0);
 		soundManager.setSoundActive(3);
+
+		powerupManager->setPowerup(itemptr->getTexture() - 11);
 		//power up
 		//powerUphandler.setPowerUp()
 	}

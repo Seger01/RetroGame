@@ -4,7 +4,7 @@
  *  Created on: 8 Mar 2023
  *      Author: coole
  */
-
+#pragma once
 #ifndef SRC_GAME_H_
 #define SRC_GAME_H_
 
