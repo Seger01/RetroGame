@@ -103,7 +103,7 @@ void Game::setup() {
 void Game::run() {
 
 	static long long lastShot = 0;
-	static long long lastLevelSwitch = 0;
+
 
 	static long long timeOfDeath = 0;
 
@@ -303,13 +303,17 @@ void Game::run() {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			if (remainingEnemies > 0) {
 				if ((currentLevel - 2) % 5 == 0 && currentLevel != 2) {
-//					//entityManager.spawnboss ofzo
-//					if(entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false){
-//						bossSpawnEnemies = true;
-//						entityManager->spawnEntities(1,8);
-//					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0){
-//						bossSpawnEnemies = false;
-//					}
+					entityManager->spawnBoss();
+					if (entityManager->getEntities()[1]->getHealth() % 6 == 0 && bossSpawnEnemies == false) {
+						bossSpawnEnemies = true;
+						entityManager->spawnEntities(1, 8);
+					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0) {
+						bossSpawnEnemies = false;
+					}
+
+					if(entities[1] == nullptr){
+						remainingEnemies = 0;
+					}
 				} else {
 					int amountOfEnemies = ((std::rand() % 5) + (currentLevel - 2));
 
@@ -473,7 +477,16 @@ void Game::checkForCheats(uint8_t inputs) {
 			for (int i = 0; i < 6; i++) {
 				if (toBossCheat[i] == lastInputsBuffer[i]) {
 					if (i == 5) {
-						//currentLevel
+						currentLevel = 7;
+						remainingEnemies = 1;
+						currentState = SwitchingLevels;
+						levelManager.switchLevel(currentLevel);
+						entityManager->removeTiles();
+						levelManager.getCollidables(&collidableTiles);
+						entityManager->addTiles();
+						levelManager.getSpawnpoints(&spawnPoints);
+						entityManager->clear();
+						lastLevelSwitch = xTaskGetTickCount();
 					}
 				} else {
 					break;

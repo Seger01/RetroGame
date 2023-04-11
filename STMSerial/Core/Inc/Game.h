@@ -59,6 +59,7 @@ private:
 
 	SPI_HandleTypeDef *hspi1;
 
+	long long lastLevelSwitch = 0;
 
 	int currentLevel = 0;
 
