@@ -159,7 +159,7 @@ void Enemy::onCollide(CollidableObject *object) {
 		Enemy *entityptr = dynamic_cast<Enemy*>(object);
 		if (stepsRemaining == 0 && type != 4) {
 			randomSteps();
-			this->stepsRemaining = 5;
+			this->stepsRemaining = 10;
 		}
 	}
 }

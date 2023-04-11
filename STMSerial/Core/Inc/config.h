@@ -23,7 +23,7 @@
 
 #define timeBetweenMenuSwitch 300
 
-#define playerSpeed 15
+#define playerSpeed 13
 #define startingHp 5
 
 #define playerCoffeeSpeed 30
