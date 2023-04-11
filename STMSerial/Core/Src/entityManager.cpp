@@ -31,6 +31,13 @@ EntityManager::~EntityManager() {
 	delete spawnpoints;
 	delete collidableTiles;
 }
+void EntityManager::setDifficulty(uint8_t difficulty){
+
+this->difficulty = difficulty;
+}
+uint8_t EntityManager::getDifficulty(){
+	return difficulty;
+}
 Entity** EntityManager::getEntities() {
 	return entities;
 }
@@ -135,7 +142,7 @@ void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 				}
 			}
 			if (!spawn_occupied) {
-				Enemy *e = new Enemy(p.X, p.Y, enemyType);
+				Enemy *e = new Enemy(p.X, p.Y, enemyType,difficulty);
 
 				for (uint8_t i = 2; i < 35; i++) {
 					if (entities[i] == nullptr) {

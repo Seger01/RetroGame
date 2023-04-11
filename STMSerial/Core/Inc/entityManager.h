@@ -15,6 +15,7 @@ private:
 	//soundManager: SoundManager;
 	Quad* center;
 	std::vector<Tile*> *collidableTiles;
+	uint8_t difficulty = 0;
 	std::vector<Tile*> *spawnpoints;
 public:
 	EntityManager(std::vector<Tile*> *collidableTiles,std::vector<Tile*> *spawnpoints);
@@ -23,6 +24,8 @@ public:
 	void addTiles();
 	Entity** getEntities();
 	uint8_t countEnemies();
+	void setDifficulty(uint8_t);
+	uint8_t getDifficulty();
 	void playerAction(bool movePlayerUp, bool movePlayerDown, bool movePlayerLeft, bool movePlayerRight,bool playerShoot);
 	void spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies);
 	void updateBoss(pointVector);

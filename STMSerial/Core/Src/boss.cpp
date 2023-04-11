@@ -100,7 +100,7 @@ pointVector Boss::loop(pointVector playerPos) {
 		if (travelling) {
 			return moveToPoint();
 		}
-		stage = 2;
+		stage = 1;
 		break;
 	case 1:
 		//int fleeDistance = (rand() % 15) + 30;

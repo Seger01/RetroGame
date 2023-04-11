@@ -5,8 +5,9 @@ extern "C" {
 #include "FreeRTOS.h"
 #include "task.h"
 }
-Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
+Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type,uint8_t difficulty) :
 		Entity(x, y) {
+	this->difficulty = difficulty;
 	setWidth(16);
 	setHeight(16);
 	this->type = type;
@@ -25,26 +26,26 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type) :
 	switch (type) {
 	case 1:
 		//regular enemy
-		setSpeed(10);
+		setSpeed(10 + (3 * difficulty));
 		setHealth(2);
 		setTexture(0);
 		break;
 	case 2:
 		// butterfly
-		setSpeed(5);
+		setSpeed(5 + (2 * difficulty));
 		setHealth(1);
 		setTexture(2);
 		stepsRemaining = 5;
 		break;
 	case 3:
-		// butterfly
-		setSpeed(10);
+		// spped
+		setSpeed(20 + (5 * difficulty));
 		setHealth(1);
 		setTexture(4);
 		break;
 	case 4:
 		//heavy boi
-		setSpeed(10);
+		setSpeed(4 + (2 * difficulty));
 		setHealth(4);
 		setTexture(6);
 		break;

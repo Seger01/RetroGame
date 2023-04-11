@@ -8,9 +8,10 @@ private:
 	pointVector direction = {0,0};
 	uint8_t stepsRemaining = 0;
 	pointVector locationLoc = {0,0};
+	uint8_t difficulty = 0;
 
 public:
-	Enemy(uint8_t x, uint8_t y,uint8_t type);
+	Enemy(uint8_t x, uint8_t y,uint8_t type,uint8_t difficulty);
 	void onCollide(CollidableObject*object) override;
 	pointVector Update(pointVector playerPos);
 	void onDeath() override;
