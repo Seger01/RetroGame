@@ -115,7 +115,14 @@ pointVector Boss::loop(pointVector playerPos) {
 			//setDestination({120,120});
 			return moveToPoint();
 		}
+		if(health < 3){
+			stage = 2;
+
+		}
 		//return flee(playerPos);
+		break;
+	case 2:
+		return followPlayer(playerPos);
 		break;
 	default:
 		break;

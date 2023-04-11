@@ -451,7 +451,7 @@ void Game::run() {
 		if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
 			currentState = MainMenu;
 			currentLevel = 1;
-			entityManager->setDifficulty((currentLevel - 2) / 4);
+			entityManager->setDifficulty((currentLevel - 2) / 2);
 			levelManager.setLevel(currentLevel);
 			//levelManager.getCollidables(&collidableTiles);
 			//levelManager.getSpawnpoints(&spawnPoints);
