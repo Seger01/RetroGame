@@ -191,28 +191,37 @@ bool Entity::checkEntities(CollidableObject *object) {
 	thisPosition.X = this->getPosX();
 	thisPosition.Y = this->getPosY();
 	pointVector thisHalfsize = this->getHalfSize();
+
+	// Calculate the distance between the centers of the two objects along each axis
 	int deltaX = otherPosition.X - thisPosition.X;
 	int deltaY = otherPosition.Y - thisPosition.Y;
+
+	// Calculate the intersection along each axis
 	int intersectX = abs(deltaX) - (otherHalfsize.X + thisHalfsize.X);
 	int intersectY = abs(deltaY) - (otherHalfsize.Y + thisHalfsize.Y);
+
+	// Check for collision along both axes
 	if (intersectX < 0 && intersectY < 0) {
-		if (intersectX > intersectY) {
-			if (deltaX > 0) {
-				moveX(intersectX);
-			}
-			else {
-				moveX(-intersectX);
-			}
-		}
-		else {
-			if (deltaY > 0) {
-				moveY(intersectY);
-			}
-			else {
-				moveY(-intersectY);
-			}
-		}
-		return true;
+	    // If the player is moving diagonally and the intersections along both axes are negative, it means the player is already inside the object and needs to be moved out
+	    if (intersectX < 0 && intersectY < 0) {
+	        if (abs(intersectX) < abs(intersectY)) {
+	            // The player is closer to the X axis, so move along the X axis
+	            if (deltaX > 0) {
+	                moveX(intersectX);
+	            } else {
+	                moveX(-intersectX);
+	            }
+	        } else {
+	            // The player is closer to the Y axis, so move along the Y axis
+	            if (deltaY > 0) {
+	                moveY(intersectY);
+	            } else {
+	                moveY(-intersectY);
+	            }
+	        }
+	        return true;
+	    }
 	}
+
 	return false;
 }

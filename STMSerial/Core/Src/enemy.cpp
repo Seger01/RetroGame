@@ -132,6 +132,7 @@ pointVector Enemy::followPlayer(pointVector playerPos) {
 	return newMovement;
 }
 pointVector moveNear(pointVector playerPos) {
+	return playerPos;
 }
 void Enemy::randomSteps() {
 	srand(xTaskGetTickCount());
@@ -157,10 +158,10 @@ void Enemy::onCollide(CollidableObject *object) {
 	} else if (dynamic_cast<Tile*>(object)) {
 		// Generate a random direction
 		Enemy *entityptr = dynamic_cast<Enemy*>(object);
-		if (stepsRemaining == 0 && type != 4) {
-			randomSteps();
-			this->stepsRemaining = 10;
-		}
+//		if (stepsRemaining == 0 && type != 4) {
+//			randomSteps();
+//			this->stepsRemaining = 10;
+//		}
 	}
 }
 void Enemy::onDeath() {
