@@ -38,6 +38,8 @@ public:
     void onDeath() override;
 
     int getTexture() override;
+
+    void updatePowerups();
 };
 
 #endif

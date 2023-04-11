@@ -17,6 +17,12 @@ Player::Player(uint8_t x, uint8_t y, Entity** entities) : Entity(x,y)
 	powerupManager = new PowerupManager(entities);
 
 }
+
+void Player::updatePowerups(){
+	powerupManager->updatePowerups();
+}
+
+
 void Player::onCollide(CollidableObject *object) {
 	Entity *entityptr = dynamic_cast<Entity*>(object);
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
