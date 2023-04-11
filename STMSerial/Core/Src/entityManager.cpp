@@ -197,8 +197,8 @@ void EntityManager::spawnBoss(){
 	center->insert(entities[1]);
 }
 void EntityManager::updateEntities() {
-
 	pointVector playerPos = entities[0]->getPosition();
+
 	updateBoss(playerPos);
 	for (uint8_t i = 1; i < 50; i++) {
 		int x = 0;
