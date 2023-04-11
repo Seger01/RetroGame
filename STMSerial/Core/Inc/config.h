@@ -23,10 +23,12 @@
 
 #define timeBetweenMenuSwitch 300
 
+#define playerSpeed 15
 #define startingHp 5
 
-#define speedPowerup 0
-#define healthPowerup 1
-#define nukePowerup 2
+#define playerCoffeeSpeed 30
+#define coffeePowerupDuration 5000
+
+
 
 #endif /* INC_CONFIG_H_ */

@@ -1,13 +1,20 @@
 #include "player.h"
 #include "boss.h"
-Player::Player(uint8_t x, uint8_t y) : Entity(x,y)
+
+
+#include "SoundManager.h"
+Player::Player(uint8_t x, uint8_t y, Entity** entities) : Entity(x,y)
 {
 	setWidth(16);
 	setHeight(16);
 	//setTexture(2);
 	setStrength(1);
-	setSpeed(15);
+	setSpeed(playerSpeed);
 	setHealth(4);
+
+	this->entities = entities;
+
+	powerupManager = new PowerupManager(entities);
 
 }
 void Player::onCollide(CollidableObject *object) {
@@ -15,6 +22,11 @@ void Player::onCollide(CollidableObject *object) {
 	if (dynamic_cast<Boss*>(object) || dynamic_cast<Enemy*>(object)) {
 
 	} else if (dynamic_cast<Item*>(object)) {
+		Item* itemptr = dynamic_cast<Item*>(object);
+		entityptr->setHealth(0);
+		soundManager.setSoundActive(3);
+
+		powerupManager->setPowerup(itemptr->getTexture() - 11);
 		//power up
 		//powerUphandler.setPowerUp()
 	}
@@ -60,6 +72,7 @@ int Player::getTexture() {
 		offset = 1;
 	} else if (abs(lastSpriteUpdate.X - position.X) >= 1 || abs(lastSpriteUpdate.Y - position.Y) >= 1) {
 		if (xTaskGetTickCount() > lastFrameUpdate + 100) {
+			soundManager.setSoundActive(2);
 			lastFrameUpdate = xTaskGetTickCount();
 
 			lastSpriteUpdate = position;

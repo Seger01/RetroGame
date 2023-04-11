@@ -4,7 +4,7 @@
  *  Created on: 2 Mar 2023
  *      Author: coole
  */
-
+#pragma once
 #ifndef SRC_COMMUNICATION_H_
 #define SRC_COMMUNICATION_H_
 

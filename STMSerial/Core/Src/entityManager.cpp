@@ -8,6 +8,7 @@
 #include "Rectangle.h"
 #include <vector>
 
+
 EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Tile*> *spawnpoints) {
 	//collidableTiles->clear();
 	//collidableTiles->push_back(new	Tile(50, 50, 3, true, false));
@@ -17,7 +18,6 @@ EntityManager::EntityManager(std::vector<Tile*> *collidableTiles, std::vector<Ti
 	for (uint8_t i = 1; i < 50; i++) {
 		entities[i] = nullptr;
 	}
-
 	Rectangle map(120, 120, 180, 180);
 	center = new Quad(map);
 	removeTiles();
@@ -111,7 +111,7 @@ void EntityManager::clear() {
 	playerPtr->setStar(false);
 }
 void EntityManager::spawnPlayer(int x, int y) {
-	entities[0] = new Player(x, y);
+	entities[0] = new Player(x, y, this->getEntities());
 	center->insert(entities[0]);
 }
 
@@ -209,7 +209,7 @@ void EntityManager::updateEntities() {
 		if (entities[i]->getHealth() <= 0) {
 			if(dynamic_cast<Enemy*>(entities[i]) && entities[36] == NULL){
 				int drop = rand() % 100;
-				if(drop < 5){
+				if(drop < 90){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
 					center->insert(entities[36]);
 				}

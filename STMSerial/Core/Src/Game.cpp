@@ -60,12 +60,12 @@ void Game::setup() {
 
 	//entityManager->spawnEntities(1, 1, 2);
 	//while(1){
-//	{
-//		uint8_t score[4] = { 23, 23, 23, 0 };
-//
-//		//for (int i = 0; i < 5; i++)
-//		highscoreManager.setAllTimeHighscore(score);
-//	}
+	{
+		uint8_t score[4] = { 23, 23, 23, 0 };
+
+		for (int i = 0; i < 5; i++)
+			highscoreManager.setAllTimeHighscore(score);
+	}
 //	{
 //		uint8_t score[4] = { 21, 23, 23, 0 };
 //
@@ -146,11 +146,14 @@ void Game::run() {
 		currentState = Reset;
 		break;
 	case SwitchingLevels:
-//		entities = entityManager->getEntities();
-		if (currentLevel < 2) {
+		//entities = entityManager->getEntities();
+		if (currentLevel == 2)
+			remainingEnemies = ((currentLevel - 2) * 5) + 10;
+
+		if (currentLevel <= 2) {
 			levelManager.switchLevel(currentLevel);
 		} else {
-			levelManager.switchLevel(((currentLevel - 2) % 6) + 2);
+			levelManager.switchLevel(((currentLevel - 2) % 5) + 2);
 		}
 		if (entities[0]->getPosX() < 120) {
 			entities[0]->moveX(1);
@@ -165,16 +168,15 @@ void Game::run() {
 		}
 
 		if (xTaskGetTickCount() > timeForLevelSwitch + lastLevelSwitch) {
-
 			currentState = PlayingLevel;
 			entityManager->removeTiles();
 			levelManager.getCollidables(&collidableTiles);
 			entityManager->addTiles();
 			levelManager.getSpawnpoints(&spawnPoints);
+
 		}
 		break;
 	case ShowDeath:
-
 		if (xTaskGetTickCount() > timeOfDeath + 2000) {
 			if (entities[0]->getHealth() <= 0) {
 				if (highscoreManager.getCurrentScore() > highscoreManager.getAllTimeHighscore()[3]) {
@@ -187,7 +189,7 @@ void Game::run() {
 				currentState = SwitchingLevels;
 				lastLevelSwitch = xTaskGetTickCount();
 				entityManager->clear();
-
+				//entityManager->getEntities()[0]
 			}
 		}
 		{
@@ -259,10 +261,13 @@ void Game::run() {
 
 		checkForCheats(inputs);
 
+		highscoreManager.setCurrentScore(currentLevel - 1);
+
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
 				playerShoot = true;
 				lastShot = xTaskGetTickCount();
+				soundManager.setSoundActive(1);
 				//entities[0]->setHealth(entities[0]->getHealth() - 1);
 			}
 		} else if ((inputs & (1 << 5)) >> 5) {
@@ -297,14 +302,14 @@ void Game::run() {
 		if (spawnTimer < xTaskGetTickCount()) {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			if (remainingEnemies > 0) {
-				if ((currentLevel - 2) % 6 == 0) {
-					//entityManager.spawnboss ofzo
-					if(entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false){
-						bossSpawnEnemies = true;
-						entityManager->spawnEntities(1,8);
-					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0){
-						bossSpawnEnemies = false;
-					}
+				if ((currentLevel - 2) % 5 == 0 && currentLevel != 2) {
+//					//entityManager.spawnboss ofzo
+//					if(entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false){
+//						bossSpawnEnemies = true;
+//						entityManager->spawnEntities(1,8);
+//					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0){
+//						bossSpawnEnemies = false;
+//					}
 				} else {
 					int amountOfEnemies = ((std::rand() % 5) + (currentLevel - 2));
 
@@ -329,6 +334,9 @@ void Game::run() {
 
 		if (entities[0]->getHealth() < lastPlayerHealth) {
 			currentState = ShowDeath;
+
+			soundManager.setSoundActive(4);
+
 			timeOfDeath = xTaskGetTickCount();
 		}
 		lastPlayerHealth = entities[0]->getHealth();
@@ -394,7 +402,7 @@ void Game::run() {
 
 				levelManager.setLevel(currentLevel);
 
-				soundManager.setSoundActive(0);
+				soundManager.setSoundActive(2);
 				//levelManager.getCollidables(&collidableTiles);
 				//levelManager.getSpawnpoints(&spawnPoints);
 				//entitymanager.updateTiles ofzxo
@@ -425,12 +433,9 @@ void Game::run() {
 			//entitymanager.updateTiles ofzxo
 
 			lastLevelSwitch = xTaskGetTickCount();
-		} else {
-			entityManager->playerAction((inputs & (1 << 0)) >> 0, (inputs & (1 << 1)) >> 1, (inputs & (1 << 2)) >> 2,
-					(inputs & (1 << 3)) >> 3, playerShoot);
 		}
-
-		break;
+		communication->sendBoth(levelManager.getMap(), emptyEntities);
+		return;
 	default:
 
 		break;
@@ -446,6 +451,7 @@ void Game::checkForCheats(uint8_t inputs) {
 	static uint8_t lastInputs = 0;
 
 	uint8_t healthCheat[8] = { buttonB, buttonA, joystickLeft, joystickRight, joystickUp, joystickDown };
+	uint8_t toBossCheat[8] = { buttonA, buttonB, joystickRight, joystickLeft, joystickDown, joystickUp };
 
 	if (inputs != 0) {
 		if (inputs != lastInputs) {
@@ -455,10 +461,19 @@ void Game::checkForCheats(uint8_t inputs) {
 
 			lastInputsBuffer[0] = inputs;
 
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 6; i++) {
 				if (healthCheat[i] == lastInputsBuffer[i]) {
 					if (i == 3) {
 						entityManager->getEntities()[0]->setHealth(entityManager->getEntities()[0]->getHealth() + 10);
+					}
+				} else {
+					break;
+				}
+			}
+			for (int i = 0; i < 6; i++) {
+				if (toBossCheat[i] == lastInputsBuffer[i]) {
+					if (i == 5) {
+						//currentLevel
 					}
 				} else {
 					break;
@@ -501,11 +516,14 @@ void Game::showAllHighscores() {
 
 	communication->sendBoth(highscoresScreen[0], emptyEntities);
 
-	HAL_Delay(500);
+	HAL_Delay(200);
 
 	while (inputManager.readInput() != buttonA) {
 
 	}
-	HAL_Delay(100);
+	HAL_Delay(200);
+	while (inputManager.readInput() != 0) {
+
+	}
 }
 

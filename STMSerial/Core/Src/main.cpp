@@ -62,7 +62,7 @@ const osThreadAttr_t SerialSend_attributes = {
   .priority = (osPriority_t) osPriorityNormal,
 };
 /* USER CODE BEGIN PV */
-
+Game game(&hspi1);
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -398,7 +398,7 @@ void startSend(void *argument) {
 	fpgaReset();
 	/* Infinite loop */
 
-	Game game(&hspi1);
+
 //
 	game.setup();
 
