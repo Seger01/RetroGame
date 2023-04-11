@@ -31,6 +31,13 @@ EntityManager::~EntityManager() {
 	delete spawnpoints;
 	delete collidableTiles;
 }
+void EntityManager::setDifficulty(uint8_t difficulty){
+
+this->difficulty = difficulty;
+}
+uint8_t EntityManager::getDifficulty(){
+	return difficulty;
+}
 Entity** EntityManager::getEntities() {
 	return entities;
 }
@@ -75,12 +82,10 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 	moveEntity(0, x, y);
 	if (playerShoot) {
 		pointVector playerPosition = playerPtr->getPosition();
-		pointVector playerHalf = playerPtr->getHalfSize();
 		pointVector bulletStart;
 		pointVector playerDirection = playerPtr->getDirection();
 		bulletStart.X = (playerPosition.X + playerDirection.X * 9);
 		bulletStart.Y = (playerPosition.Y + playerDirection.Y * 9);
-		uint8_t bullets = 5;
 		//if(entities[1] != nullptr)
 		for (uint8_t i = 37; i < 42; i++) {
 			if (entities[i] == NULL) {
@@ -102,6 +107,8 @@ void EntityManager::clear() {
 		delete entities[i];
 		entities[i] = nullptr;
 	}
+	Player* playerPtr = dynamic_cast<Player*>(entities[0]);
+	playerPtr->setStar(false);
 }
 void EntityManager::spawnPlayer(int x, int y) {
 	entities[0] = new Player(x, y);
@@ -135,7 +142,7 @@ void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 				}
 			}
 			if (!spawn_occupied) {
-				Enemy *e = new Enemy(p.X, p.Y, enemyType);
+				Enemy *e = new Enemy(p.X, p.Y, enemyType,difficulty);
 
 				for (uint8_t i = 2; i < 35; i++) {
 					if (entities[i] == nullptr) {
@@ -153,16 +160,16 @@ void EntityManager::spawnEntities(uint8_t enemyType, uint8_t amountOfEnemies) {
 }
 void EntityManager::updateBoss(pointVector playerPos) {
 	static long long shootTimer = 0;
-	bool bossShoot = false;
+	static int shotDelay = 500;
 	if(entities[1] == NULL){
 		return;
 	}
 	Boss *bossPtr = dynamic_cast<Boss*>(entities[1]);
 	pointVector movement =  bossPtr->loop(playerPos);
-	if(xTaskGetTickCount() > shootTimer + 200){
+	if(xTaskGetTickCount() > shootTimer + shotDelay){
+		shotDelay = (rand() % 150) + 300;
 		pointVector shootDirection = bossPtr->shoot(playerPos);
 			pointVector bossPosition = bossPtr->getPosition();
-			pointVector bossHalf = bossPtr->getHalfSize();
 			pointVector bulletStart;
 			bulletStart.X = (bossPosition.X + shootDirection.X * 10);
 			bulletStart.Y = (bossPosition.Y + shootDirection.Y * 10);
@@ -172,6 +179,7 @@ void EntityManager::updateBoss(pointVector playerPos) {
 				if (entities[i] == NULL) {
 					entities[i] = new Bullet(bulletStart.X, bulletStart.Y, 1);
 					Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[i]);
+					bulletPtr->setSpeed(35);
 					center->insert(bulletPtr);
 					bulletPtr->setTravelDirection(shootDirection);
 					break;
@@ -203,6 +211,7 @@ void EntityManager::updateEntities() {
 				int drop = rand() % 100;
 				if(drop < 5){
 					entities[36] = new Item(entities[i]->getPosX(),entities[i]->getPosY());
+					center->insert(entities[36]);
 				}
 			}
 			center->remove(entities[i]);
@@ -249,8 +258,12 @@ void EntityManager::moveEntity(int toBeMoved, int x, int y) {
 				Bullet *bulletPtr = dynamic_cast<Bullet*>(entities[toBeMoved]);
 				bulletPtr->onCollide(found->at(j));
 				break;
+			}else if(dynamic_cast<Player*>(entities[toBeMoved])){
+				Player* playerPtr = dynamic_cast<Player*>(entities[toBeMoved]);
+				playerPtr->onCollide(found->at(j));
+				break;
 			}
-
+			// if wall get where it touches and make it move along side it
 			entities[toBeMoved]->onCollide(found->at(j));
 		}
 

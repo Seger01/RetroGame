@@ -19,6 +19,14 @@ void Player::onCollide(CollidableObject *object) {
 		//powerUphandler.setPowerUp()
 	}
 }
+void Player::setStar(bool value){
+	this->star = value;
+}
+void Player::setHealth(uint8_t health){
+	if(!star){
+		this->health = health;
+	}
+}
 pointVector Player::getDirection() {
 	return direction;
 }

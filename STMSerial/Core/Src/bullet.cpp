@@ -62,7 +62,40 @@ void Bullet::stepY(int direction) {
 			this->position.Y -= (int) speed;
 		}
 }
-
+bool Bullet::checkEntities(CollidableObject *object) {
+	if (dynamic_cast<Item*>(object)) {
+		return false;
+	}
+	pointVector otherPosition;
+	otherPosition.X = object->getPosX();
+	otherPosition.Y = object->getPosY();
+	pointVector otherHalfsize = object->getHalfSize();
+	pointVector thisPosition;
+	thisPosition.X = this->getPosX();
+	thisPosition.Y = this->getPosY();
+	pointVector thisHalfsize = this->getHalfSize();
+	int deltaX = otherPosition.X - thisPosition.X;
+	int deltaY = otherPosition.Y - thisPosition.Y;
+	int intersectX = abs(deltaX) - (otherHalfsize.X + thisHalfsize.X);
+	int intersectY = abs(deltaY) - (otherHalfsize.Y + thisHalfsize.Y);
+	if (intersectX < 0 && intersectY < 0) {
+		if (intersectX > intersectY) {
+			if (deltaX > 0) {
+				moveX(intersectX);
+			} else {
+				moveX(-intersectX);
+			}
+		} else {
+			if (deltaY > 0) {
+				moveY(intersectY);
+			} else {
+				moveY(-intersectY);
+			}
+		}
+		return true;
+	}
+	return false;
+}
 int Bullet::getTexture(){
 	return 13;
 }
