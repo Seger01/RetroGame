@@ -28,7 +28,6 @@ private:
 public:
     Player(uint8_t x, uint8_t y, Entity** entities);
     void setStar(bool);
-    void updatePowerUp();
     void setHealth(uint8_t) override;
     void onCollide(CollidableObject *object) override;
     void setTexture(uint8_t);

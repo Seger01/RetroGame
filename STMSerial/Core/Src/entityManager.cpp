@@ -62,6 +62,7 @@ void EntityManager::playerAction(bool movePlayerUp, bool movePlayerDown, bool mo
 	int x = 0;
 	int y = 0;
 	Player *playerPtr = dynamic_cast<Player*>(entities[0]);
+	playerPtr->updatePowerups();
 	if (movePlayerUp) {
 		y = 1;
 	} else if (movePlayerDown) {
