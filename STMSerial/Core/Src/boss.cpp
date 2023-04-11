@@ -6,7 +6,7 @@ Boss::Boss(uint8_t x, uint8_t y) :
 	setHeight(16);
 	setTexture(8);
 	setSpeed(15);
-	setHealth(20);
+	setHealth(6);
 	setDestination( { 120, 120 });
 }
 void Boss::onCollide(CollidableObject *object) {

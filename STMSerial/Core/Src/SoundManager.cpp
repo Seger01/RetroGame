@@ -26,5 +26,5 @@ uint8_t SoundManager::getActiveSounds(){
 
 	activeSounds = 0;
 
-	return (temp | 0b01000000); // 0b01000000
+	return (temp ); // 0b01000000
 }

@@ -104,11 +104,13 @@ void Game::run() {
 
 	static long long lastShot = 0;
 
-
 	static long long timeOfDeath = 0;
 
 	bool playerShoot = false;
 	static bool entityUpdate = false;
+
+	static bool bossSpawn = false;
+
 
 	static int lastPlayerHealth = 0;
 
@@ -189,6 +191,7 @@ void Game::run() {
 				currentState = SwitchingLevels;
 				lastLevelSwitch = xTaskGetTickCount();
 				entityManager->clear();
+				bossSpawn = false;
 				//entityManager->getEntities()[0]
 			}
 		}
@@ -207,6 +210,7 @@ void Game::run() {
 		return;
 	case GivingNameForHighscore: {
 		static uint8_t screen[15][15] = { 0 };
+		soundManager.setSoundActive(6);
 
 		static uint8_t chars[3] = { 0 };
 
@@ -263,6 +267,8 @@ void Game::run() {
 
 		highscoreManager.setCurrentScore(currentLevel - 1);
 
+		soundManager.setSoundActive(7);
+
 		if ((inputs & (1 << 4)) >> 4) {
 			if (xTaskGetTickCount() >= lastShot + timeBetweenShots) {
 				playerShoot = true;
@@ -303,29 +309,40 @@ void Game::run() {
 			spawnTimer = xTaskGetTickCount() + timeBetweenEnemySpawns;
 			if (remainingEnemies > 0) {
 				if ((currentLevel - 2) % 5 == 0 && currentLevel != 2) {
-					entityManager->spawnBoss();
-					if (entityManager->getEntities()[1]->getHealth() % 6 == 0 && bossSpawnEnemies == false) {
+					if (bossSpawn == false) {
+						entityManager->spawnBoss();
+						bossSpawn = true;
+					}
+
+					if (entityManager->getEntities()[1]->getHealth() % 5 == 0 && bossSpawnEnemies == false) {
 						bossSpawnEnemies = true;
-						entityManager->spawnEntities(1, 8);
+						entityManager->spawnEntities(2, 5);
 					} else if (entityManager->getEntities()[1]->getHealth() % 5 != 0) {
 						bossSpawnEnemies = false;
 					}
 
-					if(entities[1] == nullptr){
+					if (entities[1] == nullptr) {
 						remainingEnemies = 0;
 					}
 				} else {
+					bossSpawn = false;
+
 					int amountOfEnemies = ((std::rand() % 5) + (currentLevel - 2));
 
 					if (amountOfEnemies > remainingEnemies)
 						amountOfEnemies = remainingEnemies;
 
-					entityManager->spawnEntities(1, ceilf((float)amountOfEnemies / 2.0));
+					entityManager->spawnEntities(1, ceilf((float) amountOfEnemies / 2.0));
+					entityManager->spawnEntities(2, floor(((float) amountOfEnemies / 2.0)));
 
 					remainingEnemies -= amountOfEnemies;
 				}
 			}
 		}
+
+//		if ((currentLevel - 2) % 5 == 0 && currentLevel != 2 && entities[1]->getHealth() == 0) {
+//			remainingEnemies = 0;
+//		}
 
 		if (remainingEnemies <= 0 && entityManager->countEnemies() == 0) {
 			currentLevel++;
@@ -349,7 +366,7 @@ void Game::run() {
 	case MainMenu:
 		static uint8_t lastInputs = 0;
 		static int gunIndex = 0;
-
+		soundManager.setSoundActive(6);
 		inputs = inputManager.readInput();
 
 //		if ((inputs & (1 << 5)) >> 5) {
@@ -428,6 +445,9 @@ void Game::run() {
 		return;
 	case Credits:
 		inputs = inputManager.readInput();
+
+		soundManager.setSoundActive(6);
+
 		if ((inputs & (1 << 5)) >> 5 && xTaskGetTickCount() > lastLevelSwitch + timeBetweenMenuSwitch) {
 			currentState = MainMenu;
 			currentLevel = 1;

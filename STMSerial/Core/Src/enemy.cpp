@@ -34,7 +34,7 @@ Enemy::Enemy(uint8_t x, uint8_t y, uint8_t type,uint8_t difficulty) :
 		// butterfly
 		setSpeed(5 + (2 * difficulty));
 		setHealth(1);
-		setTexture(2);
+		setTexture(8);
 		stepsRemaining = 5;
 		break;
 	case 3:
