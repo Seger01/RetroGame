@@ -60,12 +60,12 @@ void Game::setup() {
 
 	//entityManager->spawnEntities(1, 1, 2);
 	//while(1){
-//	{
-//		uint8_t score[4] = { 23, 23, 23, 0 };
-//
-//		//for (int i = 0; i < 5; i++)
-//		highscoreManager.setAllTimeHighscore(score);
-//	}
+	{
+		uint8_t score[4] = { 23, 23, 23, 0 };
+
+		for (int i = 0; i < 5; i++)
+			highscoreManager.setAllTimeHighscore(score);
+	}
 //	{
 //		uint8_t score[4] = { 21, 23, 23, 0 };
 //
@@ -451,6 +451,7 @@ void Game::checkForCheats(uint8_t inputs) {
 	static uint8_t lastInputs = 0;
 
 	uint8_t healthCheat[8] = { buttonB, buttonA, joystickLeft, joystickRight, joystickUp, joystickDown };
+	uint8_t toBossCheat[8] = { buttonA, buttonB, joystickRight, joystickLeft, joystickDown, joystickUp };
 
 	if (inputs != 0) {
 		if (inputs != lastInputs) {
@@ -460,10 +461,19 @@ void Game::checkForCheats(uint8_t inputs) {
 
 			lastInputsBuffer[0] = inputs;
 
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < 6; i++) {
 				if (healthCheat[i] == lastInputsBuffer[i]) {
 					if (i == 3) {
 						entityManager->getEntities()[0]->setHealth(entityManager->getEntities()[0]->getHealth() + 10);
+					}
+				} else {
+					break;
+				}
+			}
+			for (int i = 0; i < 6; i++) {
+				if (toBossCheat[i] == lastInputsBuffer[i]) {
+					if (i == 5) {
+						currentLevel
 					}
 				} else {
 					break;
