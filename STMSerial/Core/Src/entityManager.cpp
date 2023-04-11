@@ -167,7 +167,7 @@ void EntityManager::updateBoss(pointVector playerPos) {
 	Boss *bossPtr = dynamic_cast<Boss*>(entities[1]);
 	pointVector movement =  bossPtr->loop(playerPos);
 	if(xTaskGetTickCount() > shootTimer + shotDelay){
-		shotDelay = (rand() % 250) + 400;
+		shotDelay = (rand() % 550) + 500;
 		pointVector shootDirection = bossPtr->shoot(playerPos);
 			pointVector bossPosition = bossPtr->getPosition();
 			pointVector bulletStart;
